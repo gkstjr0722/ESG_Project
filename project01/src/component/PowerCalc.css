@@ -1,0 +1,17 @@
+.power-calc-bg {
+  min-height: 100vh;
+  display: flex; justify-content: center; align-items: center;
+  background: #f9fafc;
+}
+.power-calc-box {
+  background: #fff; border-radius: 14px; box-shadow: 0 2px 12px #0001;
+  padding: 40px 32px; min-width: 340px;
+}
+.power-calc-box h2 { margin-bottom: 26px; }
+.power-calc-box input[type="number"] { width: 120px; margin-left: 8px; }
+.main-btn {
+  margin-top: 18px; padding: 10px 32px;
+  border-radius: 8px; border: none; background: #1767ac; color: #fff; font-size: 16px; cursor: pointer;
+}
+.main-btn:hover { background: #2485e8; }
+.power-calc-result { margin-top: 26px; font-size: 20px; color: #e24e42; }

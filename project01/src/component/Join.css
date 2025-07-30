@@ -1,0 +1,69 @@
+.join-corp-bg {
+  min-height: 100vh;
+  background: #f7fafd;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.join-corp-box {
+  background: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  min-width: 320px;
+  max-width: 520px;
+  width: 90%;
+  box-sizing: border-box;
+}
+.join-corp-box h2 {
+  text-align: center;
+  color: #0c355c;
+  margin-bottom: 24px;
+}
+.join-corp-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.join-corp-box input[type="text"],
+.join-corp-box input[type="password"],
+.join-corp-box input[type="email"],
+.join-corp-box input[type="tel"] {
+  padding: 11px 14px;
+  font-size: 16px;
+  border: 1.5px solid #e1e4e8;
+  border-radius: 8px;
+  transition: border 0.2s;
+}
+.join-corp-box input:focus {
+  border: 1.5px solid #0098d8;
+  outline: none;
+}
+.upload-section {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+}
+.terms {
+  font-size: 15px;
+  margin: 10px 0 4px 0;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.main-btn {
+  background: #e24e42;
+  color: #fff;
+  border: none;
+  padding: 13px 0;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 12px;
+  cursor: pointer;
+  transition: background 0.16s;
+}
+.main-btn:hover {
+  background: #b53026;
+}
