@@ -11,10 +11,7 @@ import PowerCalc from './component/PowerCalc.jsx';
 import MyPage from './component/MyPage.jsx';
 import EditMyPage from './component/EditMyPage.jsx';
 
-<<<<<<< HEAD
 // 테스트 할거야
-=======
->>>>>>> faf304c3807f9d106ff9aaf2c4116e45650f82ee
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
