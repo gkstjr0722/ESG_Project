@@ -11,6 +11,10 @@ import PowerCalc from './component/PowerCalc.jsx';
 import MyPage from './component/MyPage.jsx';
 import EditMyPage from './component/EditMyPage.jsx';
 
+
+// 테스트 해봅니다. 해윙3
+// 테스트 할거야
+
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
