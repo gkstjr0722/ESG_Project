@@ -2,23 +2,31 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './Header.css';
 
-const megaMenuList = [
-  { label: '기업용', submenu: ['전기요금계산', '탄소량계산'] },
-  { label: '관공업용', submenu: ['전기요금계산', '탄소량계산'] },
-  { label: '위치찾기', submenu: ['전기차 충전소', '전기공사업체'] },
-  { label: '고객센터', submenu: ['Hans게시판', '자료실'] },
+const mainMenuList = [
+  { label: '전력사용현황', path: '/usage' },
+  { label: '위치찾기', path: '/location' },
+  { label: '고객센터', path: '/support' }
 ];
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userType, setUserType] = useState('none');
   const navigate = useNavigate();
 
   useEffect(() => {
     const checkLogin = () => {
       const biz = localStorage.getItem('id');
       const gov = localStorage.getItem('gov_id');
-      setIsLoggedIn(!!biz || !!gov);
+      if (biz) {
+        setIsLoggedIn(true);
+        setUserType('business');
+      } else if (gov) {
+        setIsLoggedIn(true);
+        setUserType('government');
+      } else {
+        setIsLoggedIn(false);
+        setUserType('none');
+      }
     };
     checkLogin();
     window.addEventListener('storage', checkLogin);
@@ -29,28 +37,34 @@ const Header = () => {
     localStorage.removeItem('id');
     localStorage.removeItem('gov_id');
     setIsLoggedIn(false);
+    setUserType('none');
     alert('로그아웃하셨습니다');
-    navigate('/'); // 메인페이지로 이동
+    navigate('/');
   };
 
+  // 로고 텍스트 동적 처리
+  let logoText = "Han's";
+  if (isLoggedIn && userType === 'business') logoText += ' 기업용';
+  if (isLoggedIn && userType === 'government') logoText += ' 관공업용';
+
   return (
-    <div className="menu-wrapper" onMouseLeave={() => setIsMenuOpen(false)}>
+    <div className="menu-wrapper">
       <nav className="navbar">
         <span className="logo">
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-            Han's E·S
+          <Link to="/" style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}>
+            {logoText}
           </Link>
         </span>
         <div className="menu-buttons">
-          {megaMenuList.map((menu, idx) => (
-            <span
+          {mainMenuList.map(menu => (
+            <Link
               key={menu.label}
+              to={menu.path}
               className="menu-main-text"
-              onMouseEnter={() => setIsMenuOpen(true)}
-              onFocus={() => setIsMenuOpen(true)}
+              style={{ textDecoration: 'none', color: 'inherit' }}
             >
               {menu.label}
-            </span>
+            </Link>
           ))}
         </div>
         <div className="nav-icons">
@@ -71,33 +85,6 @@ const Header = () => {
           )}
         </div>
       </nav>
-      <div className={`mega-menu-bar${isMenuOpen ? ' open' : ''}`}>
-        <div className="mega-menu-row">
-          {megaMenuList.map((menu, idx) => (
-            <div key={menu.label} className="mega-menu-col">
-              {menu.submenu.map((item, j) => {
-                if (idx === 0 && j === 0) {
-                  return (
-                    <Link
-                      to="/powercalc"
-                      key={j}
-                      className="mega-menu-item"
-                      style={{ textDecoration: 'none', color: 'inherit' }}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {item}
-                    </Link>
-                  );
-                } else {
-                  return (
-                    <div key={j} className="mega-menu-item">{item}</div>
-                  );
-                }
-              })}
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 };
