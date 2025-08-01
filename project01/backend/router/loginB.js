@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
 
+
 // 기업 로그인 (id, pw 확인)
 router.post('/corp', (req, res) => {
   const { id, pw } = req.body;

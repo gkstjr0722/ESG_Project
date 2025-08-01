@@ -4,6 +4,7 @@ const conn = require('../config/db');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' }); // uploads 폴더 자동생성
 
+
 router.post('/joinCorp', upload.single('bizCert'), (req, res) => {
     console.log('req.body:', req.body);
   console.log('req.file:', req.file);
