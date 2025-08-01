@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
 import './LoginCorp.css'; // 기존 스타일 그대로 사용
@@ -7,8 +7,24 @@ const LoginUnified = () => {
   const [mode, setMode] = useState('business'); // 'business' or 'government'
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
+  const [saveId, setSaveId] = useState(false);  // 아이디 저장 여부
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // 로그인 타입별로 다른 키로 저장
+  const savedIdKey = mode === 'business' ? 'savedId' : 'savedGovId';
+
+  // 컴포넌트 마운트, mode 변경 시 localStorage에서 아이디 불러오기
+  useEffect(() => {
+    const saved = localStorage.getItem(savedIdKey);
+    if (saved) {
+      setId(saved);
+      setSaveId(true);
+    } else {
+      setId('');
+      setSaveId(false);
+    }
+  }, [mode]); // mode가 바뀔 때마다 실행
 
   // 각각 로그인 엔드포인트 지정
   const loginEndpoints = {
@@ -33,7 +49,12 @@ const LoginUnified = () => {
       const data = await res.json();
 
       if (data.result === 'success') {
-        // 타입별로 localStorage 구분 가능
+        // 로그인 성공 시: localStorage에 아이디 저장/삭제
+        if (saveId) {
+          localStorage.setItem(savedIdKey, id);
+        } else {
+          localStorage.removeItem(savedIdKey);
+        }
         localStorage.setItem(mode === 'business' ? 'id' : 'gov_id', id);
         navigate('/');
       } else {
@@ -85,6 +106,18 @@ const LoginUnified = () => {
               onChange={e => setPw(e.target.value)}
               required
             />
+            {/* 아이디 저장 체크박스 */}
+            <div style={{ margin: '12px 0 0 0', textAlign: 'left' }}>
+              <input
+                type="checkbox"
+                id="saveId"
+                checked={saveId}
+                onChange={() => setSaveId(!saveId)}
+              />
+              <label htmlFor="saveId" style={{ marginLeft: '6px', fontSize: '14px' }}>
+                아이디 저장
+              </label>
+            </div>
             {error && <div className="login-error">{error}</div>}
             <button className="main-btn" type="submit">로그인</button>
           </form>
