@@ -40,4 +40,25 @@ router.post('/joinGovernment', async (req, res) => {
   }
 });
 
+// 관공업 회원정보 조회 (마이페이지용)
+router.post('/userinfo_gov', (req, res) => {
+  const { id } = req.body;
+  if (!id) return res.status(400).json({ result: 0, message: "ID 누락" });
+
+  const sql = "SELECT * FROM government_users WHERE id = ?";
+  db.query(sql, [id], (err, rows) => {
+    if (err) {
+      console.error(err);
+      return res.status(500).json({ result: 0, message: "DB 오류" });
+    }
+    if (rows.length === 0) {
+      return res.json({ result: 0, message: "회원정보 없음" });
+    }
+    // 비밀번호 등 민감 정보 제외
+    const user = { ...rows[0] };
+    delete user.pw;
+    res.json({ result: 1, user });
+  });
+});
+
 module.exports = router;
