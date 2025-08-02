@@ -5,6 +5,7 @@ import axios from 'axios';
 
 const EditMyPage = () => {
     const navigate = useNavigate();
+    const [userType, setUserType] = useState('business');
     const [formData, setFormData] = useState({
         corpName: '',
         corpRegNum: '',
@@ -15,37 +16,49 @@ const EditMyPage = () => {
         email: '',
         corpTel: '',
         address: '',
-        id: '',    // ★ id 필드 추가!
+        id: '',
+        gov_id: ''    // ★ id 필드 추가!
     });
     // 비밀번호 변경을 위한 새로운 상태
     const [newPassword, setNewPassword] = useState('');
     const [confirmNewPassword, setConfirmNewPassword] = useState('');
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        const loadUserInfo = async () => {
-            try {
-                // 로그인한 id를 localStorage에서 읽기
-                const id = localStorage.getItem('id');
-                if (!id) {
-                    alert('로그인이 필요합니다!');
-                    navigate('/login-corp');
-                    return;
-                }
-                // 실제 서버에서 사용자 정보 가져오기 (POST 방식)
-                const response = await axios.post('http://localhost:3001/api/mypage/userinfo', { id });
-                setFormData({ ...response.data.user, id });
+   useEffect(() => {
+        // 기업/관공업 로그인 체크
+        const id = localStorage.getItem('id');
+        const govId = localStorage.getItem('gov_id');
 
-            } catch (error) {
-                console.error('회원 정보를 불러오는 데 실패했습니다:', error);
-                alert('회원 정보를 불러올 수 없습니다. 다시 시도해주세요.');
-                navigate('/mypage');
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadUserInfo();
+        if (govId) {
+            setUserType('government');
+            // 관공업 정보 조회
+            axios.post('http://localhost:3001/userg/userinfo_gov', { id: govId })
+                .then(res => {
+                    setFormData({ ...res.data.user, gov_id: govId });
+                })
+                .catch(() => {
+                    alert('회원 정보를 불러올 수 없습니다.');
+                    navigate('/mypage');
+                })
+                .finally(() => setIsLoading(false));
+        } else if (id) {
+            setUserType('business');
+            // 기업 정보 조회
+            axios.post('http://localhost:3001/api/mypage/userinfo', { id })
+                .then(res => {
+                    setFormData({ ...res.data.user, id });
+                })
+                .catch(() => {
+                    alert('회원 정보를 불러올 수 없습니다.');
+                    navigate('/mypage');
+                })
+                .finally(() => setIsLoading(false));
+        } else {
+            alert('로그인이 필요합니다!');
+            navigate('/login');
+        }
     }, [navigate]);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -72,26 +85,36 @@ const EditMyPage = () => {
                 return;
             }
         }
-
+    
         try {
             // 1️⃣ 회원 정보 업데이트 (id 반드시 포함)
-            await axios.put('http://localhost:3001/api/mypage/update', {
-                ...formData, id: formData.id
-            });
-
-            // 2️⃣ 새 비밀번호가 입력되었다면, 비밀번호만 별도로 업데이트 요청
-            if (newPassword) {
-                await axios.put('http://localhost:3001/api/mypage/password-update', {
-                    id: formData.id,
-                    newPassword
+            if (userType === 'business') {
+                await axios.put('http://localhost:3001/api/mypage/update', {
+                    ...formData, id: formData.id
                 });
+            
+            // 2️⃣ 새 비밀번호가 입력되었다면, 비밀번호만 별도로 업데이트 요청
+                if (newPassword) {
+                    await axios.put('http://localhost:3001/api/mypage/password-update', {
+                        id: formData.id,
+                        newPassword
+                    });
+                }
+            } else {
+                await axios.put('http://localhost:3001/userg/update_gov', {
+                    ...formData, id: formData.gov_id
+                });
+                if (newPassword) {
+                    await axios.put('http://localhost:3001/userg/password-update_gov', {
+                        id: formData.gov_id, newPassword
+                    });
+                }
             }
 
             alert('회원 정보가 성공적으로 수정되었습니다.');
             navigate('/mypage');
 
         } catch (error) {
-            console.error('회원 정보 수정 실패:', error);
             alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
         }
     };
@@ -106,15 +129,25 @@ const EditMyPage = () => {
         );
     }
 
+
+
+
+
+
+
     return (
         <div>
             <Header />
             <div>
                 <br /><br /><br /><br />
-                <h2>회원 정보 수정</h2>
+                <h2>회원 정보 수정 {userType === 'business' ? '(기업용)' : '(관공업용)'}</h2>
                 <form onSubmit={handleSubmit}>
                     회사/기관명 : <input type="text" name="corpName" placeholder="회사/기관명" value={formData.corpName} onChange={handleChange} required />
-                    사업자등록번호 : <input type="text" name="corpRegNum" placeholder="사업자등록번호" value={formData.corpRegNum} disabled style={{backgroundColor: '#f0f0f0'}} />
+                    {userType === 'business' && (
+                        <>
+                            사업자등록번호 : <input type="text" name="corpRegNum" placeholder="사업자등록번호" value={formData.corpRegNum} disabled style={{ backgroundColor: '#f0f0f0' }} />
+                        </>
+                    )}
                     대표자명 : <input type="text" name="ceo" placeholder="대표자명" value={formData.ceo} onChange={handleChange} required />
                     부서/팀명 [선택] : <input type="text" name="dept" placeholder="부서/팀명 [선택] " value={formData.dept} onChange={handleChange} />
                     담당자명 : <input type="text" name="manager" placeholder="담당자명" value={formData.manager} onChange={handleChange} required />
