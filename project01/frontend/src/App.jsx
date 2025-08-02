@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import Header from './component/Header';
-import LoginCorp from './component/LoginCorp';
-import MyPage from './component/MyPage';
-import EditMyPage from './component/EditMyPage';
+import Header from './component/JSX/Header';
 import bannerImg from './assets/banner.webp';
 import './App.css';
 
@@ -30,7 +27,7 @@ const videoData = [
 ];
 
 // 메인 페이지 컴포넌트
-function MainPage() {
+function App() {
   const [showVideos, setShowVideos] = useState(false);
 
   return (
@@ -75,16 +72,5 @@ function MainPage() {
   );
 }
 
-// 라우터 구조
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<MainPage />} />
-      <Route path="/login-corp" element={<LoginCorp />} />
-      <Route path="/mypage" element={<MyPage />} />
-      <Route path="/editmypage" element={<EditMyPage />} />
-    </Routes>
-  );
-}
 
 export default App;
