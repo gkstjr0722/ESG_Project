@@ -5,19 +5,29 @@ import axios from 'axios';
 
 const Mypage = () => {
   const [user, setUser] = useState(null);
+  const [userType, setUserType] = useState('none');
   const navigate = useNavigate();
 
   useEffect(() => {
     // 1. 로그인한 id를 localStorage에서 읽음
     const id = localStorage.getItem('id');
-    if (!id) {
+    const govId = localStorage.getItem('gov_id');
+
+    if (id) {
+      setUserType('business');
+    } else if (govId) {
+      setUserType('government');
+    } else {
       alert('로그인이 필요합니다!');
       navigate('/login');
       return;
     }
 
+    const userId = id || govId;
+    const endpoint = userType === 'government' ? 'userinfo_gov' : 'userinfo';
+
     // 2. 서버에 내 id로 조회 요청
-    axios.post('http://localhost:3001/api/mypage/userinfo', { id })
+    axios.post(`http://localhost:3001/api/mypage/userinfo${endpoint}`, { id: userId })
       .then(res => {
         if (res.data.user) setUser(res.data.user);
         else {
@@ -29,7 +39,7 @@ const Mypage = () => {
         alert('회원정보 조회 실패! 다시 로그인 해주세요.');
         navigate('/login');
       });
-  }, [navigate]);
+  }, [navigate, userType]);
 
   if (!user) return (
     <div>
@@ -46,7 +56,9 @@ const Mypage = () => {
         <div>
           <p><strong>아이디:</strong> {user.id}</p>
           <p><strong>회사/기관명:</strong> {user.corpName}</p>
-          <p><strong>사업자등록번호:</strong> {user.corpRegNum}</p>
+          {userType === 'business' && (
+            <p><strong>사업자등록번호:</strong> {user.corpRegNum}</p>
+          )}
           <p><strong>대표자명:</strong> {user.ceo}</p>
           {user.dept && <p><strong>부서/팀명:</strong> {user.dept}</p>}
           <p><strong>담당자명:</strong> {user.manager}</p>
