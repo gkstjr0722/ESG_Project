@@ -27,7 +27,7 @@ const Mypage = () => {
     const endpoint = userType === 'government' ? 'userinfo_gov' : 'userinfo';
 
     // 2. 서버에 내 id로 조회 요청
-    axios.post('http://localhost:3001/api/mypage/userinfo${endpoint}', { id: userId })
+    axios.post(`http://localhost:3001/api/mypage/userinfo${endpoint}`, { id: userId })
       .then(res => {
         if (res.data.user) setUser(res.data.user);
         else {
