@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
 
-// 회원 정보 업데이트
+// 회원 정보 업데이트 (기업 or 관공업)
 router.put('/putR', (req, res) => {
   const {
+    type,     // 'corp' 또는 'gov'
     id,
     corpName,
     ceo,
@@ -17,11 +18,20 @@ router.put('/putR', (req, res) => {
     address
   } = req.body;
 
-  // **id는 로그인한 사용자 기준!**
-  if (!id) return res.status(400).json({ msg: 'id 필요' });
+  if (!id || !type) return res.status(400).json({ msg: 'id, type 필요' });
+
+  // 어떤 테이블을 수정할지 구분
+  let tableName;
+  if (type === 'corp') {
+    tableName = 'CORP_MEMBER';
+  } else if (type === 'gov') {
+    tableName = 'GOVERNMENT_USERS';
+  } else {
+    return res.status(400).json({ msg: 'type 값 오류' });
+  }
 
   const sql = `
-    UPDATE CORP_MEMBER
+    UPDATE ${tableName}
     SET corpName=?, ceo=?, dept=?, manager=?, phone=?, email=?, corpTel=?, address=?
     WHERE id=?
   `;
