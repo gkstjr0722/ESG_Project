@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './PowerCalc.css'; // 스타일 따로 관리 추천
+import '../CSS/PowerCalc.css'; // 스타일 따로 관리 추천
 
 const INDUSTRY_TYPES = [
   { key: 'a_high', label: '산업용(을) (고압A)', rate: 120 },   // kWh당 120원 예시

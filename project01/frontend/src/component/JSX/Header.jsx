@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import './Header.css';
+import '../CSS/Header.css';
 
 const mainMenuList = [
   { label: '전력사용현황', path: '/usage' },

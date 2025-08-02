@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import './LoginCorp.css'; // 기존 스타일 그대로 사용
+import '../CSS/LoginCorp.css'; // 기존 스타일 그대로 사용
 
 const LoginUnified = () => {
   const [mode, setMode] = useState('business'); // 'business' or 'government'

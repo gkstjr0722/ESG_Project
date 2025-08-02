@@ -1,4 +1,4 @@
-import './Join.css'
+import '../CSS/Join.css'
 import { useState } from "react";
 import Header from './Header';
 import { useNavigate } from "react-router-dom";

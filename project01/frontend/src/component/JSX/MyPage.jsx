@@ -12,7 +12,7 @@ const Mypage = () => {
     const id = localStorage.getItem('id');
     if (!id) {
       alert('로그인이 필요합니다!');
-      navigate('/login-corp');
+      navigate('/login');
       return;
     }
 
@@ -22,12 +22,12 @@ const Mypage = () => {
         if (res.data.user) setUser(res.data.user);
         else {
           alert('회원 정보를 찾을 수 없습니다.');
-          navigate('/login-corp');
+          navigate('/login');
         }
       })
       .catch(err => {
         alert('회원정보 조회 실패! 다시 로그인 해주세요.');
-        navigate('/login-corp');
+        navigate('/login');
       });
   }, [navigate]);
 
