@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import './Header.css';
 
 const mainMenuList = [
-  { label: '전력사용현황', path: '/usage' },
+  { label: '전력사용현황', path: '/powercalc' },
   { label: '위치찾기', path: '/location' },
   { label: '고객센터', path: '/support' }
 ];
