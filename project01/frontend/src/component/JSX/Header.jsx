@@ -45,7 +45,7 @@ const Header = () => {
   // 로고 텍스트 동적 처리
   let logoText = "Han's";
   if (isLoggedIn && userType === 'business') logoText += ' 기업용';
-  if (isLoggedIn && userType === 'government') logoText += ' 관공업용';
+  if (isLoggedIn && userType === 'government') logoText += ' 관공용';
 
   return (
     <div className="menu-wrapper">
@@ -68,7 +68,6 @@ const Header = () => {
           ))}
         </div>
         <div className="nav-icons">
-          <span role="img" aria-label="search">🔍</span>
           <Link to="/mypage" className="userpage">
             <span role="img" aria-label="user">👤</span>
           </Link>

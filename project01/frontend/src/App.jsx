@@ -28,19 +28,15 @@ const videoData = [
 
 // 메인 페이지 컴포넌트
 function App() {
-  const [showVideos, setShowVideos] = useState(false);
 
   return (
-    <div>
+    <div className="main-page-root">
       <Header />
       <div
         className="main-banner-bg"
         style={{ backgroundImage: `url(${bannerImg})` }}
       >
-        <button className="toggle-video-btn" onClick={() => setShowVideos(v => !v)}>
-          {showVideos ? '홍보영상 닫기 ▲' : '홍보영상 보기 ▼'}
-        </button>
-        <div className={`video-panel${showVideos ? ' open' : ''}`}>
+        <div className="video-list-section">
           <div className="video-grid">
             {videoData.map((video, idx) => (
               <a
@@ -62,10 +58,6 @@ function App() {
               </a>
             ))}
           </div>
-        </div>
-        <div style={{ marginTop: 40 }}>
-       
-          {/* <Link to="/joinmain" className="main-btn">회원가입</Link> */}
         </div>
       </div>
     </div>
