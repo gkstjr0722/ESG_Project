@@ -6,6 +6,7 @@ import './App.css';
 
 // 유튜브 썸네일 데이터
 const videoData = [
+
   {
     title: '한전 파워플래너 소개',
     channel: 'KEPCO 공식',
@@ -36,7 +37,13 @@ function App() {
         className="main-banner-bg"
         style={{ backgroundImage: `url(${bannerImg})` }}
       >
+        <button className='banner-button'>공지사항 바로가기</button>
+        
         <div className="video-list-section">
+          <div className='video-list-section-text'>
+            <h1>홍보영상</h1>
+            <h1>보러가기</h1>
+          </div>
           <div className="video-grid">
             {videoData.map((video, idx) => (
               <a
