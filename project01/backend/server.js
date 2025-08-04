@@ -13,6 +13,7 @@ const loginBRouter = require('./router/loginB');
 const mypageRouter = require('./router/mypageR');
 const putRouter = require('./router/put');
 const loginGRouter  = require('./router/loginG');
+const proxyEvRouter = require('./router/proxyEv');
 
 
 app.use('/api/mypage', mypageRouter);
@@ -23,6 +24,7 @@ app.use('/userg', userGRouter);
 app.use('/loginB', loginBRouter);
 app.use('/loginG', loginGRouter);
 app.use('/put', putRouter);
+app.use('/api/proxy', proxyEvRouter);
 
 
 app.get('/', (req, res) => {
