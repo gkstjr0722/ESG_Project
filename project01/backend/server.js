@@ -15,6 +15,7 @@ const putRouter = require('./router/put');
 const loginGRouter  = require('./router/loginG');
 const proxyEvRouter = require('./router/proxyEv');
 
+
 app.use('/api/mypage', mypageRouter);
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
@@ -24,6 +25,7 @@ app.use('/loginB', loginBRouter);
 app.use('/loginG', loginGRouter);
 app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
+
 
 app.get('/', (req, res) => {
   res.send('백엔드 서버 정상 작동 중!');
