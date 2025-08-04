@@ -10,6 +10,7 @@ import LoginCorp from './component/JSX/LoginCorp.jsx';
 import PowerCalc from './component/JSX/PowerCalc.jsx';
 import MyPage from './component/JSX/MyPage.jsx';
 import EditMyPage from './component/JSX/EditMyPage.jsx';
+import MapEVCharger from './component/JSX/MapEVCharger.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -22,6 +23,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/powercalc" element={<PowerCalc />} />
       <Route path="/mypage" element={<MyPage />} />
       <Route path="/editmypage" element={<EditMyPage />} />
+      <Route path="/location" element={<MapEVCharger />} />
     </Routes>
   </BrowserRouter>
 );

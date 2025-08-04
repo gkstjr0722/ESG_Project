@@ -1,0 +1,23 @@
+.evmap-wrap {
+  width: 100vw;
+  min-height: 100vh;
+  background: #fff;
+}
+.evmap-title {
+  margin: 18px 0 10px 24px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+.evmap-map {
+  width: 95vw;
+  height: 85vh;
+  margin: 0 auto;
+  border-radius: 18px;
+  box-shadow: 0 2px 16px #eee;
+  min-height: 550px;
+}
+.evmap-popup {
+  min-width: 190px;
+  font-size: 16px;
+  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+}
