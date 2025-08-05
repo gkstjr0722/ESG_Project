@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
-const bcrypt = require('bcrypt'); // bcrypt 추가 
+
 
 
 // 문의글 작성 (저장)
@@ -42,6 +42,6 @@ router.get('/list', (req, res) => {
 
 
 
-module.exsports = router;
+module.exports = router;
 
 // 문의글 수정 기능 

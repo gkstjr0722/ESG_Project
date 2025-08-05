@@ -17,6 +17,7 @@ const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
 
 
+
 app.use('/api/mypage', mypageRouter);
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
@@ -26,7 +27,8 @@ app.use('/loginB', loginBRouter);
 app.use('/loginG', loginGRouter);
 app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
-app.use('./api/inquiry', inquiryRouter);
+app.use('/api/inquiry', inquiryRouter);
+app.use(express.json());
 
 
 
