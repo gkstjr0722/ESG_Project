@@ -2,25 +2,51 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import '../../CSS/Faq.css';
-
-// DB연결 전 임시 데이터
-const DUMMY_QUESTIONS = [
-  { id: 1, text: '토스 앱에서 송금을 한 뒤 송금확인증은 어떻게 발급받나요?', detail: '송금 확인증은 토스 앱에서 “송금내역” 메뉴에 들어가 해당 내역을 선택한 뒤, “확인증 발급”을 누르시면 PDF로 저장 및 공유하실 수 있습니다.' },
-  { id: 2, text: '오픈뱅킹 자동이체 문자를 받았어요.', detail: '오픈뱅킹 자동이체는 등록한 계좌에서 자동으로 출금되는 서비스입니다. 문자 내용과 내역을 확인 후 문의가 더 필요하시면 고객센터로 문의해주세요.' },
-];
+import axios from 'axios';
 
 const FaqDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [question, setQuestion] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    // 실제론 서버 fetch
-    const found = DUMMY_QUESTIONS.find(q => String(q.id) === String(id));
-    setQuestion(found);
+    const fetchDetail = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        // FAQ도 문의글이므로 동일 API를 활용
+        // /api/inquiry/:id와 똑같이 호출 (조회수도 증가함에 유의)
+        const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
+        if (res.data && res.data.question) {
+          setQuestion(res.data.question);
+        } else {
+          setError('해당 질문을 찾을 수 없습니다.');
+        }
+      } catch (err) {
+        setError('질문 정보를 불러오지 못했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDetail();
   }, [id]);
 
-  if (!question) {
+  if (loading) {
+    return (
+      <div>
+        <Header />
+        <div className="faq-detail-page-wrap">
+          <div className="faq-detail-notfound">
+            불러오는 중...
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !question) {
     return (
       <div>
         <Header />
