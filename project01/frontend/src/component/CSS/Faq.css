@@ -227,10 +227,8 @@ body {
 .faq-write-form {
   max-width: 600px;
   margin: 0 auto;
-  background: #fafbfc;
   padding: 32px 28px;
   border-radius: 20px;
-  box-shadow: 0 2px 12px rgba(20,40,60,0.05);
 }
 .faq-write-row {
   margin-bottom: 22px;
