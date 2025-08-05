@@ -14,6 +14,7 @@ const mypageRouter = require('./router/mypageR');
 const putRouter = require('./router/put');
 const loginGRouter  = require('./router/loginG');
 const proxyEvRouter = require('./router/proxyEv');
+const inquiryRouter = require('./router/inquiry');
 
 
 app.use('/api/mypage', mypageRouter);
@@ -25,6 +26,8 @@ app.use('/loginB', loginBRouter);
 app.use('/loginG', loginGRouter);
 app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
+app.use('./api/inquiry', inquiryRouter);
+
 
 
 app.get('/', (req, res) => {
