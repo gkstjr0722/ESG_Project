@@ -198,3 +198,89 @@ body {
   margin-top: 6px;
   letter-spacing: 0.1px;
 }
+
+.floating-write-btn {
+  position: fixed;
+  bottom: 100px;   /* 화면 아래에서 48px 띄움 */
+  right: 300px;    /* 화면 오른쪽에서 48px 띄움 */
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #2b64d6;
+  color: white;
+  font-size: 36px;
+  border: none;
+  box-shadow: 0 4px 12px rgba(53,117,246,0.2);
+  cursor: pointer;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.floating-write-btn:hover {
+  background-color: #1a3b9f;
+  box-shadow: 0 8px 24px rgba(53,117,246,0.24);
+}
+
+
+.faq-write-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 32px 28px;
+  border-radius: 20px;
+}
+.faq-write-row {
+  margin-bottom: 22px;
+}
+
+.faq-write-input, .faq-write-textarea {
+  width: 100%;
+  padding: 13px 14px;
+  border-radius: 10px;
+  border: 1px solid #dbe0ea;
+  background: #fff;
+  font-size: 1em;
+  outline: none;
+  box-sizing: border-box;
+}
+.faq-write-input:focus, .faq-write-textarea:focus {
+  border-color: #3575f6;
+  background: #f4f8ff;
+}
+.faq-write-textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+.faq-write-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: flex-end;
+}
+.faq-write-submit {
+  background: #3575f6;
+  color: #fff;
+  border: none;
+  padding: 10px 28px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.faq-write-submit:hover {
+  background: #194e9e;
+}
+.faq-write-cancel {
+  background: #f1f2f6;
+  color: #666;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 8px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.faq-write-cancel:hover {
+  background: #e3e8f0;
+}

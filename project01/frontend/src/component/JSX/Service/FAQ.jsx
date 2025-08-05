@@ -2,21 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../Header';
 import '../../CSS/Faq.css';
-
-
-// DB연결 전 임시 데이터
-const DUMMY_QUESTIONS = [
-  { id: 1, text: '토스 앱에서 송금을 한 뒤 송금확인증은 어떻게 발급받나요?' },
-  { id: 2, text: '오픈뱅킹 자동이체 문자를 받았어요.' }
-];
+import axios from 'axios';
 
 const FAQ = () => {
   const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    setQuestions(DUMMY_QUESTIONS);
+    const fetchFaq = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        // 백엔드에서 조회수 5 이상인 문의글만 반환하도록 구현
+        const res = await axios.get('http://localhost:3001/api/faq');
+        setQuestions(res.data.questions || []);
+      } catch (err) {
+        setError('FAQ 목록을 불러오지 못했습니다.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFaq();
   }, []);
 
   const filteredQuestions = questions.filter(q =>

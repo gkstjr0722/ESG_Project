@@ -1,39 +1,57 @@
 import React, { useState } from 'react';
 import '../CSS/ImageSlider.css'; 
-import photo1 from '../../assets/photo1.jpg';
+import photo6 from '../../assets/photo6.jpg';
 import photo2 from '../../assets/photo2.jpg';
 import photo3 from '../../assets/photo3.jpg';
 import photo4 from '../../assets/photo4.jpg';
 import photo5 from '../../assets/photo5.jpg';
 
 const images = [
-  photo1, photo2, photo3, photo4, photo5
+  photo6, photo2, photo3, photo4, photo5
 ];
 
-function ImageSlider() {
+  const ImageSlider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  const handleNext = () => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
+  // 이전 이미지 (처음이면 마지막으로)
+  const goToPrev = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + images.length) % images.length);
   };
+ 
 
   return (
     <div className="slider-container">
-        <button onClick={handlePrev} className="slider-button prev">←</button>
-  <img src={images[currentIndex]} alt={`Slide ${currentIndex + 1}`} className="slider-image" />
-  <button onClick={handleNext} className="slider-button next">→</button>
+   <span className="slider-edge left-edge" onClick={goToPrev}>
+        <span className="arrow">←</span>
+      </span>
 
-  <div className="slider-index">{currentIndex + 1} / {images.length}</div>
+      <div className="slider-wrapper">
+        <img
+          src={images[currentIndex]}
+          alt={`Slide ${currentIndex + 1}`}
+          className="slider-image slide-animation"
+          key={currentIndex} // 키를 줘야 애니메이션 재실행됨
+        />
+      </div>
+
+      <span className="slider-edge right-edge" onClick={goToNext}>
+        <span className="arrow">→</span>
+      </span>
+
+      {/* 하단 버튼 */}
+      <div className="slider-controls">
+        <button className="slider-button prev" onClick={goToPrev}>◀</button>
+        <span className="slider-index">{currentIndex + 1} / {images.length}</span>
+        <button className="slider-button next" onClick={goToNext}>▶</button>
+      </div>
+
+      <div className="slider-index">{currentIndex + 1} / {images.length}</div>
     </div>
   );
-}
+ };
 
 export default ImageSlider;

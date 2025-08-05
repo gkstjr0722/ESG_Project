@@ -24,24 +24,10 @@ body {
   /* 전체 앱 컨테이너: 가운데 정렬 및 최대 너비 설정 */
 }
 
-.main-banner-bg {
-  width: 100vw;
-  min-height: 320px;
-  background-size: cover;
-  /* background-position: center; */
-  background-repeat: no-repeat;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 20px;
-  box-shadow: 0 4px 26px 0 rgba(60,120,200,0.12);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1 0 auto;
-}
-
 .slider-section {
-  /* margin-top: 40px; */
-  /* ✅ 슬라이더 섹션: 배너와의 간격 확보 */
+  margin-top: -20px;
+  width: 100vw;
+  margin-bottom: 151px ;
 }
 
 .banner-button {
@@ -65,10 +51,11 @@ body {
 
 /* 영상리스트 영역은 페이지 맨 아래쪽 */
 .video-list-section {
+  position: absolute;
   width: 100vw;
   padding-bottom: 20px;
   padding-top: 30px;
-  margin-top: auto;
+  margin-top: 490px;
   /* background: linear-gradient(180deg, #d2e7ff 0%, #f0eaff 100%); */
   background: linear-gradient(180deg, #376ec2 0%);
 }

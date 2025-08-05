@@ -10,12 +10,13 @@ import LoginCorp from './component/JSX/LoginCorp.jsx';
 import PowerCalc from './component/JSX/PowerCalc.jsx';
 import MyPage from './component/JSX/MyPage.jsx';
 import EditMyPage from './component/JSX/EditMyPage.jsx';
-import Support from './component/JSX/Service/Support.jsx';
-import FAQ from './component/JSX/Service/FAQ.jsx';
-import Inquiry from './component/JSX/Service/Inquiry.jsx';
-import FaqDetail from './component/JSX/Service/FaqDetail.jsx';
-import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx';
 import MapEVCharger from './component/JSX/MapEVCharger.jsx';
+import Support from './component/JSX/Service/Support.jsx';
+import FAQ from './component/JSX/Service/FAQ.jsx'
+import FaqDetail from './component/JSX/Service/FaqDetail.jsx'
+import Inquiry from './component/JSX/Service/Inquiry.jsx'
+import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx'
+import InquiryWrite from './component/JSX/Service/InquiryWrite.jsx'
 
 
 createRoot(document.getElementById('root')).render(
@@ -35,7 +36,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/faq/:id" element={<FaqDetail />}></Route>
       <Route path="/inquiry" element={<Inquiry />}></Route>
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
-      
+      <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
     </Routes>
   </BrowserRouter>
 );

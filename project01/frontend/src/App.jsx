@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import Header from './component/JSX/Header';
-import bannerImg from './assets/banner.webp';
+// import bannerImg from './assets/banner.webp';
 import './App.css';
 import ImageSlider from './component/JSX/ImageSlider';
 
@@ -35,10 +35,10 @@ function App() {
     <div className="main-page-root">
       <Header />
       <div className="app-container">
-      <div
+      {/* <div
         className="main-banner-bg"
         style={{ backgroundImage: `url(${bannerImg})` }}
-      >
+      > */}
 
       {/* ✅ 슬라이더 추가 (완성되면 위 배너 대체 예정) */}
       <section className="slider-section">
@@ -74,7 +74,7 @@ function App() {
               </a>
             ))}
           </div>
-        </div>
+        {/* </div> */}
       </div>
     </div>
   );
