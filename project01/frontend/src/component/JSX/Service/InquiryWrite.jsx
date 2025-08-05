@@ -13,6 +13,28 @@ const InquiryWrite = () => {
   });
   const [loading, setLoading] = useState(false);
 
+    // 로그인 여부 체크 (로그인 시에만 사용하려면 아래 코드 주석 해제)
+  // const isLoggedIn = localStorage.getItem('id') || localStorage.getItem('gov_id');
+  // if (!isLoggedIn) {
+  //   return (
+  //     <div>
+  //       <Header />
+  //       <div className="faq-detail-page-wrap">
+  //         <div className="faq-detail-notfound">
+  //           문의 작성은 <b>로그인</b> 후 이용하실 수 있습니다.
+  //           <br /><br />
+  //           <button
+  //             className="faq-detail-backbtn"
+  //             onClick={() => navigate('/login')}
+  //           >
+  //             로그인 하러가기
+  //           </button>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
+
   // 입력값 핸들러
   const handleChange = e => {
     const { name, value } = e.target;
@@ -27,7 +49,9 @@ const InquiryWrite = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      // 실제 API 엔드포인트는 백엔드 라우터에 맞춰 수정
+      // 로그인한 경우 작성자 정보를 보내려고 함.
+      // const userId = localStorage.getItem('id') || localStorage.getItem('gov_id');
+      // const res = await axios.post('http://localhost:3001/api/inquiry', { ...form, userId });
       const res = await axios.post('http://localhost:3001/api/inquiry', form);
       if (res.data.success) {
         alert('문의가 등록되었습니다!');
