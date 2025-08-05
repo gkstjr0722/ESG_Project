@@ -56,5 +56,48 @@ router.get('/:qs_id', (req, res) => {
 });
 
 // (추가) 문의글 수정, 삭제 기능
+// 4. 문의글 수정 (QS_ID 기준, 일부 컬럼만 수정)
+router.put('/edit/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const {
+    TITLE, CONTENT, ANSWER, AS_DATE, UPDATE_DT
+  } = req.body;
 
+  // 필요에 따라 수정가능 컬럼 조정!
+  const sql = `
+    UPDATE USER_QUESTION
+    SET TITLE = ?, CONTENT = ?, ANSWER = ?, AS_DATE = ?, UPDATE_DT = ?
+    WHERE QS_ID = ?
+  `;
+  conn.query(
+    sql,
+    [TITLE, CONTENT, ANSWER, AS_DATE, UPDATE_DT, qs_id],
+    (err, result) => {
+      if (err) {
+        console.error('DB 오류:', err);
+        return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+      }
+      if (result.affectedRows === 0) {
+        return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
+      }
+      res.json({ result: 'success' });
+    }
+  );
+});
+
+// 5. 문의글 삭제 (QS_ID 기준)
+router.delete('/delete/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const sql = `DELETE FROM USER_QUESTION WHERE QS_ID = ?`;
+  conn.query(sql, [qs_id], (err, result) => {
+    if (err) {
+      console.error('DB 오류:', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
+    }
+    res.json({ result: 'success' });
+  });
+});
 module.exports = router;
