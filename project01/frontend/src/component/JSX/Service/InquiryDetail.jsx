@@ -74,51 +74,52 @@ const InquiryDetail = () => {
         <br /><br />
         <div className="faq-detail-title">{question.TITLE}</div>
         <div className="faq-detail-date">
-        작성일&nbsp;&nbsp;|&nbsp;&nbsp;
-        {question.QS_DATE &&
-        new Date(question.QS_DATE).toLocaleDateString('ko-KR', {
-        timeZone: 'Asia/Seoul',
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-       
-        })
-        .replace(/\./g, '-')
-        .replace(/\s/g, '')       
-        .replace(/-$/, '')   
-        }
-      </div>
+          작성일&nbsp;&nbsp;|&nbsp;&nbsp;
+          {question.QS_DATE &&
+            new Date(question.QS_DATE).toLocaleDateString('ko-KR', {
+            timeZone: 'Asia/Seoul',
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+            })
+            .replace(/\./g, '-')
+            .replace(/\s/g, '')       
+            .replace(/-$/, '')   
+          }
+        </div>
         <div className="faq-detail-content">{question.CONTENT}</div>
         <div className="faq-write-btns">
-        {question.USER_ID === userId && (
-          <button 
-            className="faq-fix-submit"
-            onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}
-            >수정
-          </button>
-        )}
-        <button
-          className="faq-fix1-submit"
-          onClick={async () => {
-            if (window.confirm("정말 삭제하시겠습니까?")) {
-              try {
-                const res = await axios.delete(
-                  `http://localhost:3001/api/inquiry/${question.QS_ID}/delete`
-                );
-                if (res.data.result === "success") {
-                  alert("삭제되었습니다!");
-                  navigate("/inquiry");
-                } else {
-                  alert("삭제에 실패했습니다.");
-                }
-              } catch (err) {
-                alert("서버 오류가 발생했습니다.");
-              }
-            }
-          }}
-        >
-          삭제
-        </button>
+          {question.USER_ID === userId && (
+            <div>
+              <button 
+                className="faq-fix-submit"
+                onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}
+                >수정
+              </button>
+              <button
+                className="faq-fix1-submit"
+                onClick={async () => {
+                  if (window.confirm("정말 삭제하시겠습니까?")) {
+                    try {
+                      const res = await axios.delete(
+                        `http://localhost:3001/api/inquiry/${question.QS_ID}/delete`
+                      );
+                      if (res.data.result === "success") {
+                        alert("삭제되었습니다!");
+                        navigate("/inquiry");
+                      } else {
+                        alert("삭제에 실패했습니다.");
+                      }
+                    } catch (err) {
+                      alert("서버 오류가 발생했습니다.");
+                    }
+                  }
+                }}
+              >
+                삭제
+              </button>
+            </div>
+            )}
         </div>
       </div>
     </div>
