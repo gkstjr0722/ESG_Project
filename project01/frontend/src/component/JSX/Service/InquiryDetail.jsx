@@ -77,7 +77,9 @@ const InquiryDetail = () => {
             작성일&nbsp;&nbsp;|&nbsp;&nbsp;{question.createdAt}
             </div>
         )}
-        
+        <div>
+          조회수&nbsp;&nbsp;|&nbsp;&nbsp;{question.views ?? 0}
+        </div>
         {question.extra && (
           <div className="faq-detail-extra">
             {question.extra}
