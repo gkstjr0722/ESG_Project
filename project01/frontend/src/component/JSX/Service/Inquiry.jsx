@@ -11,6 +11,9 @@ const Inquiry = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  // 로그인 여부 확인
+  const isLoggedIn = localStorage.getItem('id') || localStorage.getItem('gov_id');
+
   // 문의글 목록 불러오기
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -80,9 +83,11 @@ const Inquiry = () => {
             ))
           )}
         </div>
+        {isLoggedIn && (
         <button className="floating-write-btn" onClick={handleWriteClick}>
           +
         </button>
+        )}
       </div>
     </div>
   );
