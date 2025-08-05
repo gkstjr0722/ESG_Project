@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // navigate 추가!
 import Header from '../Header';
 import '../../CSS/Support.css'
+import Notice from './Notice';
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('qna');
@@ -52,7 +53,9 @@ const Support = () => {
           </div>
         </div>
       )}
-      {/* 공지사항 탭 영역은 추후 구현 */}
+      {activeTab === 'notice' && (
+        <Notice /> 
+      )}
     </>
   );
 };
