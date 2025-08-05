@@ -25,16 +25,16 @@ const InquiryWrite = () => {
       setLoading(true);
       axios.get(`http://localhost:3001/api/inquiry/${id}`)
         .then(res => {
-          if (res.data && res.data.QS_ID) {
+          if (res.data && res.data.question) {
             // 본인 글 확인 (실제 운영에서는 백엔드에서 체크!)
-            if (res.data.USER_ID !== USER_ID) {
+            if (res.data.question.USER_ID !== USER_ID) {
               alert('본인 글만 수정할 수 있습니다.');
               navigate('/inquiry');
               return;
             }
             setForm({
-              TITLE: res.data.TITLE || '',
-              CONTENT: res.data.CONTENT || ''
+              TITLE: res.data.question.TITLE || '',
+              CONTENT: res.data.question.CONTENT || ''
             });
           } else {
             alert('글을 찾을 수 없습니다.');
