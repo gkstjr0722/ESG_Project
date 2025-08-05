@@ -1,23 +1,31 @@
 .evmap-wrap {
   width: 100vw;
-  min-height: 100vh;
+  min-height: 90vh;
   background: #fff;
+  padding: 0;
+  box-sizing: border-box;
 }
 .evmap-title {
-  margin: 18px 0 10px 24px;
+  margin: 18px 0 10px 18px;
   font-size: 2rem;
   font-weight: bold;
 }
 .evmap-map {
-  width: 95vw;
-  height: 85vh;
-  margin: 0 auto;
+  width: 98vw;
+  height: 75vh;
+  margin: 0 auto 20px auto;
   border-radius: 18px;
   box-shadow: 0 2px 16px #eee;
-  min-height: 550px;
+}
+.evmap-loading {
+  text-align: center;
+  padding: 100px 0;
+  font-size: 1.5rem;
+  color: #999;
 }
 .evmap-popup {
-  min-width: 190px;
-  font-size: 16px;
-  font-family: 'Pretendard', 'Malgun Gothic', sans-serif;
+  padding: 8px 12px;
+  min-width: 180px;
+  font-size: 15px;
+  color: #222;
 }
