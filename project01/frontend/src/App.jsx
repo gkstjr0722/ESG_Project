@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import Header from './component/JSX/Header';
 import bannerImg from './assets/banner.webp';
 import './App.css';
+import ImageSlider from './component/JSX/ImageSlider';
 
 // 유튜브 썸네일 데이터
 const videoData = [
@@ -33,10 +34,18 @@ function App() {
   return (
     <div className="main-page-root">
       <Header />
+      <div className="app-container">
       <div
         className="main-banner-bg"
         style={{ backgroundImage: `url(${bannerImg})` }}
       >
+
+      {/* ✅ 슬라이더 추가 (완성되면 위 배너 대체 예정) */}
+      <section className="slider-section">
+        <ImageSlider />
+      </section>
+    </div>
+
         <button className='banner-button'>공지사항 바로가기</button>
         
         <div className="video-list-section">

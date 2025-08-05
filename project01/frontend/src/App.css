@@ -15,6 +15,15 @@ body {
   flex-direction: column;
 }
 
+.app-container {
+  width: 100%;
+  /* max-width: 800px; */
+  margin: 0 auto;
+  /* text-align: center; */
+
+  /* 전체 앱 컨테이너: 가운데 정렬 및 최대 너비 설정 */
+}
+
 .main-banner-bg {
   width: 100vw;
   min-height: 320px;
@@ -28,6 +37,11 @@ body {
   align-items: center;
   justify-content: center;
   flex: 1 0 auto;
+}
+
+.slider-section {
+  /* margin-top: 40px; */
+  /* ✅ 슬라이더 섹션: 배너와의 간격 확보 */
 }
 
 .banner-button {
