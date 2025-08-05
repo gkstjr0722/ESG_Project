@@ -16,6 +16,7 @@ import Inquiry from './component/JSX/Service/Inquiry.jsx';
 import FaqDetail from './component/JSX/Service/FaqDetail.jsx';
 import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx';
 import MapEVCharger from './component/JSX/MapEVCharger.jsx';
+import InquiryWrite from './component/JSX/Service/InquiryWrite.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/faq/:id" element={<FaqDetail />}></Route>
       <Route path="/inquiry" element={<Inquiry />}></Route>
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
+      <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
     </Routes>
   </BrowserRouter>
 );

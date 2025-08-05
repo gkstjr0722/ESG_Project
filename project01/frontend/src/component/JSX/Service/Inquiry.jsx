@@ -10,6 +10,7 @@ const DUMMY_QUESTIONS = [
   { id: 2, text: '오픈뱅킹 자동이체 문자를 받았어요.', status:'완료' }
 ];
 
+
 const Inquiry = () => {
   const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState('');
@@ -22,6 +23,10 @@ const Inquiry = () => {
   const filteredQuestions = questions.filter(q =>
     q.text.includes(search)
   );
+
+  const handleWriteClick = () => {
+    navigate('/inquiry/write');
+  };
 
   return (
     <div>
@@ -58,6 +63,9 @@ const Inquiry = () => {
             ))
           )}
         </div>
+        <button className="floating-write-btn" onClick={handleWriteClick}>
+          +
+        </button>
       </div>
     </div>
   );
