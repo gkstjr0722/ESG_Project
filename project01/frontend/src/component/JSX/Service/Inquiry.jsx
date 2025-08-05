@@ -11,16 +11,17 @@ const Inquiry = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // const isLoggedIn = localStorage.getItem('id') || localStorage.getItem('gov_id');
+  // 로그인 여부 확인
+  const isLoggedIn = localStorage.getItem('id') || localStorage.getItem('gov_id');
 
-    // 서버에서 문의 목록 불러오기
+  // 문의글 목록 불러오기
   useEffect(() => {
     const fetchQuestions = async () => {
-      // setLoading(true);
       setError('');
+      setLoading(true);
       try {
-        const res = await axios.get('http://localhost:3001/api/inquiry'); // 실제 엔드포인트에 맞게 변경!
-        setQuestions(res.data.questions || []);
+        const res = await axios.get('http://localhost:3001/api/inquiry/list');
+        setQuestions(res.data || []);
       } catch (err) {
         setError('문의 목록을 불러오지 못했습니다.');
       } finally {
@@ -30,10 +31,14 @@ const Inquiry = () => {
     fetchQuestions();
   }, []);
 
-  // 검색 적용
+  // 검색 (제목, 내용에서)
   const filteredQuestions = questions.filter(q =>
-    q.text.includes(search)
+    ((q.TITLE && q.TITLE.toLowerCase().includes(search.toLowerCase())) ||
+     (q.CONTENT && q.CONTENT.toLowerCase().includes(search.toLowerCase())))
   );
+
+  // 상태 표시: 답변이 있으면 '완료', 아니면 '대기'
+  const getStatus = (q) => (q.ANSWER && q.ANSWER.trim() !== '' ? '완료' : '대기');
 
   const handleWriteClick = () => {
     navigate('/inquiry/write');
@@ -56,30 +61,33 @@ const Inquiry = () => {
           />
         </div>
         <div className="faq-question-list">
-          {filteredQuestions.length === 0 ? (
+          {loading ? (
+            <div className="faq-question-empty">로딩 중...</div>
+          ) : error ? (
+            <div className="faq-question-empty">{error}</div>
+          ) : filteredQuestions.length === 0 ? (
             <div className="faq-question-empty">등록된 질문이 없습니다.</div>
           ) : (
             filteredQuestions.map(q => (
               <div
-                key={q.id}
+                key={q.QS_ID}
                 className="faq-question-item"
-                onClick={() => navigate(`/inquiry/${q.id}`)}
+                onClick={() => navigate(`/inquiry/${q.QS_ID}`)}
               >
                 <span className="faq-q-icon">Q</span>
-                {q.text}
-                <span className={`inquiry-status-badge ${q.status === '완료' ? 'done' : 'doing'}`}>
-                  {q.status}
+                {q.TITLE}
+                <span className={`inquiry-status-badge ${getStatus(q) === '완료' ? 'done' : 'doing'}`}>
+                  {getStatus(q)}
                 </span>
               </div>
             ))
           )}
         </div>
-        {/* 나중에 다 만들고 나서 풀기 로그인시 버튼 보이게 해둔 거임 */}
-        {/* {isLoggedIn && ( */}
+        {isLoggedIn && (
         <button className="floating-write-btn" onClick={handleWriteClick}>
           +
         </button>
-        {/* )} */}
+        )}
       </div>
     </div>
   );

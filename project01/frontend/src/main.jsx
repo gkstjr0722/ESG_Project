@@ -37,6 +37,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/inquiry" element={<Inquiry />}></Route>
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
       <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
+      <Route path="/inquiry/edit/:id" element={<InquiryWrite />} />
     </Routes>
   </BrowserRouter>
 );

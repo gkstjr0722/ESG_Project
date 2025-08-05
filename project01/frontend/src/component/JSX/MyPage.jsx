@@ -13,6 +13,9 @@ const Mypage = () => {
     const id = localStorage.getItem('id');
     const govId = localStorage.getItem('gov_id');
 
+  // 로그인/마이페이지 등에서 (로그인 성공 응답에서 받아서)
+
+
     if (id) {
       setUserType('business');
     } else if (govId) {

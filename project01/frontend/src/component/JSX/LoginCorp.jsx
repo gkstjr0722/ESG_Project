@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from './Header';
-import '../CSS/LoginCorp.css'; // 기존 스타일 그대로 사용
+import '../CSS/LoginCorp.css';
 
-const LoginUnified = () => {
-  const [mode, setMode] = useState('business'); // 'business' or 'government'
+const LoginCorp = () => {   // 함수명 통일!
+  const [mode, setMode] = useState('business');
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
-  const [saveId, setSaveId] = useState(false);  // 아이디 저장 여부
+  const [saveId, setSaveId] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // 로그인 타입별로 다른 키로 저장
   const savedIdKey = mode === 'business' ? 'savedId' : 'savedGovId';
 
-  // 컴포넌트 마운트, mode 변경 시 localStorage에서 아이디 불러오기
   useEffect(() => {
     const saved = localStorage.getItem(savedIdKey);
     if (saved) {
@@ -24,7 +22,7 @@ const LoginUnified = () => {
       setId('');
       setSaveId(false);
     }
-  }, [mode]); // mode가 바뀔 때마다 실행
+  }, [mode]);
 
   // 각각 로그인 엔드포인트 지정
   const loginEndpoints = {
@@ -55,7 +53,14 @@ const LoginUnified = () => {
         } else {
           localStorage.removeItem(savedIdKey);
         }
+      
         localStorage.setItem(mode === 'business' ? 'id' : 'gov_id', id);
+         localStorage.setItem('userName', data.userName || '');
+        localStorage.setItem('email', data.email || '');
+      
+        // ★ 로그인 성공 시 이름/이메일도 저장 (백엔드에서 응답해야 함!)
+        
+
         navigate('/');
       } else {
         setError(data.msg || '로그인 실패! 아이디/비밀번호를 확인하세요.');
@@ -132,4 +137,4 @@ const LoginUnified = () => {
   );
 };
 
-export default LoginUnified;
+export default LoginCorp;
