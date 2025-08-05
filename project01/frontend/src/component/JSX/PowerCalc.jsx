@@ -143,8 +143,12 @@ export default function PowerCalc() {
             <div style={{margin:'10px 0'}}>
               <label>시간대별 전력 사용량 (kWh):</label>
               <div className="row">경부하&nbsp; <input type="number" min="0" value={usageTimes[0]} onChange={e=>setUsageTimes({...usageTimes,0:e.target.value})} required /></div>
-              <div className="row">중간부하 <input type="number" min="0" value={usageTimes[1]} onChange={e=>setUsageTimes({...usageTimes,1:e.target.value})} required /></div>
+              <div className="row">중간부 <input type="number" min="0" value={usageTimes[1]} onChange={e=>setUsageTimes({...usageTimes,1:e.target.value})} required /></div>
               <div className="row">최대부하 <input type="number" min="0" value={usageTimes[2]} onChange={e=>setUsageTimes({...usageTimes,2:e.target.value})} required /></div>
+              <p>시간대 : 경부하(22시~08시), 중간부하(08~16시), 최대부하(16시~22시)
+                <br></br>
+                ※ 제주특별자치도의 시간대별 구분은 모든 계절에 적용
+              </p>
             </div>
           )}
           <button className="main-btn" type="submit">요금 계산하기</button>
