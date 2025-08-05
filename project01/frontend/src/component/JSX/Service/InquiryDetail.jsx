@@ -17,8 +17,8 @@ const InquiryDetail = () => {
       setError('');
       try {
         const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
-        if (res.data && res.data.QS_ID) {
-          setQuestion(res.data);  // 한 건 객체로 바로!
+        if (res.data && res.data.question) {
+          setQuestion(res.data.question);  // 한 건 객체로 바로!
         } else {
           setError('해당 질문을 찾을 수 없습니다.');
         }

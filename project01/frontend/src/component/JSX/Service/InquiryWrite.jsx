@@ -13,9 +13,10 @@ const InquiryWrite = () => {
   const [loading, setLoading] = useState(false);
 
   // (실제 로그인 연동 시 아래 값들을 localStorage 등에서 받아서 대입)
-  const USER_ID = "testuser";
-  const USER_NAME = "테스터";
-  const EMAIL = "test@email.com";
+  const USER_ID = localStorage.getItem('id');
+  const USER_NAME = localStorage.getItem('userName');
+  const EMAIL = localStorage.getItem('email');
+  console.log(USER_ID, USER_NAME, EMAIL); 
 
   // 입력값 핸들러
   const handleChange = e => {
