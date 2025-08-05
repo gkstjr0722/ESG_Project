@@ -12,14 +12,13 @@ const InquiryDetail = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // 서버에서 해당 문의글 불러오기
     const fetchDetail = async () => {
       setLoading(true);
       setError('');
       try {
         const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
-        if (res.data && res.data.question) {
-          setQuestion(res.data.question);
+        if (res.data && res.data.QS_ID) {
+          setQuestion(res.data);  // 한 건 객체로 바로!
         } else {
           setError('해당 질문을 찾을 수 없습니다.');
         }
@@ -71,22 +70,26 @@ const InquiryDetail = () => {
           ← 돌아가기
         </a>
         <br /><br />
-        <div className="faq-detail-title">{question.text}</div>
-        {question.createdAt && (
-            <div className="faq-detail-date">
-            작성일&nbsp;&nbsp;|&nbsp;&nbsp;{question.createdAt}
-            </div>
-        )}
-        <div>
-          조회수&nbsp;&nbsp;|&nbsp;&nbsp;{question.views ?? 0}
-        </div>
-        {question.extra && (
-          <div className="faq-detail-extra">
-            {question.extra}
-          </div>
-        )}
-        <br /><br />
-        <div className="faq-detail-content">{question.detail}</div>
+        <div className="faq-detail-title">{question.TITLE}</div>
+        <div className="faq-detail-date">
+        작성일&nbsp;&nbsp;|&nbsp;&nbsp;
+        {question.QS_DATE &&
+        new Date(question.QS_DATE).toLocaleDateString('ko-KR', {
+        timeZone: 'Asia/Seoul',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+       
+        })
+        .replace(/\./g, '-')
+        .replace(/\s/g, '')       
+        .replace(/-$/, '')   
+      }
+      </div>
+
+        
+       
+        <div className="faq-detail-content">{question.CONTENT}</div>
       </div>
     </div>
   );
