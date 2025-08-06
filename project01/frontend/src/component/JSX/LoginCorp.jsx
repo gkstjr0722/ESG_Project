@@ -124,7 +124,7 @@ const LoginCorp = () => {   // 함수명 통일!
               </label>
             </div>
             {error && <div className="login-error">{error}</div>}
-            <button className="main-btn" type="submit">로그인</button>
+            <button className="main-btn1" type="submit">로그인</button>
           </form>
           <div className="login-link-area">
             <span>비밀번호를 잊으셨나요?</span>
