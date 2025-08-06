@@ -32,7 +32,6 @@ const InquiryDetail = () => {
     };
     fetchDetail();
   }, [id]);
-
   if (loading) {
     return (
       <div>
@@ -96,28 +95,29 @@ const InquiryDetail = () => {
                 onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}
                 >수정
               </button>
-              <button
-                className="faq-fix1-submit"
-                onClick={async () => {
-                  if (window.confirm("정말 삭제하시겠습니까?")) {
-                    try {
-                      const res = await axios.delete(
-                        `http://localhost:3001/api/inquiry/${question.QS_ID}/delete`
-                      );
-                      if (res.data.result === "success") {
-                        alert("삭제되었습니다!");
-                        navigate("/inquiry");
-                      } else {
-                        alert("삭제에 실패했습니다.");
-                      }
-                    } catch (err) {
-                      alert("서버 오류가 발생했습니다.");
-                    }
-                  }
-                }}
-              >
-                삭제
-              </button>
+             <button
+  className="faq-fix1-submit"
+  onClick={async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        const res = await axios.delete(
+          `http://localhost:3001/api/inquiry/delete/${question.QS_ID}`
+        );
+        if (res.data.result === "success") {
+          alert("삭제되었습니다!");
+          navigate("/inquiry");
+        } else {
+          alert("삭제에 실패했습니다.");
+        }
+      } catch (err) {
+        alert("서버 오류가 발생했습니다.");
+      }
+    }
+  }}
+>
+  삭제
+</button>
+
             </div>
             )}
         </div>

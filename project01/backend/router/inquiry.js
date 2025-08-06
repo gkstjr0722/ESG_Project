@@ -38,6 +38,7 @@ router.post('/add', (req, res) => {
     }
   );
 });
+
 // (추가) 문의글 수정, 삭제 기능
 // backend/router/inquiry.js
 router.put('/edit/:qs_id', (req, res) => {
@@ -73,6 +74,22 @@ router.get('/:qs_id', (req, res) => {
 
 
 
+
+// 5. 문의글 삭제 (QS_ID 기준)
+router.delete('/qs_id/delete', (req, res) => {
+  const { qs_id } = req.params;
+  const sql = `DELETE FROM USER_QUESTION WHERE QS_ID = ?`;
+  conn.query(sql, [qs_id], (err, result) => {
+    if (err) {
+      console.error('DB 오류:', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
+    }
+    res.json({ result: 'success' });
+  });
+});
 
 
 module.exports = router;
