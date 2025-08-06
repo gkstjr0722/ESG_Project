@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Header';
 import '../../CSS/Faq.css';
 import axios from 'axios';
+import Header from '../../component/Header';
 
 const Inquiry = () => {
   const [questions, setQuestions] = useState([]);
@@ -46,7 +46,7 @@ const Inquiry = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
       <br /><br />
       <div className="faq-page-wrap">
         <h1 className="faq-title">고객 문의</h1>

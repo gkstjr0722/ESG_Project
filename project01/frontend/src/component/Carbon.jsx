@@ -1,13 +1,13 @@
 import React from 'react'
 
-const AveragePower = () => {
+const Carbon = () => {
   return (
     <>
       <div className='box'>
-        <div>AveragePower</div>
+          <div>CarbonUsageStatus</div>
       </div>
     </>
   )
 }
 
-export default AveragePower
+export default Carbon

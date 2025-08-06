@@ -1,7 +1,7 @@
 import '../CSS/Join.css'
 import { useState } from "react";
-import Header from './Header'; // 또는 ./components/Header
 import { useNavigate } from "react-router-dom"; // ← 추가!
+import Header from '../component/Header';
 
 const JoinCorp = () => {
   // 각각 입력값 상태
@@ -43,7 +43,7 @@ const JoinCorp = () => {
 
   return (
     <div>
-    <Header />
+    <Header/>
     <div className="join-corp-bg">
       <div className="join-corp-box">
         <h2>공공기관·기업 회원가입</h2>

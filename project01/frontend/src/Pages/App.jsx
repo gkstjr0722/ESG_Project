@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-import Header from './component/JSX/Header';
 // import bannerImg from './assets/banner.webp';
-import './App.css';
-import ImageSlider from './component/JSX/ImageSlider';
+import '../CSS/Main.css';
+import Header from '../component/Header';
+import Slider from './Slider';
 
 // 유튜브 썸네일 데이터
 const videoData = [
@@ -33,7 +33,7 @@ function App() {
 
   return (
     <div className="main-page-root">
-      <Header />
+      <Header/>
       <div className="app-container">
       {/* <div
         className="main-banner-bg"
@@ -42,7 +42,7 @@ function App() {
 
       {/* ✅ 슬라이더 추가 (완성되면 위 배너 대체 예정) */}
       <section className="slider-section">
-        <ImageSlider />
+        <Slider/>
       </section>
     </div>
 

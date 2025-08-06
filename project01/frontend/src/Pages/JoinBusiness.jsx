@@ -1,8 +1,8 @@
 import '../CSS/Join.css'
 import { useState } from "react";
-import Header from './Header';
 import { useNavigate } from "react-router-dom";
 import React from 'react'; 
+import Header from '../component/Header';
 
 const JoinCorp = () => {
   const [corpName, setCorpName] = useState('');
@@ -67,7 +67,7 @@ const JoinCorp = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
       <div className="join-corp-bg">
         <div className="join-corp-box">
           <h2>공공기관·기업 회원가입</h2>

@@ -26,7 +26,7 @@ function loadKakaoSdk() {
 
 const SEOUL_CENTER = { lat: 37.5665, lng: 126.9780 };
 
-const MapEVCharger = () => {
+const Map = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
   const mapRef = useRef(null);
@@ -148,4 +148,4 @@ const MapEVCharger = () => {
   );
 };
 
-export default MapEVCharger;
+export default Map;

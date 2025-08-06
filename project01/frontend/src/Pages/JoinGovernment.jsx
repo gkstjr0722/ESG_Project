@@ -1,6 +1,6 @@
 import '../CSS/Join.css'
 import { useState } from "react";
-import Header from './Header'; // 또는 ./components/Header
+import Header from '../component/Header';
 import { useNavigate } from "react-router-dom"; // ← 추가!
 import axios from 'axios';
 import React from 'react';

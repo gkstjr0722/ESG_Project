@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 import '../CSS/LoginCorp.css';
+import Header from '../component/Header';
 
-const LoginCorp = () => {   // 함수명 통일!
+const Login = () => {   // 함수명 통일!
   const [mode, setMode] = useState('business');
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
@@ -72,7 +72,7 @@ const LoginCorp = () => {   // 함수명 통일!
 
   return (
     <div>
-      <Header />
+      <Header/>
       <div className="login-corp-bg">
         <div className="login-corp-box">
           <div className="login-switch-btn-area">
@@ -137,4 +137,4 @@ const LoginCorp = () => {   // 함수명 통일!
   );
 };
 
-export default LoginCorp;
+export default Login;

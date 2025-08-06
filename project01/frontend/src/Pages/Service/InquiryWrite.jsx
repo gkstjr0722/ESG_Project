@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Header from '../Header';
 import '../../CSS/Faq.css';
 import axios from 'axios';
+import Header from '../../component/Header';
 
 const InquiryWrite = () => {
   const { id } = useParams();
@@ -121,7 +121,7 @@ const InquiryWrite = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
         <a className="faq-detail-backbtn" onClick={handleCancel}>

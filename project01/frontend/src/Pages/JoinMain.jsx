@@ -1,6 +1,6 @@
 import '../CSS/LoginCorp.css';
 import React from 'react';
-import Header from './Header';
+import Header from '../component/Header';
 import { Link } from 'react-router-dom';
 
 const JoinMain = () => {

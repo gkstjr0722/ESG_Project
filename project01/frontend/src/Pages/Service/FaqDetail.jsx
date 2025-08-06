@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import Header from '../Header';
+import Header from '../../component/Header';
 import '../../CSS/Faq.css';
+import axios from 'axios';
 
-const NoticeDetail = () => {
+const FaqDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [notice, setNotice] = useState(null);
+  const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
@@ -16,14 +16,16 @@ const NoticeDetail = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await axios.get(`http://localhost:3001/api/notice/${id}`);
-        if (res.data && res.data.notice) {
-          setNotice(res.data.notice);
+        // FAQ도 문의글이므로 동일 API를 활용
+        // /api/inquiry/:id와 똑같이 호출 (조회수도 증가함에 유의)
+        const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
+        if (res.data && res.data.question) {
+          setQuestion(res.data.question);
         } else {
-          setError('해당 공지사항을 찾을 수 없습니다.');
+          setError('해당 질문을 찾을 수 없습니다.');
         }
       } catch (err) {
-        setError('공지사항 정보를 불러오지 못했습니다.');
+        setError('질문 정보를 불러오지 못했습니다.');
       } finally {
         setLoading(false);
       }
@@ -44,15 +46,15 @@ const NoticeDetail = () => {
     );
   }
 
-  if (error || !notice) {
+  if (error || !question) {
     return (
       <div>
         <Header />
         <div className="faq-detail-page-wrap">
           <div className="faq-detail-notfound">
-            {error || '해당 공지사항을 찾을 수 없습니다.'}
+            해당 질문을 찾을 수 없습니다.
             <br />
-            <button className="faq-detail-backbtn" onClick={() => navigate('/notice')}>
+            <button className="faq-detail-backbtn" onClick={() => navigate('/faq')}>
               목록으로 돌아가기
             </button>
           </div>
@@ -66,19 +68,15 @@ const NoticeDetail = () => {
       <Header />
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
-        <a className="faq-detail-backbtn" onClick={() => navigate('/notice')}>
+        <a className="faq-detail-backbtn" onClick={() => navigate('/faq')}>
           ← 돌아가기
         </a>
         <br /><br />
-        <div className="faq-detail-title">{notice.title}</div>
-        <div className="faq-detail-date">
-          {notice.created_at?.slice(0, 10)}
-        </div>
-        <br />
-        <div className="faq-detail-content">{notice.content}</div>
+        <div className="faq-detail-title">{question.text}</div>
+        <div className="faq-detail-content">{question.detail}</div>
       </div>
     </div>
   );
 };
 
-export default NoticeDetail;
+export default FaqDetail;

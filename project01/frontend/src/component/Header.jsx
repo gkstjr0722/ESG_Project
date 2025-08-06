@@ -4,7 +4,7 @@ import '../CSS/Header.css';
 
 const mainMenuList = [
   { label: '전력사용현황', path: '/calcmain' },
-  { label: '위치찾기', path: '/location' },
+  { label: '위치찾기', path: '/map' },
   { label: '고객센터', path: '/support' }
 ];
 
