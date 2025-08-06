@@ -102,7 +102,7 @@ const JoinCorp = () => {
                 개인정보처리방침 동의
               </label>
             </div>
-            <button className="main-btn" type="submit">회원가입 완료</button>
+            <button className="main-btn1" type="submit">회원가입 완료</button>
           </form>
         </div>
       </div>

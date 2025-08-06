@@ -52,8 +52,8 @@
   flex-direction: column;
   gap: 4px;
 }
-.main-btn {
-  background: #e24e42;
+.main-btn1 {
+  background: #0077cb;
   color: #fff;
   border: none;
   padding: 13px 0;
@@ -64,6 +64,6 @@
   cursor: pointer;
   transition: background 0.16s;
 }
-.main-btn:hover {
-  background: #b53026;
+.main-btn1:hover {
+  background: #085cab;
 }

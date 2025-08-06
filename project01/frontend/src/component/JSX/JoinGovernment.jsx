@@ -82,7 +82,7 @@ const handleSubmit = async (e) => {
             </label>
           </div>
           <br />
-          <button className="main-btn" type="submit">회원가입 완료</button>
+          <button className="main-btn1" type="submit">회원가입 완료</button>
         </form>
       </div>
     </div>

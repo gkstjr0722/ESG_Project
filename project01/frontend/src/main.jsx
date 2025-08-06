@@ -17,15 +17,11 @@ import FaqDetail from './component/JSX/Service/FaqDetail.jsx'
 import Inquiry from './component/JSX/Service/Inquiry.jsx'
 import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx'
 import InquiryWrite from './component/JSX/Service/InquiryWrite.jsx'
-<<<<<<< HEAD
-import InquiryEdit from './component/JSX/Service/Inquiry.jsx';
-=======
 import ElectricityUsageForecast from './component/JSX/Calc/ElectricityUsageForecast.jsx';
 import CalcMain from './component/JSX/Calc/CalcMain.jsx';
 import MonthlyUsageForecast from './component/JSX/Calc/MonthlyUsageForecast.jsx';
 import AveragePower from './component/JSX/Calc/AveragePower.jsx';
 import CarbonUsageStatus from './component/JSX/Calc/CarbonUsageStatus.jsx';
->>>>>>> 364c13da1a440b077f18785e0a41b5ca317204b4
 
 
 createRoot(document.getElementById('root')).render(
@@ -46,9 +42,6 @@ createRoot(document.getElementById('root')).render(
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
       <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
       <Route path="/inquiry/edit/:id" element={<InquiryWrite />} />
-<<<<<<< HEAD
-      <Route path="inquiry/edit/:qs_id" element={<InquiryEdit />}></Route>
-=======
       <Route path="/eletricityusageforecast" element={<ElectricityUsageForecast />} />
       {/* 전력사용현황 */}
       <Route path="/calcmain" element={<CalcMain />} />
@@ -56,7 +49,6 @@ createRoot(document.getElementById('root')).render(
       <Route path="/currentbill" element={<CurrentBill />} />
       <Route path="/averagepower" element={<AveragePower />} />
       <Route path="/carbonusagestatus" element={<CarbonUsageStatus />} />
->>>>>>> 364c13da1a440b077f18785e0a41b5ca317204b4
     </Routes>
   </BrowserRouter>
 );

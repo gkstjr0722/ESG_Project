@@ -73,10 +73,8 @@ router.get('/:qs_id', (req, res) => {
 });
 
 
-
-
 // 5. 문의글 삭제 (QS_ID 기준)
-router.delete('/qs_id/delete', (req, res) => {
+router.delete('/delete/:qs_id', (req, res) => {
   const { qs_id } = req.params;
   const sql = `DELETE FROM USER_QUESTION WHERE QS_ID = ?`;
   conn.query(sql, [qs_id], (err, result) => {

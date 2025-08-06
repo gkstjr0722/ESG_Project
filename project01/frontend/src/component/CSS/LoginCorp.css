@@ -40,7 +40,7 @@
   border: 1.5px solid #3ba2f3;
 }
 
-.main-btn {
+.main-btn1 {
   width: 100%;
   background: #0077cb;
   color: #fff;
@@ -54,7 +54,7 @@
   margin-bottom: 5px;
   transition: background 0.2s;
 }
-.main-btn:hover {
+.main-btn1:hover {
   background: #085cab;
 }
 
