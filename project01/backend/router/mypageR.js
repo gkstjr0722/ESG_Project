@@ -4,21 +4,13 @@ const router = express.Router();
 const conn = require('../config/db');
 
 // [1] POST: 사용자 정보 조회
-router.post('/userinfo', (req, res) => {
-  const { id } = req.body;
-  if (!id) return res.status(400).json({ msg: 'id 필요' });
-
-  const sql = 'SELECT * FROM CORP_MEMBER WHERE id = ?';
-  conn.query(sql, [id], (err, rows) => {
-    if (err) return res.status(500).json({ msg: 'DB 오류' });
-    if (rows.length > 0) return res.json({ user: rows[0] });
     res.status(404).json({ msg: '회원 정보 없음' });
   });
 });
 
 // [2] PUT: 회원 정보 수정 (비번 제외)
 router.put('/update', (req, res) => {
-  const { id, corpName, ceo, dept, manager, phone, email, corpTel, address } = req.body;
+  const { id, corpName, c eo, dept, manager, phone, email, corpTel, address } = req.body;
   if (!id) return res.status(400).json({ msg: 'id 필요' });
 
   const sql = `

@@ -14,11 +14,11 @@ const InquiryEdit = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // 기존 데이터 불러오기
+  // 기존 데이터 불러오기 (오타 수정!)
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/inquiry/add${qs_id}`);
+        const res = await axios.get(`http://localhost:3001/api/inquiry/${qs_id}`);
         if (res.data && res.data.question) {
           setForm({
             TITLE: res.data.question.TITLE,
@@ -44,7 +44,7 @@ const InquiryEdit = () => {
     }));
   };
 
-  // 수정 저장
+  // 수정 저장 (수정 이력도 저장)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.TITLE.trim() || !form.CONTENT.trim()) {
@@ -52,7 +52,7 @@ const InquiryEdit = () => {
       return;
     }
     try {
-      // 수정 날짜 추가 (YYYY-MM-DD HH:mm:ss)
+      // 1. 문의글 UPDATE
       const now = new Date();
       const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
 
@@ -60,6 +60,21 @@ const InquiryEdit = () => {
         `http://localhost:3001/api/inquiry/edit/${qs_id}`,
         { ...form, UPDATE_DT }
       );
+
+      // 2. 수정 이력 INSERT문
+      const EDIT_ID = 'edit_' + now.getTime();
+      const EDITOR_ID = localStorage.getItem('id') || localStorage.getItem('gov_id') || '';
+      const EDITOR_NAME = localStorage.getItem('userName') || '';
+      await axios.post('http://localhost:3001/api/inquiry/edit-history', {
+        EDIT_ID,
+        QS_ID: qs_id,
+        EDITOR_ID,
+        EDITOR_NAME,
+        EDIT_TITLE: form.TITLE,
+        EDIT_CONTENT: form.CONTENT,
+        EDIT_DT: UPDATE_DT,
+      });
+
       alert('수정이 완료되었습니다!');
       navigate(`/inquiry/${qs_id}`);
     } catch (err) {
