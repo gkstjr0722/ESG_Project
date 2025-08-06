@@ -7,7 +7,7 @@ import JoinMain from './component/JSX/JoinMain.jsx';
 import JoinBusiness from './component/JSX/JoinBusiness.jsx'; // 경로! (component)
 import JoinGovernment from './component/JSX/JoinGovernment.jsx'; // 경로! (component)
 import LoginCorp from './component/JSX/LoginCorp.jsx';
-import PowerCalc from './component/JSX/PowerCalc.jsx';
+import CurrentBill from './component/JSX/Calc/CurrentBill.jsx';
 import MyPage from './component/JSX/MyPage.jsx';
 import EditMyPage from './component/JSX/EditMyPage.jsx';
 import MapEVCharger from './component/JSX/MapEVCharger.jsx';
@@ -17,6 +17,11 @@ import FaqDetail from './component/JSX/Service/FaqDetail.jsx'
 import Inquiry from './component/JSX/Service/Inquiry.jsx'
 import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx'
 import InquiryWrite from './component/JSX/Service/InquiryWrite.jsx'
+import ElectricityUsageForecast from './component/JSX/Calc/ElectricityUsageForecast.jsx';
+import CalcMain from './component/JSX/Calc/CalcMain.jsx';
+import MonthlyUsageForecast from './component/JSX/Calc/MonthlyUsageForecast.jsx';
+import AveragePower from './component/JSX/Calc/AveragePower.jsx';
+import CarbonUsageStatus from './component/JSX/Calc/CarbonUsageStatus.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -27,7 +32,6 @@ createRoot(document.getElementById('root')).render(
       <Route path="/joinbusiness" element={<JoinBusiness />} />
       <Route path="/joingovernment" element={<JoinGovernment />} />
       <Route path="/login" element={<LoginCorp />} />
-      <Route path="/powercalc" element={<PowerCalc />} />
       <Route path="/mypage" element={<MyPage />} />
       <Route path="/editmypage" element={<EditMyPage />} />
       <Route path="/location" element={<MapEVCharger />} />
@@ -38,6 +42,13 @@ createRoot(document.getElementById('root')).render(
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
       <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
       <Route path="/inquiry/edit/:id" element={<InquiryWrite />} />
+      <Route path="/eletricityusageforecast" element={<ElectricityUsageForecast />} />
+      {/* 전력사용현황 */}
+      <Route path="/calcmain" element={<CalcMain />} />
+      <Route path="/monthlyusageforecast" element={<MonthlyUsageForecast />} />
+      <Route path="/currentbill" element={<CurrentBill />} />
+      <Route path="/averagepower" element={<AveragePower />} />
+      <Route path="/carbonusagestatus" element={<CarbonUsageStatus />} />
     </Routes>
   </BrowserRouter>
 );
