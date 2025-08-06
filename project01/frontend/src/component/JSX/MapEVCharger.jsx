@@ -2,14 +2,13 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import "../CSS/MapEVCharger.css";
 
-// 동적 스크립트 로딩 함수 (최초 1회만 로드)
+// 동적 스크립트 로딩
 function loadKakaoSdk() {
   return new Promise((resolve, reject) => {
     if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
       resolve();
       return;
     }
-    // 혹시라도 두 번 이상 삽입 방지
     if (document.getElementById("kakao-map-sdk")) {
       document.getElementById("kakao-map-sdk").onload = () => {
         window.kakao.maps.load(resolve);
@@ -25,21 +24,21 @@ function loadKakaoSdk() {
   });
 }
 
+const SEOUL_CENTER = { lat: 37.5665, lng: 126.9780 };
+
 const MapEVCharger = () => {
   const [stations, setStations] = useState([]);
   const [loading, setLoading] = useState(true);
-  const mapRef = useRef(null); // 맵 인스턴스 보관
-  const markersRef = useRef([]); // 마커/인포윈도우 관리
+  const mapRef = useRef(null);
+  const markersRef = useRef([]);
 
-  // 1. SDK+데이터 순차 로딩
   useEffect(() => {
-    let isMounted = true; // cleanup 플래그
+    let isMounted = true;
 
     async function fetchAll() {
       setLoading(true);
       await loadKakaoSdk();
 
-      // 충전소 데이터 요청
       let raw = [];
       try {
         const { data } = await axios.get("http://localhost:3001/api/proxy/list");
@@ -50,7 +49,7 @@ const MapEVCharger = () => {
         return;
       }
 
-      // 주소 → 좌표 최대 5개 변환
+      // 5개만 주소 → 좌표 변환
       const geocoder = new window.kakao.maps.services.Geocoder();
       const results = await Promise.all(
         raw.slice(0, 5).map(st =>
@@ -63,7 +62,6 @@ const MapEVCharger = () => {
                   lng: Number(result[0].x)
                 });
               } else {
-                console.warn("지오코딩 실패:", st.stnPlace, st.stnAddr, status, result);
                 resolve(null);
               }
             });
@@ -79,7 +77,6 @@ const MapEVCharger = () => {
 
     return () => {
       isMounted = false;
-      // ★ 이전 마커/인포윈도우, map 클린업 (중복/메모리누수 방지)
       markersRef.current.forEach(obj => {
         obj.marker.setMap(null);
         if (obj.infowindow) obj.infowindow.close();
@@ -89,30 +86,25 @@ const MapEVCharger = () => {
     };
   }, []);
 
-  // 2. 지도 및 마커, 인포윈도우 생성
   useEffect(() => {
-    if (loading || stations.length === 0) return;
+    if (loading) return;
     const container = document.getElementById("ev-map");
     if (!container) return;
-
-    // ★ 기존 맵 지우기 (hot reload 대비)
     container.innerHTML = "";
 
-    // 맵 생성
+    // 서울 중심
     const map = new window.kakao.maps.Map(container, {
-      center: new window.kakao.maps.LatLng(36.35, 127.7),
+      center: new window.kakao.maps.LatLng(SEOUL_CENTER.lat, SEOUL_CENTER.lng),
       level: 7
     });
     mapRef.current = map;
 
-    // 마커/인포윈도우 리스트 리셋
     markersRef.current.forEach(obj => {
       obj.marker.setMap(null);
       if (obj.infowindow) obj.infowindow.close();
     });
     markersRef.current = [];
 
-    // 마커, 인포윈도우 동적 생성
     stations.forEach(st => {
       if (!st.lat || !st.lng) return;
       const marker = new window.kakao.maps.Marker({
@@ -136,20 +128,22 @@ const MapEVCharger = () => {
       markersRef.current.push({ marker, infowindow });
     });
 
-    // 반응형: 마커중앙
-    if (stations.length > 0) {
-      map.setCenter(new window.kakao.maps.LatLng(stations[0].lat, stations[0].lng));
-    }
+    // 지도 중심은 서울
+    map.setCenter(new window.kakao.maps.LatLng(SEOUL_CENTER.lat, SEOUL_CENTER.lng));
   }, [loading, stations]);
 
   return (
-    <div className="evmap-wrap">
-      <h2 className="evmap-title">전국 전기차 충전소 위치찾기</h2>
-      {loading ? (
-        <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
-      ) : (
-        <div id="ev-map" className="evmap-map"></div>
-      )}
+    <div className="evmap-mainwrap">
+      <div className="evmap-topnav">
+        <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
+      </div>
+      <div className="evmap-content">
+        {loading ? (
+          <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+        ) : (
+          <div id="ev-map" className="evmap-map"></div>
+        )}
+      </div>
     </div>
   );
 };
