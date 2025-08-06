@@ -38,6 +38,22 @@ router.post('/add', (req, res) => {
     }
   );
 });
+// (추가) 문의글 수정, 삭제 기능
+// backend/router/inquiry.js
+router.put('/edit/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const { TITLE, CONTENT, UPDATE_DT } = req.body;
+  const sql = `
+    UPDATE USER_QUESTION 
+    SET TITLE = ?, CONTENT = ?, UPDATE_DT = ? 
+    WHERE QS_ID = ?
+  `;
+  conn.query(sql, [TITLE, CONTENT, UPDATE_DT, qs_id], (err, result) => {
+    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    res.json({ result: 'success' });
+  });
+});
+
 
 // 3. 상세 문의글 조회 (QS_ID로 단일 조회)
 router.get('/:qs_id', (req, res) => {
@@ -55,6 +71,8 @@ router.get('/:qs_id', (req, res) => {
   });
 });
 
-// (추가) 문의글 수정, 삭제 기능
+
+
+
 
 module.exports = router;

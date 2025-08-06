@@ -58,14 +58,19 @@ const InquiryWrite = () => {
     }));
   };
 
-  // 등록 버튼
+  // 등록/수정 버튼
   const handleSubmit = async e => {
     e.preventDefault();
     setLoading(true);
     try {
       if (isEdit) {
-        // 수정 요청
-        const res = await axios.post(`http://localhost:3001/api/inquiry/${id}/edit`, form);
+        // 수정 요청 → **PUT 사용 & 경로 /edit/id**
+        const now = new Date();
+        const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
+        const res = await axios.put(
+          `http://localhost:3001/api/inquiry/edit/${id}`,
+          { ...form, UPDATE_DT }
+        );
         if (res.data.result === 'success') {
           alert('수정되었습니다!');
           navigate(`/inquiry/${id}`);
@@ -84,7 +89,7 @@ const InquiryWrite = () => {
           CONTENT: form.CONTENT,
           ANSWER: '',
           QS_DATE: now.toISOString().slice(0, 19).replace('T', ' '),
-          QS_NUMBER: 1, // 규칙 따로 있으면 변경
+          QS_NUMBER: 1,
           AS_DATE: null,
           UPDATE_DT: null,
           QS_ID,
@@ -101,7 +106,7 @@ const InquiryWrite = () => {
     } catch (err) {
       alert('서버 오류가 발생했습니다.');
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   };
 

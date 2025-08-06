@@ -17,6 +17,7 @@ import FaqDetail from './component/JSX/Service/FaqDetail.jsx'
 import Inquiry from './component/JSX/Service/Inquiry.jsx'
 import InquiryDetail from './component/JSX/Service/InquiryDetail.jsx'
 import InquiryWrite from './component/JSX/Service/InquiryWrite.jsx'
+import InquiryEdit from './component/JSX/Service/Inquiry.jsx';
 
 
 createRoot(document.getElementById('root')).render(
@@ -38,6 +39,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
       <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
       <Route path="/inquiry/edit/:id" element={<InquiryWrite />} />
+      <Route path="inquiry/edit/:qs_id" element={<InquiryEdit />}></Route>
     </Routes>
   </BrowserRouter>
 );
