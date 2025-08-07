@@ -154,6 +154,27 @@ router.get('/faq/top', (req, res) => {
   });
 });
 
+// 고객문의글 답변 가능 기능(관리자만) 라우터
+router.post('/answer/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const { ANSWER } = req.body;
+
+  if (!ANSWER || !qs_id) {
+    return res.status(400).json({ result: 'fail', msg: '필수값 누락' });
+  }
+
+  const sql = 'UPDATE USER_QUESTION SET ANSWER = ?, AS_DATE = NOW() WHERE QS_ID = ?';
+  conn.query(sql, [ANSWER, qs_id], (err, result) => {
+    if (err) {
+      console.error('DB 오류(답변등록):', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류(답변등록)' });
+    }
+    res.json({ result: 'success' });
+  });
+});
+
+
+
 module.exports = router;
 
 // inq
