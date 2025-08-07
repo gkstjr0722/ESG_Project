@@ -3,6 +3,9 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
+// 공통 CSS
+import './CSS/Common.css';
+
 // 메인 페이지
 import App from './Pages/App.jsx';
 import Slider from './Pages/Slider.jsx';
@@ -36,7 +39,6 @@ import ElecUsed from './component/ElecUsed.jsx';
 import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
-
 
 
 // 링크연결

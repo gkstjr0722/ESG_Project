@@ -1,21 +1,8 @@
 
-/* 로그인/회원가입 페이지 배경+가운데 정렬 컨테이너 */
-.login-corp-bg {
-  min-height: 100vh;
-  background: #f5f7fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 /* 로그인/회원가입 페이지 흰 박스 */
 .login-corp-box {
-  background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-width: 200px;
   max-width: 450px;
-  width: 90%;
   text-align: center;
 }
 
@@ -42,21 +29,7 @@
   border: 1.5px solid #3ba2f3;
 }
 
-/* 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통  */
-.main-btn-00 {
-  background: #1d5fc4;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s;
-}
-.main-btn-00:hover {
-  background: #0059ac;
-}
+
 /* 로그인-로그인 버튼 */
 .main-btn1 {
   width: 100%;
@@ -115,10 +88,8 @@
 .login-switch-btn {
   padding: 7px 22px;
   font-size: 16px;
-  border-radius: 6px;
   border: 1px solid #ddd;
   background: #f8f8f8;
-  cursor: pointer;
   transition: background 0.2s, color 0.2s, border 0.2s;
 }
 

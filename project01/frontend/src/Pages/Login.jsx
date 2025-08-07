@@ -75,8 +75,8 @@ const Login = () => {   // 함수명 통일!
   return (
     <div>
       <Header/>
-      <div className="login-corp-bg">
-        <div className="login-corp-box">
+      <div className="common-bg">
+        <div className="common-box login-corp-box">
           <div className="login-switch-btn-area">
             <button
               className={mode === 'business' ? 'login-switch-btn active' : 'login-switch-btn'}
@@ -126,7 +126,7 @@ const Login = () => {   // 함수명 통일!
               </label>
             </div>
             {error && <div className="login-error">{error}</div>}
-            <button className="main-btn1" type="submit">로그인</button>
+            <button className="common-btn main-btn1" type="submit">로그인</button>
           </form>
           <div className="login-link-area">
             <span>비밀번호를 잊으셨나요?</span>
