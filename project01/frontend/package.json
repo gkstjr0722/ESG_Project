@@ -10,12 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.13.5",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-kakao-maps-sdk": "^1.2.0",
-    "react-router-dom": "^7.7.1"
+    "react-router-dom": "^7.7.1",
+    "swiper": "^8.4.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",
