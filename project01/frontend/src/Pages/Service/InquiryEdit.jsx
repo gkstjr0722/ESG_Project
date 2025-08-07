@@ -18,7 +18,7 @@ const InquiryEdit = () => {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/inquiry/add${qs_id}`);
+        const res = await axios.get(`http://localhost:3001/api/inquiry/${qs_id}`);
         if (res.data && res.data.question) {
           setForm({
             TITLE: res.data.question.TITLE,
@@ -44,28 +44,33 @@ const InquiryEdit = () => {
     }));
   };
 
-  // 수정 저장
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.TITLE.trim() || !form.CONTENT.trim()) {
-      alert('제목과 내용을 입력해 주세요.');
-      return;
-    }
-    try {
-      // 수정 날짜 추가 (YYYY-MM-DD HH:mm:ss)
-      const now = new Date();
-      const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
+  // 수정 저장 (수정 이력도 저장)
+ // 수정 저장 (수정 이력도 저장)
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!form.TITLE.trim() || !form.CONTENT.trim()) {
+    alert('제목과 내용을 입력해 주세요.');
+    return;
+  }
 
-      await axios.put(
-        `http://localhost:3001/api/inquiry/edit/${qs_id}`,
-        { ...form, UPDATE_DT }
-      );
-      alert('수정이 완료되었습니다!');
-      navigate(`/inquiry/${qs_id}`);
-    } catch (err) {
-      alert('수정에 실패했습니다.');
-    }
-  };
+  try {
+    const now = new Date();
+    const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
+
+    // editor_id, editor_name 안 보냄!
+    await axios.put(
+      `http://localhost:3001/api/inquiry/edit/${qs_id}`,
+      { ...form, UPDATE_DT }
+    );
+
+    alert('수정이 완료되었습니다!');
+    navigate(`/inquiry/${qs_id}`);
+  } catch (err) {
+    console.error('[수정 에러]', err);
+    alert('수정에 실패했습니다.');
+  }
+};
+
 
   // 취소 버튼
   const handleCancel = () => {
