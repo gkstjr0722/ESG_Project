@@ -13,6 +13,9 @@ const Inquiry = () => {
 
   // 로그인 여부 확인
   const isLoggedIn = localStorage.getItem('id') || localStorage.getItem('gov_id');
+  const corpAdmin = localStorage.getItem('id') === 'admin';
+  const govAdmin = localStorage.getItem('gov_id') === 'admin';
+  const isAdmin = corpAdmin || govAdmin;
 
   // 문의글 목록 불러오기
   useEffect(() => {
@@ -83,10 +86,10 @@ const Inquiry = () => {
             ))
           )}
         </div>
-        {isLoggedIn && (
-        <button className="floating-write-btn" onClick={handleWriteClick}>
-          +
-        </button>
+        {isLoggedIn && !isAdmin && (
+          <button className="floating-write-btn" onClick={handleWriteClick}>
+            +
+          </button>
         )}
       </div>
     </div>
