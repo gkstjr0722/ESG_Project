@@ -30,6 +30,7 @@ const Mypage = () => {
   useEffect(() => {
     const id = localStorage.getItem('id');
     const govId = localStorage.getItem('gov_id');
+    console.log('[Mypage] id:', id, 'govId:', govId);
 
     if (id) {
       setUserType('business');
@@ -76,7 +77,7 @@ const Mypage = () => {
         corpTel: user.corpTel || '',
         address: user.address || '',
         id: user.id || '',
-        gov_id: user.gov_id || '',
+        gov_id: user.id || '', // 정부회원도 id 컬럼을 사용!
       });
     }
   }, [user]);
@@ -88,6 +89,14 @@ const Mypage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const targetId = userType === 'business' ? formData.id : formData.gov_id;
+    console.log('[handleSubmit] 요청에 들어가는 id:', targetId);
+
+    if (!targetId) {
+      alert('id가 없습니다. 로그아웃 후 다시 로그인 해보세요.');
+      return;
+    }
 
     if (
       !formData.corpName ||
@@ -127,12 +136,19 @@ const Mypage = () => {
         }
       } else {
         await axios.put('http://localhost:3001/userg/update_gov', {
-          ...formData,
+          corpName: formData.corpName,
+          ceo: formData.ceo,
+          dept: formData.dept,
+          manager: formData.manager,
+          phone: formData.phone,
+          email: formData.email,
+          corpTel: formData.corpTel,
+          address: formData.address,
           id: formData.gov_id,
         });
 
         if (newPassword) {
-          await axios.put('http://localhost:3001/userg/password-update_gov', {
+          await axios.put('http://localhost:3001/userg/update_gov_pw', {
             id: formData.gov_id,
             newPassword,
           });
@@ -141,9 +157,6 @@ const Mypage = () => {
 
       alert('회원 정보가 성공적으로 수정되었습니다.');
       setEditMode(false);
-
-      // 최신 정보 갱신 위해 다시 user 데이터 요청 가능 (선택)
-      // or 강제 새로고침 가능
     } catch (error) {
       alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
     }
