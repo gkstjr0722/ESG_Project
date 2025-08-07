@@ -12,6 +12,7 @@ import Map from './Pages/Map.jsx';
 
 // 고객센터
 import Support from './Pages/Service/Support.jsx';
+import Notice from './Pages/Service/Notice.jsx';
 
 // 고객문의
 import FAQ from './Pages/Service/FAQ.jsx';
@@ -53,6 +54,7 @@ createRoot(document.getElementById('root')).render(
 
       {/* 고객센터 */}
       <Route path="/support" element={<Support />}></Route>
+      <Route path="/notice" element={<Notice />}></Route>
 
       {/* 고객문의 */}
       <Route path="/faq" element={<FAQ />}></Route>
