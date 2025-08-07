@@ -1,3 +1,5 @@
+// 로그인
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/LoginCorp.css';
@@ -55,7 +57,7 @@ const Login = () => {   // 함수명 통일!
         }
       
         localStorage.setItem(mode === 'business' ? 'id' : 'gov_id', id);
-         localStorage.setItem('userName', data.userName || '');
+        localStorage.setItem('userName', data.userName || '');
         localStorage.setItem('email', data.email || '');
       
         // ★ 로그인 성공 시 이름/이메일도 저장 (백엔드에서 응답해야 함!)
@@ -129,7 +131,7 @@ const Login = () => {   // 함수명 통일!
           <div className="login-link-area">
             <span>비밀번호를 잊으셨나요?</span>
             <span className="divider">|</span>
-            <a href="/joinmain" className="join-link">회원가입</a>
+            <a href="/join" className="join-link">회원가입</a>
           </div>
         </div>
       </div>
