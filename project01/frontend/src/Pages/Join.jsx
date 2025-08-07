@@ -61,7 +61,7 @@ function BusinessJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="main-btn1" style={{ flex: 1 }}>회원가입 완료</button>
+        <button type="submit" className="common-btn join-btn" style={{ flex: 1}}>회원가입 완료</button>
         <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
       </div>
     </form>
@@ -116,8 +116,8 @@ function GovernmentJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="common-btn" style={{ flex: 1 }}>회원가입 완료</button>
-        <button type="button" className="common-btn" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
+        <button type="submit" className="common-btn join-btn" style={{ flex: 1}}>회원가입 완료</button>
+        <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
       </div>
     </form>
   );

@@ -6,6 +6,7 @@
   text-align: center;
 }
 
+/* 회원가입 h2에만 적용되는듯 */
 .login-corp-box h2 {
   color: #0c355c;
   margin-bottom: 32px;
@@ -52,22 +53,27 @@
   height: 200px;
   box-sizing: border-box;
 }
-
+/* 로그인 서버오류 안내 멘트 */
 .login-error {
   color: #dc143c;
   margin-bottom: 12px;
   font-size: 0.98rem;
 }
 
+/* 로그인 아래 비밀번호를 잊으셨나요? <- 바꿀 예정 */
 .login-link-area {
   margin-top: 14px;
   color: #555;
   font-size: 0.96rem;
 }
+
+/* 로그인 아래 비밀번호를 잊으셨나요?와 회원가입 링크 가운데 나누는 "|" */
 .login-link-area .divider {
   margin: 0 10px;
   color: #bbb;
 }
+
+/* 로그인 아래 회원가입 링크 */
 .login-link-area .join-link {
   color: #0077cb;
   text-decoration: underline;
@@ -78,13 +84,14 @@
   color: #085cab;
 }
 
+/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼 구역 */
 .login-switch-btn-area {
   display: flex;
   justify-content: center;
   gap: 18px;
   margin-bottom: 8px;
 }
-
+/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼*/
 .login-switch-btn {
   padding: 7px 22px;
   font-size: 16px;

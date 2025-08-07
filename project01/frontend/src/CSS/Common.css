@@ -1,14 +1,14 @@
-/* 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통 + login-switch-btn도 추가하기 */
+/* 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통 + login-switch-btn + support-banner-tab */
 .common-btn {
-  background: #1d5fc4;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s;
+    background: #1d5fc4;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
 }
 .common-btn:hover {
   background: #0059ac;
