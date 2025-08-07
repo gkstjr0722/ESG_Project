@@ -10,8 +10,14 @@ const InquiryDetail = () => {
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [answerInput, setAnswerInput] = useState('');
+  const [showAnswerInput, setShowAnswerInput] = useState(false);
+  const [answerLoading, setAnswerLoading] = useState(false);
 
   const userId = localStorage.getItem('id') || localStorage.getItem('gov_id');
+  const corpAdmin = localStorage.getItem('id') === 'admin';
+  const govAdmin = localStorage.getItem('gov_id') === 'admin';
+  const isAdmin = corpAdmin || govAdmin;
 
   useEffect(() => {
     const fetchDetail = async () => {
@@ -32,6 +38,53 @@ const InquiryDetail = () => {
     };
     fetchDetail();
   }, [id]);
+
+  // 답변 작성/수정 토글
+  const handleShowAnswerInput = () => {
+    setShowAnswerInput(!showAnswerInput);
+    setAnswerInput(question.ANSWER || '');
+  };
+
+  // 답변 저장
+  const handleAnswerSubmit = async () => {
+    if (!answerInput.trim()) {
+      alert('답변 내용을 입력해주세요.');
+      return;
+    }
+    setAnswerLoading(true);
+    try {
+      await axios.post(`http://localhost:3001/api/inquiry/answer/${question.QS_ID}`, {
+        ANSWER: answerInput,
+      });
+      alert('답변이 등록되었습니다!');
+      setShowAnswerInput(false);
+      setQuestion((prev) => ({ ...prev, ANSWER: answerInput }));
+    } catch (e) {
+      alert('답변 등록에 실패했습니다.');
+    } finally {
+      setAnswerLoading(false);
+    }
+  };
+
+  // 삭제
+  const handleDelete = async () => {
+    if (window.confirm("정말 삭제하시겠습니까?")) {
+      try {
+        const res = await axios.delete(
+          `http://localhost:3001/api/inquiry/delete/${question.QS_ID}`
+        );
+        if (res.data.result === "success") {
+          alert("삭제되었습니다!");
+          navigate("/inquiry");
+        } else {
+          alert("삭제에 실패했습니다.");
+        }
+      } catch (err) {
+        alert("서버 오류가 발생했습니다.");
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div>
@@ -62,6 +115,9 @@ const InquiryDetail = () => {
     );
   }
 
+  const isOwner = question.USER_ID === userId;
+  const canEditOrDelete = isOwner && (!question.ANSWER || question.ANSWER.trim() === '');
+
   return (
     <div>
       <Header />
@@ -87,40 +143,47 @@ const InquiryDetail = () => {
           }
         </div>
         <div className="faq-detail-content">{question.CONTENT}</div>
-        <div className="faq-write-btns">
-          {question.USER_ID === userId && (
-            <div>
-              <button 
-                className="faq-fix-submit"
-                onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}
-                >수정
-              </button>
-             <button
-  className="faq-fix1-submit"
-  onClick={async () => {
-    if (window.confirm("정말 삭제하시겠습니까?")) {
-      try {
-        const res = await axios.delete(
-          `http://localhost:3001/api/inquiry/delete/${question.QS_ID}`
-        );
-        if (res.data.result === "success") {
-          alert("삭제되었습니다!");
-          navigate("/inquiry");
-        } else {
-          alert("삭제에 실패했습니다.");
-        }
-      } catch (err) {
-        alert("서버 오류가 발생했습니다.");
-      }
-    }
-  }}
->
-  삭제
-</button>
 
-            </div>
+        {/* 답변 */}
+        {question.ANSWER && (
+          <div className="faq-answer-box">
+            <strong>관리자 답변</strong>
+            <div className="faq-answer-content">{question.ANSWER}</div>
+          </div>
+        )}
+
+        {/* 작성자: 답변 전만 수정/삭제 가능 */}
+        {canEditOrDelete && (
+          <div className="faq-write-btns">
+            <button className="faq-fix-submit" onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}>수정</button>
+            <button className="faq-fix1-submit" onClick={handleDelete}>삭제</button>
+          </div>
+        )}
+
+        {/* 관리자: 답변/수정/삭제 가능 */}
+        {isAdmin && (
+          <div className="faq-answer-admin-wrap">
+            {!showAnswerInput ? (
+              <button className="faq-answer-btn" onClick={handleShowAnswerInput}>
+                {question.ANSWER ? '답변 수정' : '답변 작성'}
+              </button>
+            ) : (
+              <div>
+                <textarea
+                  className="faq-answer-textarea"
+                  value={answerInput}
+                  onChange={e => setAnswerInput(e.target.value)}
+                  rows={4}
+                />
+                <button onClick={handleAnswerSubmit} disabled={answerLoading}>
+                  {answerLoading ? '저장 중...' : '저장'}
+                </button>
+                <button onClick={handleShowAnswerInput}>취소</button>
+              </div>
             )}
-        </div>
+            <button className="faq-fix1-submit" onClick={handleDelete}>삭제</button>
+          </div>
+        )}
       </div>
     </div>
   );
