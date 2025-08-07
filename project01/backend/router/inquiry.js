@@ -39,10 +39,10 @@ router.post('/add', (req, res) => {
   );
 });
 
-// 문의글 수정 + 이전 이력 백업
+// 3. 문의글 수정 + 이전 이력 백업
 router.put('/edit/:qs_id', (req, res) => {
   const { qs_id } = req.params;
-  const { TITLE, CONTENT, UPDATE_DT,  } = req.body;
+  const { TITLE, CONTENT, UPDATE_DT } = req.body;
 
   // 1. 현재 글 정보 SELECT (이전 데이터 백업용)
   const selectSql = `SELECT * FROM USER_QUESTION WHERE QS_ID = ?`;
@@ -53,7 +53,7 @@ router.put('/edit/:qs_id', (req, res) => {
     const origin = rows[0];
     // 2. 백업 데이터 INSERT (수정 전 데이터 전체 복사)
     const EDIT_ID = 'edit_' + Date.now();
-    const EDIT_DT = UPDATE_DT;  // 수정 시각을 히스토리에도 사용
+    const EDIT_DT = UPDATE_DT;
 
     const insertSql = `
       INSERT INTO QUESTION_EDIT (
@@ -98,25 +98,32 @@ router.put('/edit/:qs_id', (req, res) => {
   });
 });
 
-// 수정
-
-
-// 3. 상세 문의글 조회 (QS_ID로 단일 조회)
+// 4. 상세 문의글 조회 (QS_ID로 단일 조회 + 조회수 증가)
 router.get('/:qs_id', (req, res) => {
   const { qs_id } = req.params;
-  const sql = `SELECT * FROM USER_QUESTION WHERE QS_ID = ?`;
-  conn.query(sql, [qs_id], (err, rows) => {
+
+  // 1. 조회수 증가
+  const increaseSql = `UPDATE USER_QUESTION SET VIEWS = VIEWS + 1 WHERE QS_ID = ?`;
+  conn.query(increaseSql, [qs_id], (err) => {
     if (err) {
-      console.error('DB 오류:', err);
-      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+      console.error('조회수 증가 오류:', err);
+      // 에러 무시하고 글 정보만 보여줌
     }
-    if (rows.length === 0) {
-      return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
-    }
-    res.json({ question: rows[0] });
+
+    // 2. 글 정보 가져오기
+    const sql = `SELECT * FROM USER_QUESTION WHERE QS_ID = ?`;
+    conn.query(sql, [qs_id], (err2, rows) => {
+      if (err2) {
+        console.error('DB 오류:', err2);
+        return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+      }
+      if (rows.length === 0) {
+        return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
+      }
+      res.json({ question: rows[0] });
+    });
   });
 });
-
 
 // 5. 문의글 삭제 (QS_ID 기준)
 router.delete('/delete/:qs_id', (req, res) => {
@@ -134,5 +141,17 @@ router.delete('/delete/:qs_id', (req, res) => {
   });
 });
 
+router.get('/faq/top', (req, res) => {
+  const sql = `
+    SELECT * FROM USER_QUESTION
+    WHERE VIEWS > 0
+    ORDER BY VIEWS DESC
+    LIMIT 5
+  `;
+  conn.query(sql, (err, rows) => {
+    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    res.json(rows);
+  });
+});
 
 module.exports = router;
