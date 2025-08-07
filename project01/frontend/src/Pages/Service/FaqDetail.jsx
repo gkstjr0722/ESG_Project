@@ -79,3 +79,5 @@ const FaqDetail = () => {
 };
 
 export default FaqDetail;
+
+// FAQ기능구현완료
