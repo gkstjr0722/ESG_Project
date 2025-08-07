@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.13.5",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "react": "^19.1.0",
