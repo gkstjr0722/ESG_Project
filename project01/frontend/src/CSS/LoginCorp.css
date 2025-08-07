@@ -1,3 +1,5 @@
+
+/* 로그인/회원가입 페이지 배경+가운데 정렬 컨테이너 */
 .login-corp-bg {
   min-height: 100vh;
   background: #f5f7fa;
@@ -5,7 +7,7 @@
   align-items: center;
   justify-content: center;
 }
-
+/* 로그인/회원가입 페이지 흰 박스 */
 .login-corp-box {
   background: #fff;
   padding: 40px;
@@ -40,22 +42,42 @@
   border: 1.5px solid #3ba2f3;
 }
 
-.main-btn1 {
-  width: 100%;
-  background: #0077cb;
+/* 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통  */
+.main-btn-00 {
+  background: #1d5fc4;
   color: #fff;
-  font-size: 1.08rem;
-  padding: 14px 0;
   border: none;
-  border-radius: 6px;
-  font-weight: 700;
+  border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
-  margin-bottom: 5px;
+  font-size: 16px;
+  text-align: center;
+  text-decoration: none;
   transition: background 0.2s;
 }
-.main-btn1:hover {
-  background: #085cab;
+.main-btn-00:hover {
+  background: #0059ac;
+}
+/* 로그인-로그인 버튼 */
+.main-btn1 {
+  width: 100%;
+  font-size: 16px;
+  padding: 14px 0;
+  border-radius: 6px;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+/* 회원가입 메인-기업/관공업 */
+.main-btn-01 {
+  font-size: 20px;
+  margin: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 190px;
+  height: 200px;
+  box-sizing: border-box;
 }
 
 .login-error {
@@ -83,34 +105,6 @@
   color: #085cab;
 }
 
-.main-btn-01 {
-  background-color: #085cab; /* 배경색 */
-  color: rgb(255, 255, 255); /* 글자색 */
-  /* padding: 15%; /* 이 부분을 제거하거나 주석 처리하세요 */
-  border: none;
-  border-radius: 5px; /* 모서리 살짝 둥글게 (완전한 사각형을 원하면 0px) */
-  cursor: pointer; /* 마우스 오버 시 커서 모양 변경 */
-  font-size: 16px; /* 글자 크기 */
-  margin: 0 10px; /* 버튼 사이의 간격 */
-
-  /* --- 이 부분이 중요합니다 --- */
-  font-size: 20px;
-  display: inline-flex; /* flex 컨테이너로 설정 */
-  align-items: center; /* 수직 가운데 정렬 */
-  justify-content: center; /* 수평 가운데 정렬 */
-  
-  width: 190px; /* 원하는 고정 너비 설정 (예시: 150px) */
-  height: 200px; /* 원하는 고정 높이 설정 (예시: 60px) */
-  /* -------------------------- */
-
-  text-align: center; /* 텍스트 가운데 정렬 (display:flex와 함께 사용해도 무방) */
-  box-sizing: border-box; /* padding과 border가 너비에 포함되도록 */
-  text-decoration: none; /* Link 태그의 기본 밑줄 제거 */
-}
-
-.main-btn-01:hover {
-  background-color: #0077cb; /* 마우스 오버 시 배경색 변경 */
-}
 .login-switch-btn-area {
   display: flex;
   justify-content: center;

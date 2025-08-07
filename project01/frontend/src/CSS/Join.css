@@ -52,13 +52,14 @@
   flex-direction: column;
   gap: 4px;
 }
+
 .main-btn1 {
   background: #0077cb;
   color: #fff;
   border: none;
   padding: 13px 0;
-  border-radius: 8px;
-  font-size: 18px;
+  border-radius: 5px;
+  font-size: 16;
   font-weight: bold;
   margin-top: 12px;
   cursor: pointer;

@@ -11,10 +11,10 @@ const JoinMain = () => {
         <div className="login-corp-box">
           <h2>회원가입</h2>
           <div>
-            <Link to="/joinbusiness" className="main-btn-01">
+            <Link to="/joinbusiness" className="main-btn-00 main-btn-01">
               기업
             </Link>
-            <Link to="/joingovernment" className="main-btn-01">
+            <Link to="/joingovernment" className="main-btn-00 main-btn-01">
               관공업
             </Link>
           </div>
