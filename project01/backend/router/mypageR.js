@@ -4,7 +4,21 @@ const router = express.Router();
 const conn = require('../config/db');
 
 // [1] POST: 사용자 정보 조회 (실제 구현 부분이 빠져 있음, 주석처리)
-    // res.status(404).json({ msg: '회원 정보 없음' });
+  router.post('/userinfo', (req, res) => {
+    const { id } = req.body;
+      if (!id) return res.status(400).json({ msg: 'id 필요' });
+
+  const sql = 'SELECT id, corpName, corpRegNum, ceo, dept, manager, phone, email, corpTel, address FROM CORP_MEMBER WHERE id = ?';
+  conn.query(sql, [id], (err, results) => {
+    if (err) return res.status(500).json({ msg: 'DB 오류' });
+    if (results.length > 0) {
+      res.json({ user: results[0] });
+    } else {
+      res.status(404).json({ msg: '회원 정보 없음' });
+    }
+  });
+});
+
 
 // [2] PUT: 회원 정보 수정 (비번 제외)
 router.put('/update', (req, res) => {
