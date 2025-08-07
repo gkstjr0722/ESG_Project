@@ -1,6 +1,6 @@
 import React from 'react'
 
-const MonthlyUsageForecast = () => {
+const MonthUsed = () => {
   return (
     <>
       <div className='box'>
@@ -10,4 +10,4 @@ const MonthlyUsageForecast = () => {
   )
 }
 
-export default MonthlyUsageForecast
+export default MonthUsed

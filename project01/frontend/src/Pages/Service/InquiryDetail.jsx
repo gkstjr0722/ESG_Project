@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Header from '../Header';
 import '../../CSS/Faq.css';
 import axios from 'axios';
+import Header from '../../component/Header';
 
 const InquiryDetail = () => {
   const { id } = useParams();
@@ -35,7 +35,7 @@ const InquiryDetail = () => {
   if (loading) {
     return (
       <div>
-        <Header />
+        <Header/>
         <div className="faq-detail-page-wrap">
           <div className="faq-detail-notfound">
             불러오는 중...

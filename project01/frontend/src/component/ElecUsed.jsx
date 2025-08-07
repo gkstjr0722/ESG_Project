@@ -1,6 +1,6 @@
 import React from 'react'
 
-const ElectricityUsageForecast = () => {
+const ElecUsed = () => {
   return (
     <>
       <div className='box'>
@@ -10,4 +10,4 @@ const ElectricityUsageForecast = () => {
   )
 }
 
-export default ElectricityUsageForecast
+export default ElecUsed

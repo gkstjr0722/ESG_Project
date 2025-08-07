@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import '../CSS/ImageSlider.css'; 
-import photo6 from '../../assets/photo6.jpg';
-import photo2 from '../../assets/photo2.jpg';
-import photo3 from '../../assets/photo3.jpg';
-import photo4 from '../../assets/photo4.jpg';
-import photo5 from '../../assets/photo5.jpg';
+import photo6 from '../assets/photo6.jpg';
+import photo2 from '../assets/photo2.jpg';
+import photo3 from '../assets/photo3.jpg';
+import photo4 from '../assets/photo4.jpg';
+import photo5 from '../assets/photo5.jpg';
 
 const images = [
   photo6, photo2, photo3, photo4, photo5
 ];
 
-  const ImageSlider = () => {
+  const Slider = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const goToNext = () => {
@@ -54,4 +54,4 @@ const images = [
   );
  };
 
-export default ImageSlider;
+export default Slider;

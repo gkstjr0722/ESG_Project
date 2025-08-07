@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from './Header';
 import axios from 'axios';
+import Header from '../component/Header';
 
 const EditMyPage = () => {
     const navigate = useNavigate();
@@ -122,7 +122,7 @@ const EditMyPage = () => {
     if (isLoading) {
         return (
             <div>
-                <Header />
+                <Header/>
                 <br /><br /><br /><br /><br /><br /><br /><br />
                 <div>정보를 불러오는 중입니다...</div>
             </div>

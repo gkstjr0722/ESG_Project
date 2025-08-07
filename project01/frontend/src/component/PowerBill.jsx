@@ -60,7 +60,7 @@ const SEASONS = [
   { key: "winter", label: "겨울철 (11~2월)" }
 ];
 
-export default function CurrentBill() {
+export default function PowerBill() {
   const [type, setType] = useState("I");
   const [option, setOption] = useState("low");
   const [season, setSeason] = useState("summer");

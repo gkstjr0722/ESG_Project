@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../Header';
 import '../../CSS/Faq.css';
 import axios from 'axios';
+import Header from '../../component/Header';
 
 const FAQ = () => {
   const [questions, setQuestions] = useState([]);
@@ -34,7 +34,7 @@ const FAQ = () => {
 
   return (
     <div>
-      <Header />
+      <Header/>
       <br /><br />
       <div className="faq-page-wrap">
         <h1 className="faq-title">자주 묻는 질문</h1>
