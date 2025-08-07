@@ -35,12 +35,6 @@ function App() {
     <div className="main-page-root">
       <Header />
       <div className="app-container">
-      {/* <div
-        className="main-banner-bg"
-        style={{ backgroundImage: `url(${bannerImg})` }}
-      > */}
-
-      {/* ✅ 슬라이더 추가 (완성되면 위 배너 대체 예정) */}
       <section className="slider-section">
         <ImageSlider />
       </section>

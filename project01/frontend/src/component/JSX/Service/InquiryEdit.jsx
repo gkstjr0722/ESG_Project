@@ -14,7 +14,7 @@ const InquiryEdit = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // 기존 데이터 불러오기 (오타 수정!)
+  // 기존 데이터 불러오기
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
@@ -45,42 +45,32 @@ const InquiryEdit = () => {
   };
 
   // 수정 저장 (수정 이력도 저장)
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!form.TITLE.trim() || !form.CONTENT.trim()) {
-      alert('제목과 내용을 입력해 주세요.');
-      return;
-    }
-    try {
-      // 1. 문의글 UPDATE
-      const now = new Date();
-      const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
+ // 수정 저장 (수정 이력도 저장)
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!form.TITLE.trim() || !form.CONTENT.trim()) {
+    alert('제목과 내용을 입력해 주세요.');
+    return;
+  }
 
-      await axios.put(
-        `http://localhost:3001/api/inquiry/edit/${qs_id}`,
-        { ...form, UPDATE_DT }
-      );
+  try {
+    const now = new Date();
+    const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
 
-      // 2. 수정 이력 INSERT문
-      const EDIT_ID = 'edit_' + now.getTime();
-      const EDITOR_ID = localStorage.getItem('id') || localStorage.getItem('gov_id') || '';
-      const EDITOR_NAME = localStorage.getItem('userName') || '';
-      await axios.post('http://localhost:3001/api/inquiry/edit-history', {
-        EDIT_ID,
-        QS_ID: qs_id,
-        EDITOR_ID,
-        EDITOR_NAME,
-        EDIT_TITLE: form.TITLE,
-        EDIT_CONTENT: form.CONTENT,
-        EDIT_DT: UPDATE_DT,
-      });
+    // editor_id, editor_name 안 보냄!
+    await axios.put(
+      `http://localhost:3001/api/inquiry/edit/${qs_id}`,
+      { ...form, UPDATE_DT }
+    );
 
-      alert('수정이 완료되었습니다!');
-      navigate(`/inquiry/${qs_id}`);
-    } catch (err) {
-      alert('수정에 실패했습니다.');
-    }
-  };
+    alert('수정이 완료되었습니다!');
+    navigate(`/inquiry/${qs_id}`);
+  } catch (err) {
+    console.error('[수정 에러]', err);
+    alert('수정에 실패했습니다.');
+  }
+};
+
 
   // 취소 버튼
   const handleCancel = () => {

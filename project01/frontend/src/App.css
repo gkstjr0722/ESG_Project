@@ -4,30 +4,27 @@ body {
   padding: 0;
   font-family: 'Malgun Gothic', '맑은 고딕', '돋움', Arial, sans-serif;
   background: #f4f4f4;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .main-page-root {
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
 .app-container {
-  width: 100%;
-  /* max-width: 800px; */
-  margin: 0 auto;
-  /* text-align: center; */
-
-  /* 전체 앱 컨테이너: 가운데 정렬 및 최대 너비 설정 */
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
 }
 
 .slider-section {
-  margin-top: -20px;
-  width: 100vw;
-  margin-bottom: 151px ;
+  flex: 1;
+  overflow: hidden;
+  
 }
 
 .banner-button {
@@ -51,56 +48,50 @@ body {
 
 /* 영상리스트 영역은 페이지 맨 아래쪽 */
 .video-list-section {
-  position: absolute;
-  width: 100vw;
+  width: 100%;
   padding-bottom: 20px;
-  padding-top: 30px;
-  margin-top: 490px;
-  /* background: linear-gradient(180deg, #d2e7ff 0%, #f0eaff 100%); */
+  padding: 20px 60px; 
+  display: flex;
   background: linear-gradient(180deg, #376ec2 0%);
+  flex-shrink: 0;
+  flex: 1;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+  flex-direction: row;        /* 가로 정렬 */
+  align-items: center;
 }
 
 /* 영상리스트 영역 내 텍스트 */
 .video-list-section-text {
-  position: absolute;
-  /* text-align: center; */
-  bottom: 70px;
-  left: 9%;
-  line-height: 1;
+   padding-right: 60px; /* ✅ 영상과 간격은 여기서 조절 */
+  padding-left: 200px; 
   color: #fff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-
+  white-space: nowrap;
+  font-size: clamp(12px, 2.5vw, 22px); /* 화면 크기에 따라 자동 크기 조절 */
+  line-height: 0.5;
 }
 
 /* 썸네일 카드 */
 .video-grid {
-  
   display: flex;
-  gap: 100px;
+  gap: 50px;
   justify-content: flex-end;
   align-items: flex-start;
   flex-wrap: wrap;
-  width: 100%;
-  max-width: 2000px;
   margin: 0 auto;
-  padding-bottom: 0px;
-  transform: translateX(-180px); 
-  position: relative;
 }
 
 .video-card {
   width: 250px;
-  height: 200px;
+  /* height: 200px; */
   border-radius: 14px;
   box-shadow: 2px 2px 100px rgba(0, 0, 0, 0.09);
-  background: #fff;  /* ★ 꼭 필요! */
+  background: #fff; 
   text-decoration: none;
   color: #000;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  transition: box-shadow 0.17s, transform 0.15s;
 }
 
 /* 마우스 오버 시 약간 커짐 */
@@ -113,9 +104,6 @@ body {
   height: 140px;        /* 비율 맞추려면 고정 높이 */
   object-fit: cover;    /* or contain */
   background: #fff;     /* ★ 여기서도 하얀 배경 */
-  border-top-left-radius: 14px;
-  border-top-right-radius: 14px;
-  display: block;
 }
 .video-info {
   padding: 10px 10px 8px 10px;
@@ -130,8 +118,18 @@ body {
 }
 
 @media (max-width: 700px) {
-  .main-banner-bg { height: 32vh; border-radius: 8px; }
-  .video-card { width: 94vw; max-width: 350px; }
-  .video-thumbnail { height: 110px; border-radius: 8px 8px 0 0; }
-  .video-list-section { min-height: 30vh; padding-bottom: 16px; }
+  .video-list-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 30px 20px;
+  }
+  .video-list-section-text {
+    white-space: normal;
+    text-align: center;
+  }
+
+  .video-grid {
+    justify-content: center;
+  }
 }

@@ -39,42 +39,65 @@ router.post('/add', (req, res) => {
   );
 });
 
-// (추가) 문의글 수정, 삭제 기능
-// backend/router/inquiry.js
-// 문의글 수정 + 수정 히스토리 저장
+// 문의글 수정 + 이전 이력 백업
 router.put('/edit/:qs_id', (req, res) => {
   const { qs_id } = req.params;
-  const { TITLE, CONTENT, UPDATE_DT, EDITOR_ID, EDITOR_NAME } = req.body;
+  const { TITLE, CONTENT, UPDATE_DT,  } = req.body;
 
-  // 1. USER_QUESTION 테이블 UPDATE (실제 글 수정)
-  const updateSql = `
-    UPDATE USER_QUESTION 
-    SET TITLE = ?, CONTENT = ?, UPDATE_DT = ? 
-    WHERE QS_ID = ?
-  `;
-  conn.query(updateSql, [TITLE, CONTENT, UPDATE_DT, qs_id], (err, result) => {
-    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류(수정)' });
+  // 1. 현재 글 정보 SELECT (이전 데이터 백업용)
+  const selectSql = `SELECT * FROM USER_QUESTION WHERE QS_ID = ?`;
+  conn.query(selectSql, [qs_id], (err, rows) => {
+    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류(SELECT)' });
+    if (rows.length === 0) return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
 
-    // 2. QUESTION_EDIT 테이블 INSERT (히스토리 기록)
-    const EDIT_ID = 'edit_' + Date.now(); // 예시: edit_1691234567890
+    const origin = rows[0];
+    // 2. 백업 데이터 INSERT (수정 전 데이터 전체 복사)
+    const EDIT_ID = 'edit_' + Date.now();
+    const EDIT_DT = UPDATE_DT;  // 수정 시각을 히스토리에도 사용
+
     const insertSql = `
-      INSERT INTO QUESTION_EDIT
-      (EDIT_ID, QS_ID, EDITOR_ID, EDITOR_NAME, EDIT_TITLE, EDIT_CONTENT, EDIT_DT)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT INTO QUESTION_EDIT (
+        EDIT_ID, QS_ID, USER_ID, USER_NAME, EMAIL, TITLE, CONTENT, ANSWER,
+        QS_DATE, QS_NUMBER, AS_DATE, UPDATE_DT, EDIT_DT
+      )
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
-    conn.query(insertSql,
-      [EDIT_ID, qs_id, EDITOR_ID, EDITOR_NAME, TITLE, CONTENT, UPDATE_DT],
-      (err2, result2) => {
-        if (err2) {
-          console.error('수정 이력 저장 실패:', err2);
-          // 메인 글은 수정 성공, 히스토리만 실패
-          return res.json({ result: 'partial_success', msg: '글은 수정됐으나 히스토리 저장 실패' });
-        }
-        res.json({ result: 'success' });
+    const values = [
+      EDIT_ID,
+      origin.QS_ID,
+      origin.USER_ID,
+      origin.USER_NAME,
+      origin.EMAIL,
+      origin.TITLE,
+      origin.CONTENT,
+      origin.ANSWER,
+      origin.QS_DATE,
+      origin.QS_NUMBER,
+      origin.AS_DATE,
+      UPDATE_DT,
+      EDIT_DT
+    ];
+
+    conn.query(insertSql, values, (err2, result2) => {
+      if (err2) {
+        console.error('이전 버전 백업 실패:', err2);
+        // 백업 실패해도 수정은 계속 진행할 수 있도록
       }
-    );
+
+      // 3. 실제 글 UPDATE
+      const updateSql = `
+        UPDATE USER_QUESTION SET TITLE = ?, CONTENT = ?, UPDATE_DT = ?
+        WHERE QS_ID = ?
+      `;
+      conn.query(updateSql, [TITLE, CONTENT, UPDATE_DT, qs_id], (err3, result3) => {
+        if (err3) return res.status(500).json({ result: 'fail', msg: 'DB 오류(UPDATE)' });
+
+        res.json({ result: 'success' });
+      });
+    });
   });
 });
+
 
 
 
