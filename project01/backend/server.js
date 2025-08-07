@@ -15,6 +15,7 @@ const putRouter = require('./router/put');
 const loginGRouter  = require('./router/loginG');
 const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
+const noticeRouter = require('./router/notice');
 
 
 
@@ -28,7 +29,16 @@ app.use('/loginG', loginGRouter);
 app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
 app.use('/api/inquiry', inquiryRouter);
+app.use('/api/notice', noticeRouter);
 app.use(express.json());
+app.use('/uploads', express.static('uploads')); 
+
+
+
+// 업로드된 파일 정적 제공 
+const path = require('path');
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 
 
 
