@@ -5,7 +5,7 @@ import '../../CSS/Faq.css';
 import axios from 'axios';
 
 const FaqDetail = () => {
-  const { id } = useParams();
+  const { id } = useParams(); // id = qs_id
   const navigate = useNavigate();
   const [question, setQuestion] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -16,8 +16,7 @@ const FaqDetail = () => {
       setLoading(true);
       setError('');
       try {
-        // FAQ도 문의글이므로 동일 API를 활용
-        // /api/inquiry/:id와 똑같이 호출 (조회수도 증가함에 유의)
+        // /api/inquiry/:id와 똑같이 호출 (조회수 증가)
         const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
         if (res.data && res.data.question) {
           setQuestion(res.data.question);
@@ -52,7 +51,7 @@ const FaqDetail = () => {
         <Header />
         <div className="faq-detail-page-wrap">
           <div className="faq-detail-notfound">
-            해당 질문을 찾을 수 없습니다.
+            {error || '해당 질문을 찾을 수 없습니다.'}
             <br />
             <button className="faq-detail-backbtn" onClick={() => navigate('/faq')}>
               목록으로 돌아가기
@@ -72,11 +71,13 @@ const FaqDetail = () => {
           ← 돌아가기
         </a>
         <br /><br />
-        <div className="faq-detail-title">{question.text}</div>
-        <div className="faq-detail-content">{question.detail}</div>
+        <div className="faq-detail-title">{question.TITLE}</div>
+        <div className="faq-detail-content">{question.CONTENT}</div>
       </div>
     </div>
   );
 };
 
 export default FaqDetail;
+
+// FAQ기능구현완료
