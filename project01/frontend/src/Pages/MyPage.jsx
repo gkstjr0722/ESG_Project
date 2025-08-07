@@ -27,7 +27,8 @@ const Mypage = () => {
 
   const navigate = useNavigate();
 
-  useEffect(() => {
+  // 사용자 데이터 불러오기 함수 (수정 후에도 재호출 용)
+  const fetchUserData = async () => {
     const id = localStorage.getItem('id');
     const govId = localStorage.getItem('gov_id');
 
@@ -47,22 +48,26 @@ const Mypage = () => {
       ? 'http://localhost:3001/userg/userinfo_gov'
       : 'http://localhost:3001/api/mypage/userinfo';
 
-    axios
-      .post(endpoint, { id: userId })
-      .then((res) => {
-        if (res.data.user) setUser(res.data.user);
-        else {
-          alert('회원 정보를 찾을 수 없습니다.');
-          navigate('/login');
-        }
-      })
-      .catch(() => {
-        alert('회원정보 조회 실패! 다시 로그인 해주세요.');
+    try {
+      const res = await axios.post(endpoint, { id: userId });
+      if (res.data.user) setUser(res.data.user);
+      else {
+        alert('회원 정보를 찾을 수 없습니다.');
         navigate('/login');
-      });
+      }
+    } catch {
+      alert('회원정보 조회 실패! 다시 로그인 해주세요.');
+      navigate('/login');
+    }
+  };
+
+  // 최초 마운트 때 사용자 데이터 fetch
+  useEffect(() => {
+    fetchUserData();
+    // eslint-disable-next-line
   }, [navigate]);
 
-  // Update formData when user changes (i.e. after loading)
+  // user가 변경될 때 formData를 동기화
   useEffect(() => {
     if (user) {
       setFormData({
@@ -86,6 +91,7 @@ const Mypage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 수정 완료 시 변경사항 즉시 반영
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -140,10 +146,13 @@ const Mypage = () => {
       }
 
       alert('회원 정보가 성공적으로 수정되었습니다.');
+      // 1. 수정 폼 닫기
       setEditMode(false);
-
-      // 최신 정보 갱신 위해 다시 user 데이터 요청 가능 (선택)
-      // or 강제 새로고침 가능
+      // 2. 최신 사용자 정보 다시 fetch - 여기서 바로 반영됨!
+      await fetchUserData();
+      // 3. 비밀번호 입력란 초기화
+      setNewPassword('');
+      setConfirmNewPassword('');
     } catch (error) {
       alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
     }
