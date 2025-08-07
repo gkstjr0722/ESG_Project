@@ -10,6 +10,8 @@ const Notice = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const userId = localStorage.getItem('id');
+
   useEffect(() => {
     const fetchNotice = async () => {
       setLoading(true);
