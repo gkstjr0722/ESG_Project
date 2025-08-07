@@ -141,6 +141,7 @@ const Mypage = () => {
           });
         }
       } else {
+        // 관공업용 수정 시 키값 정확히 맞추고, 비밀번호 수정 라우터도 정확해야 함
         await axios.put('http://localhost:3001/userg/update_gov', {
           corpName: formData.corpName,
           ceo: formData.ceo,
@@ -150,11 +151,11 @@ const Mypage = () => {
           email: formData.email,
           corpTel: formData.corpTel,
           address: formData.address,
-          id: formData.gov_id,
+          id: formData.gov_id,  // 실제 ID 반드시 맞게
         });
 
         if (newPassword) {
-          await axios.put('http://localhost:3001/userg/update_gov_pw', {
+          await axios.put('http://localhost:3001/userg/password-update_gov', {
             id: formData.gov_id,
             newPassword,
           });
@@ -164,11 +165,14 @@ const Mypage = () => {
       alert('회원 정보가 성공적으로 수정되었습니다.');
       // 1. 수정 폼 닫기
       setEditMode(false);
-
-      // 최신 정보 갱신 위해 다시 user 데이터 요청 가능 (선택)
-      // or 강제 새로고침 가능
+      // 2. 최신 사용자 정보 다시 fetch - 여기서 바로 반영됨!
+      await fetchUserData();
+      // 3. 비밀번호 입력란 초기화
+      setNewPassword('');
+      setConfirmNewPassword('');
     } catch (error) {
       alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
+      console.error(error);
     }
   };
 
