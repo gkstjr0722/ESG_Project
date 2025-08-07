@@ -1,19 +1,8 @@
-.join-corp-bg {
-  min-height: 100vh;
-  background: #f7fafd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 .join-corp-box {
-  background: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   min-width: 320px;
   max-width: 520px;
-  width: 90%;
   box-sizing: border-box;
+  text-align: center;
 }
 .join-corp-box h2 {
   text-align: center;
@@ -52,18 +41,8 @@
   flex-direction: column;
   gap: 4px;
 }
-.main-btn1 {
-  background: #0077cb;
-  color: #fff;
-  border: none;
+
+.join-btn {
   padding: 13px 0;
-  border-radius: 8px;
-  font-size: 18px;
-  font-weight: bold;
   margin-top: 12px;
-  cursor: pointer;
-  transition: background 0.16s;
-}
-.main-btn1:hover {
-  background: #085cab;
 }

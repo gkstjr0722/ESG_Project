@@ -70,7 +70,7 @@ body {
   z-index: 1100;
 }
 
-.mega-menu-bar {
+/* .mega-menu-bar {
   position: fixed;
   top: 60px;
   left: 0;
@@ -87,20 +87,20 @@ body {
   align-items: flex-start;
 }
 .mega-menu-bar.open {
-  height: 170px;   /* 원하는 펼침 높이 */
+  height: 170px;
   opacity: 1;
   transition: height .35s, opacity .18s;
 }
 
 .mega-menu-row {
   display: flex;
-  gap: 56px;    /* 컬럼 간격 */
+  gap: 56px;
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
   padding: 28px 0 10px 0;
   justify-content: center;
-  align-items: flex-start; /* 세로 기준 맞춤 */
+  align-items: flex-start;
 }
 
 .mega-menu-col {
@@ -108,36 +108,11 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} */
 
-.mega-menu-item {
-  background: #f5f8fa;
-  color: #1c2328;
-  font-size: 18px;
-  padding: 13px 40px;  /* 좌우 넉넉하게 */
-  border-radius: 8px;
-  margin-bottom: 10px;
-  font-weight: 500;
-  transition: background 0.18s, color 0.18s;
-  cursor: pointer;
-  min-width: 180px;
-  width: auto;
-  max-width: none;
-  text-align: center;
-  box-sizing: border-box;
-  white-space: nowrap;  /* 한 줄! */
-}
-.mega-menu-item:last-child { margin-bottom: 0; }
-
-.mega-menu-item:hover {
-  background: #ddeefd;
-  color: #0098d8;
-}
-
-
-.dropdown-menu-bar {
+/* .dropdown-menu-bar {
   position: absolute;
-  top: 60px; /* navbar 높이만큼 내려옴 */
+  top: 60px;
   left: 0;
   width: 100%;
   background: #fff;
@@ -146,14 +121,14 @@ body {
   justify-content: center;
   z-index: 1200;
   animation: slideDown .3s;
-}
+} */
 
 @keyframes slideDown {
   from { opacity: 0; transform: translateY(-20px);}
   to { opacity: 1; transform: translateY(0);}
 }
 
-.dropdown-menu-list {
+/* .dropdown-menu-list {
   margin: 0;
   padding: 18px 0 18px 0;
   list-style: none;
@@ -161,9 +136,9 @@ body {
   flex-direction: column;
   gap: 12px;
   min-width: 200px;
-}
+} */
 
-.dropdown-menu-item {
+/* .dropdown-menu-item {
   padding: 12px 36px;
   font-size: 19px;
   color: #1c2328;
@@ -176,7 +151,7 @@ body {
 .dropdown-menu-item:hover {
   background: #ddeefd;
   color: #0098d8;
-}
+} */
 
 .userpage {
   text-decoration: none;

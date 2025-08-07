@@ -1,5 +1,4 @@
 // 회원가입
-
 import '../CSS/Join.css';
 import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
@@ -62,7 +61,7 @@ function BusinessJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="main-btn" style={{ flex: 1 }}>회원가입 완료</button>
+        <button type="submit" className="main-btn1" style={{ flex: 1 }}>회원가입 완료</button>
         <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
       </div>
     </form>
@@ -117,8 +116,8 @@ function GovernmentJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="main-btn" style={{ flex: 1 }}>회원가입 완료</button>
-        <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
+        <button type="submit" className="common-btn" style={{ flex: 1 }}>회원가입 완료</button>
+        <button type="button" className="common-btn" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
       </div>
     </form>
   );
@@ -130,8 +129,8 @@ const Join = () => {
   return (
     <div>
       <Header />
-      <div className="join-corp-bg">
-        <div className="join-corp-box" style={{ maxWidth: '600px', margin: 'auto' }}>
+      <div className="common-bg">
+        <div className="common-box join-corp-box" style={{ maxWidth: '600px', margin: 'auto' }}>
           <Routes>
             <Route
               path="/"
@@ -139,8 +138,8 @@ const Join = () => {
                 <>
                   <h2>회원가입</h2>
                   <div>
-                    <Link to="business" className="main-btn-01">기업</Link>
-                    <Link to="government" className="main-btn-01">관공업</Link>
+                    <Link to="business" className="common-btn main-btn-01">기업</Link>
+                    <Link to="government" className="common-btn main-btn-01">관공업</Link>
                   </div>
                 </>
               }
