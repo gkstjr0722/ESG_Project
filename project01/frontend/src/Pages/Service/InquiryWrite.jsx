@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import '../../CSS/Faq.css';
+// import '../../CSS/Faq.css';
+import '../../CSS/Sub.css';
 import axios from 'axios';
 import Header from '../../component/Header';
 
