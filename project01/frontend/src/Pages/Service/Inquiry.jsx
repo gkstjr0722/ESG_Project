@@ -42,7 +42,7 @@ const Inquiry = () => {
   );
 
   // 상태 표시: 답변이 있으면 '완료', 아니면 '대기'
-  const getStatus = (q) => (q.ANSWER && q.ANSWER.trim() !== '' ? '완료' : '대기');
+  const getStatus = (q) => (q.ANSWER && q.ANSWER.trim() !== '' ? '답변완료' : '답변대기중');
 
   const handleWriteClick = () => {
     navigate('/inquiry/write');
@@ -80,7 +80,7 @@ const Inquiry = () => {
               >
                 <span className="faq-q-icon">Q</span>
                 {q.TITLE}
-                <span className={`inquiry-status-badge ${getStatus(q) === '완료' ? 'done' : 'doing'}`}>
+                <span className={`inquiry-status-badge ${getStatus(q) === '답변완료' ? 'done' : 'doing'}`}>
                   {getStatus(q)}
                 </span>
               </div>
