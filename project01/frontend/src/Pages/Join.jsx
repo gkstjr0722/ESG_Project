@@ -1,5 +1,6 @@
 // 회원가입
-import '../CSS/Join.css';
+import '../CSS/Main.css';
+// import '../CSS/Join.css';
 import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';

@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+// import React, { useState } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
-// import bannerImg from './assets/banner.webp';
 import '../CSS/Main.css';
 import Header from '../component/Header';
 import Slider from './Slider';

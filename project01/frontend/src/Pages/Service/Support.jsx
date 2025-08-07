@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // navigate 추가!
 import Header from '../../component/Header';
-import '../../CSS/Support.css'
+// import '../../CSS/Support.css'
+import '../../CSS/Sub.css';
 import Notice from './Notice';
 
 const Support = () => {

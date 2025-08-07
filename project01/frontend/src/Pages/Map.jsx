@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import "../CSS/MapEVCharger.css";
+// import "../CSS/MapEVCharger.css";
+import '../CSS/Sub.css';
 
 // 동적 스크립트 로딩
 function loadKakaoSdk() {
