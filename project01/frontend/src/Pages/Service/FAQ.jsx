@@ -16,9 +16,9 @@ const FAQ = () => {
       setLoading(true);
       setError('');
       try {
-        // 백엔드에서 조회수 5 이상인 문의글만 반환하도록 구현
-        const res = await axios.get('http://localhost:3001/api/faq');
-        setQuestions(res.data.questions || []);
+        // 조회수 상위 5개만 반환하는 백엔드 라우터와 연동
+        const res = await axios.get('http://localhost:3001/api/inquiry/faq/top');
+        setQuestions(res.data || []);
       } catch (err) {
         setError('FAQ 목록을 불러오지 못했습니다.');
       } finally {
@@ -28,8 +28,9 @@ const FAQ = () => {
     fetchFaq();
   }, []);
 
+  // 질문 제목으로만 검색(원하면 CONTENT도 가능)
   const filteredQuestions = questions.filter(q =>
-    q.text.includes(search)
+    q.TITLE && q.TITLE.includes(search)
   );
 
   return (
@@ -49,17 +50,21 @@ const FAQ = () => {
           />
         </div>
         <div className="faq-question-list">
-          {filteredQuestions.length === 0 ? (
+          {loading ? (
+            <div className="faq-question-empty">불러오는 중...</div>
+          ) : error ? (
+            <div className="faq-question-empty">{error}</div>
+          ) : filteredQuestions.length === 0 ? (
             <div className="faq-question-empty">등록된 질문이 없습니다.</div>
           ) : (
             filteredQuestions.map(q => (
               <div
-                key={q.id}
+                key={q.QS_ID}
                 className="faq-question-item"
-                onClick={() => navigate(`/faq/${q.id}`)}
+                onClick={() => navigate(`/faq/${q.QS_ID}`)}
               >
                 <span className="faq-q-icon">Q</span>
-                {q.text}
+                {q.TITLE}
               </div>
             ))
           )}
