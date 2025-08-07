@@ -98,7 +98,7 @@ router.put('/edit/:qs_id', (req, res) => {
   });
 });
 
-
+// 수정
 
 
 // 3. 상세 문의글 조회 (QS_ID로 단일 조회)
