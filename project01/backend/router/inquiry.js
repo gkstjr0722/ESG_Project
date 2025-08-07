@@ -141,18 +141,7 @@ router.delete('/delete/:qs_id', (req, res) => {
   });
 });
 
-router.get('/faq/top', (req, res) => {
-  const sql = `
-    SELECT * FROM USER_QUESTION
-    WHERE VIEWS > 0
-    ORDER BY VIEWS DESC
-    LIMIT 5
-  `;
-  conn.query(sql, (err, rows) => {
-    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
-    res.json(rows);
-  });
-});
+
 
 // 고객문의글 답변 가능 기능(관리자만) 라우터
 router.post('/answer/:qs_id', (req, res) => {
@@ -173,8 +162,22 @@ router.post('/answer/:qs_id', (req, res) => {
   });
 });
 
+// FAQ(자주묻는질문) - 문의글 중 조회수 Top5 반환(mysql연동용)
+router.get('/faq/top', (req, res) => {
+  const sql = `
+    SELECT QS_ID, TITLE, CONTENT, ANSWER, QS_DATE, VIEWS
+    FROM USER_QUESTION
+    WHERE VIEWS > 0
+    ORDER BY VIEWS DESC
+    LIMIT 5
+  `;
+  conn.query(sql, (err, rows) => {
+    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    res.json(rows);
+  });
+});
+
 
 
 module.exports = router;
 
-// inq

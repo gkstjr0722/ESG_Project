@@ -7,18 +7,17 @@ import Header from '../../component/Header';
 const FAQ = () => {
   const [questions, setQuestions] = useState([]);
   const [search, setSearch] = useState('');
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchFaq = async () => {
       setLoading(true);
       setError('');
       try {
-        // 조회수 상위 5개만 반환하는 백엔드 라우터와 연동
         const res = await axios.get('http://localhost:3001/api/inquiry/faq/top');
-        setQuestions(res.data || []);
+        setQuestions(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         setError('FAQ 목록을 불러오지 못했습니다.');
       } finally {
@@ -28,14 +27,18 @@ const FAQ = () => {
     fetchFaq();
   }, []);
 
-  // 질문 제목으로만 검색(원하면 CONTENT도 가능)
+  // 필요에 따라 답변이 있는 질문만 노출하려면 아래처럼 필터 수정 (옵션)
+  // const filteredQuestions = questions.filter(q =>
+  //   q.TITLE && q.TITLE.includes(search) && q.ANSWER && q.ANSWER.trim() !== ""
+  // );
+
   const filteredQuestions = questions.filter(q =>
     q.TITLE && q.TITLE.includes(search)
   );
 
   return (
     <div>
-      <Header/>
+      <Header />
       <br /><br />
       <div className="faq-page-wrap">
         <h1 className="faq-title">자주 묻는 질문</h1>
