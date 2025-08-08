@@ -170,6 +170,7 @@ body {
   border:none; background:transparent; box-shadow:none;
 }
 
+
 /* 큰, 둥근 버튼 (테두리 없이 그림자만) */
 .support-card-btn{
   display:inline-flex; align-items:center; justify-content:center;
@@ -184,7 +185,10 @@ body {
 .support-card-btn:hover{
   transform:translateY(-2px);
   box-shadow:0 16px 36px rgba(17,24,39,.12);
-  background:#fafbff;
+  background: #00519c;
+  color: #fff;  
+}
+
 }
 .support-card-btn:active{ transform:translateY(0); box-shadow:0 8px 22px rgba(17,24,39,.10); }
 .support-card-btn:focus{ outline:none; }
