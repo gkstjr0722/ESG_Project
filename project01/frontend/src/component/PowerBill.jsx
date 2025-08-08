@@ -1,3 +1,5 @@
+// 전기 요금
+
 import React, { useState } from 'react';
 
 const POWER_RATE_I = [
@@ -104,7 +106,6 @@ export default function PowerBill() {
   };
 
   return (
-    <div className='box'>
       <div className="power-calc-bg">
         <div className="power-calc-box">
           <h2>산업용(갑) 전력요금 계산기</h2>
@@ -160,6 +161,5 @@ export default function PowerBill() {
           )}
         </div>
       </div>
-    </div>
   );
 }

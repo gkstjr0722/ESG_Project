@@ -1,5 +1,5 @@
+// src/Pages/Service/Notice.jsx
 import React, { useState, useEffect } from 'react';
-// import '../../CSS/Faq.css';
 import '../../CSS/Sub.css';
 import axios from 'axios';
 
@@ -8,8 +8,9 @@ const Notice = () => {
   const [search, setSearch] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [mode, setMode] = useState('list');
+  const [mode, setMode] = useState('list'); // 'list' | 'view' | 'write'
   const [selectedNotice, setSelectedNotice] = useState(null);
+
   const [form, setForm] = useState({ TITLE: '', CONTENT: '' });
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
@@ -25,9 +26,9 @@ const Notice = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await axios.get('http://localhost:3001/api/notice/list');
-      setNotices(res.data.notices || []);
-    } catch (err) {
+      const { data } = await axios.get('http://localhost:3001/api/notice/list');
+      setNotices(data.notices || []);
+    } catch (e) {
       setError('공지사항 목록을 불러오지 못했습니다.');
     } finally {
       setLoading(false);
@@ -36,10 +37,11 @@ const Notice = () => {
 
   useEffect(() => { fetchNotice(); }, []);
 
-  // 검색 필터
+  // 검색(대소문자 구분 없이)
+  const q = (search || '').trim().toLowerCase();
   const filteredNotices = notices.filter(n =>
-    (n.TITLE && n.TITLE.includes(search)) ||
-    (n.CONTENT && n.CONTENT.includes(search))
+    (n.TITLE && String(n.TITLE).toLowerCase().includes(q)) ||
+    (n.CONTENT && String(n.CONTENT).toLowerCase().includes(q))
   );
 
   // 폼 입력
@@ -50,17 +52,15 @@ const Notice = () => {
 
   // 파일 첨부
   const handleFileChange = e => {
-    const file = e.target.files[0];
-    setFile(file);
-    if (file) setPreviewUrl(URL.createObjectURL(file));
+    const f = e.target.files?.[0] || null;
+    setFile(f);
+    if (f) setPreviewUrl(URL.createObjectURL(f));
     else setPreviewUrl('');
   };
 
   // 프리뷰 메모리 해제
   useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
   }, [previewUrl]);
 
   // 등록 요청
@@ -121,11 +121,12 @@ const Notice = () => {
     setPreviewUrl('');
   };
 
-  // -- 등록 폼 (관리자만)
+  /* ───────── 등록 폼 (관리자만) ───────── */
   if (mode === 'write' && isAdmin) {
     return (
       <div className="faq-page-wrap">
         <h1 className="faq-title">공지사항 등록</h1>
+
         <form className="faq-write-form" onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="faq-write-row">
             <label className="faq-write-label">제목</label>
@@ -140,6 +141,7 @@ const Notice = () => {
               disabled={loading}
             />
           </div>
+
           <div className="faq-write-row">
             <label className="faq-write-label">내용</label>
             <textarea
@@ -154,6 +156,7 @@ const Notice = () => {
               disabled={loading}
             />
           </div>
+
           <div className="faq-write-row">
             <label className="faq-write-label">첨부파일 (이미지/PDF)</label>
             <input
@@ -162,18 +165,22 @@ const Notice = () => {
               onChange={handleFileChange}
               disabled={loading}
             />
+
             {previewUrl && (
               <div style={{ marginTop: 10 }}>
-                <img src={previewUrl} alt="미리보기" style={{ maxWidth: 200, maxHeight: 200 }} />
-                <button type="button" onClick={() => { setFile(null); setPreviewUrl(''); }}>파일 취소</button>
+                <img src={previewUrl} alt="미리보기" style={{ maxWidth: 260, height: 'auto' }} />
+                <button type="button" onClick={() => { setFile(null); setPreviewUrl(''); }}>
+                  파일 취소
+                </button>
               </div>
             )}
           </div>
+
           <div className="faq-write-btns">
-            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
+            <button type="submit" className="faq-write-submit" disabled={loading}>
               {loading ? '처리 중...' : '등록'}
             </button>
-            <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
+            <button type="button" className="faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
             </button>
           </div>
@@ -182,42 +189,65 @@ const Notice = () => {
     );
   }
 
-  // -- 상세보기 (일반유저/관리자)
+  /* ───────── 상세보기 ───────── */
   if (mode === 'view' && selectedNotice) {
-    // 파일 경로 보정 (외부 URL 또는 서버 업로드 경로)
     let fileUrl = '';
     if (selectedNotice.FILE_PATH) {
-      if (selectedNotice.FILE_PATH.startsWith('http')) {
-        fileUrl = selectedNotice.FILE_PATH;
-      } else {
-        fileUrl = `http://localhost:3001${selectedNotice.FILE_PATH}`;
-      }
+      fileUrl = selectedNotice.FILE_PATH.startsWith('http')
+        ? selectedNotice.FILE_PATH
+        : `http://localhost:3001${selectedNotice.FILE_PATH}`;
     }
+    const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
+
+    const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
+    const backBtnSx = {
+      background: 'transparent', border: 'none', boxShadow: 'none',
+      color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
+      cursor: 'pointer', margin: '0 0 12px 0'
+    };
+    const zeroLeft = { marginLeft: 0, paddingLeft: 0 };
 
     return (
       <div className="faq-page-wrap">
-        <button className="faq-detail-backbtn" onClick={handleViewBack}>
-          ← 돌아가기
-        </button>
-        <div className="faq-detail-title">{selectedNotice.TITLE}</div>
-        <div className="faq-detail-date">{selectedNotice.NOTICE_DT?.slice(0, 10)}</div>
-        <div className="faq-detail-content">{selectedNotice.CONTENT}</div>
-        {fileUrl && (
-          fileUrl.match(/\.(jpg|jpeg|png|gif)$/i)
-            ? <img src={fileUrl} alt="첨부파일" style={{ maxWidth: 200, maxHeight: 200 }} />
-            : <a href={fileUrl} target="_blank" rel="noopener noreferrer">첨부파일 다운로드</a>
-        )}
+        <div className="notice-detail-inner" style={wrapSx}>
+          <button className="faq-detail-backbtn" onClick={handleViewBack} style={backBtnSx}>
+            ← 돌아가기
+          </button>
+
+          <div className="faq-detail-title notice-detail-title" style={zeroLeft}>
+            {selectedNotice.TITLE}
+          </div>
+
+          <div className="faq-detail-date" style={zeroLeft}>
+            {selectedNotice.NOTICE_DT?.slice(0, 10)}
+          </div>
+
+          <div className="faq-detail-content notice-detail-content" style={zeroLeft}>
+            {selectedNotice.CONTENT}
+          </div>
+
+          {fileUrl && (
+            isImage ? (
+              <img src={fileUrl} alt="첨부파일" className="notice-detail-img" loading="lazy" style={{ ...zeroLeft }} />
+            ) : (
+              <a className="notice-detail-file" href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ ...zeroLeft }}>
+                첨부파일 열기/다운로드
+              </a>
+            )
+          )}
+        </div>
       </div>
     );
   }
 
-  // -- 목록
+  /* ───────── 목록 ───────── */
   return (
     <div>
       <br /><br />
       <div className="faq-page-wrap">
         <h1 className="faq-title">공지사항</h1>
-        <div className="faq-search-row">
+
+        <div className="faq-search-row" style={{ alignItems: 'center', gap: 12 }}>
           <span className="faq-search-icon">N</span>
           <input
             className="faq-search-input"
@@ -227,17 +257,22 @@ const Notice = () => {
             onChange={e => setSearch(e.target.value)}
           />
           {isAdmin && (
-            <button className='common-btn notice-main-uplode' onClick={() => {
-              setMode('write');
-              setForm({ TITLE: '', CONTENT: '' });
-              setFile(null);
-              setPreviewUrl('');
-              setSelectedNotice(null);
-            }}>
+            <button
+              className="notice-add-btn"   // ⬅ 둥근 버튼 클래스 적용
+              type="button"
+              onClick={() => {
+                setMode('write');
+                setForm({ TITLE: '', CONTENT: '' });
+                setFile(null);
+                setPreviewUrl('');
+                setSelectedNotice(null);
+              }}
+            >
               공지사항 등록
             </button>
           )}
         </div>
+
         <div className="faq-question-list">
           {loading ? (
             <div className="faq-question-empty">불러오는 중...</div>
@@ -255,7 +290,7 @@ const Notice = () => {
               >
                 <span className="faq-q-icon">N</span>
                 {n.TITLE}
-                <span style={{ marginLeft: '10px', color: '#aaa', fontSize: '0.96em' }}>
+                <span style={{ marginLeft: 10, color: '#aaa', fontSize: '0.96em' }}>
                   {n.NOTICE_DT?.slice(0, 10)}
                 </span>
               </div>

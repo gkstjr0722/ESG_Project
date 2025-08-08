@@ -1,319 +1,196 @@
-/*  메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
+/* ======================= main.css ======================= */
+/* 메인 공지 캐러셀 */
+.notice-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #f4f8ff;
+  border-radius: 16px;
+  padding: 40px 60px;
+  min-height: 300px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.notice-hero__content { max-width: 980px; text-align: left; cursor: pointer; }
+.notice-hero__eyebrow { font-size: 22px; letter-spacing: .08em; color: #5b7fff; margin-bottom: 10px; }
+.notice-hero__title { font-size: 42px; font-weight: 900; line-height: 1.25; margin-bottom: 12px; }
+.notice-hero__date { font-size: 22px; color: #8c8c8c; }
+.notice-hero__cta  { margin-top: 14px; font-size: 22px; display: inline-flex; gap: 6px; align-items: center; }
+.notice-hero__nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  border: none; background: rgba(0,0,0,.05);
+  width: 36px; height: 36px; border-radius: 50%;
+  font-size: 22px; cursor: pointer;
+}
+.notice-hero__nav:hover { background: rgba(0,0,0,.12); }
+.notice-hero__nav.prev { left: 12px; }
+.notice-hero__nav.next { right: 12px; }
 
+/* 인디케이터 */
+.notice-hero__dots {
+  position: absolute; bottom: 10px; left: 0; right: 0;
+  display: flex; gap: 8px; justify-content: center;
+}
+.notice-hero__dots .dot {
+  width: 10px; height: 10px; border-radius: 50%; border: none;
+  background: #cfd6e4; cursor: pointer;
+  transition: transform .18s ease, background-color .18s ease, opacity .18s ease;
+  opacity: .95;
+}
+.notice-hero__dots .dot.active { background: #ff8800; transform: scale(1.25); opacity: 1; }
 
-/* 메인페이지 (Main.css) */
+@media (max-width: 768px) {
+  .notice-hero { padding: 24px; }
+  .notice-hero__title { font-size: 30px; }
+  .notice-hero__eyebrow, .notice-hero__date, .notice-hero__cta { font-size: 16px; }
+}
+
+/* 레이아웃 기본 */
 body {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'Malgun Gothic', '맑은 고딕', '돋움', Arial, sans-serif;
-  background: #f4f4f4;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
+  box-sizing: border-box; margin: 0; padding: 0;
+  font-family: 'Malgun Gothic','맑은 고딕','돋움',Arial,sans-serif;
+  background: #f4f4f4; height: 100vh; display: flex; flex-direction: column;
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
 }
+.main-page-root { min-height: 100vh; display: flex; flex-direction: column; }
+.app-container { flex: 1 0 auto; display: flex; flex-direction: column; }
+.notice-section { flex: 1 1 auto; display: flex; }
+.banner-button { display: none !important; }
 
-.main-page-root {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-}
-
+/* 슬라이더(안전 기본값) */
 .slider-section {
-  flex: 1;
-  overflow: hidden;
+  width: 100%; max-width: 100%; box-sizing: border-box;
+  margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center;
+  flex: 0 0 auto;
+}
+.swiper-wrapper-custom { width: 100%; height: auto; position: relative; }
+.mySwiper { width: 100%; height: auto; position: relative; background: transparent; }
+.mySwiper .swiper-button-prev,
+.mySwiper .swiper-button-next {
+  color: #007aff; width: 40px; height: 30px; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,.8); border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,.3); z-index: 10;
+}
+.mySwiper .swiper-button-prev { left: 15px; }
+.mySwiper .swiper-button-next { right: 15px; }
+.mySwiper .swiper-button-prev::after,
+.mySwiper .swiper-button-next::after { font-size: 20px; font-weight: bold; }
+.mySwiper .swiper-pagination-progressbar,
+.swiper-pagination-progressbar-custom {
+  position: absolute; left: 0 !important; right: 0 !important; bottom: 0 !important; top: auto !important;
+  width: 100% !important; height: 6px; background: rgba(0,0,0,.08); border-radius: 3px; z-index: 11;
+}
+.mySwiper .swiper-pagination-progressbar-fill { background: orange !important; border-radius: 3px; }
+.swiper-pagination-fraction-custom {
+  position: absolute; right: 24px; bottom: 14px; z-index: 20;
+  color: #ff8800; font-weight: bold; background: rgba(255,255,255,.85);
+  padding: 2px 10px; border-radius: 12px; font-size: 16px; letter-spacing: 1px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08); user-select: none;
 }
 
-.banner-button {
-  position: absolute;
-  top: 38%;
-  left: 11%;
-  padding: 16px 32px;
-  font-size: 20px;
-  border-radius: 15px;
-  background-color: white;
-  color: #1d5fc4;
-  border: 2px solid #1d5fc4;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-
-.banner-button:hover {
-  background-color: #1d5fc4;
-  color: white;
-  border-color: #1d5fc4;
-}
-
-/* 영상리스트 영역은 페이지 맨 아래쪽 */
+/* 홍보영상 섹션 */
 .video-list-section {
-  width: 100%;
-  padding-bottom: 20px;
-  padding: 20px 60px; 
-  display: flex;
-  background: linear-gradient(180deg, #376ec2 0%);
-  flex-shrink: 0;
-  flex: 1;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  flex-direction: row;        /* 가로 정렬 */
-  align-items: center;
+  width: 100%; padding: 20px 60px 20px;
+  display: flex; background: linear-gradient(180deg, #376ec2 0%);
+  flex: 0 0 auto; flex-shrink: 0; flex-wrap: wrap; box-sizing: border-box;
+  flex-direction: row; align-items: center;
 }
-
-/* 영상리스트 영역 내 텍스트 */
 .video-list-section-text {
-   padding-right: 60px; /* ✅ 영상과 간격은 여기서 조절 */
-  padding-left: 200px; 
-  color: #fff;
-  white-space: nowrap;
-  font-size: clamp(12px, 2.5vw, 22px); /* 화면 크기에 따라 자동 크기 조절 */
-  line-height: 0.5;
+  padding-right: 60px; padding-left: 200px; color: #fff; white-space: nowrap;
+  font-size: clamp(14px, 2.8vw, 26px); line-height: .5;
 }
-
-/* 썸네일 카드 */
-.video-grid {
-  display: flex;
-  gap: 50px;
-  justify-content: flex-end;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  margin: 0 auto;
-}
-
+.video-grid { display: flex; gap: 50px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
 .video-card {
-  width: 250px;
-  /* height: 200px; */
-  border-radius: 14px;
-  box-shadow: 2px 2px 100px rgba(0, 0, 0, 0.09);
-  background: #fff; 
-  text-decoration: none;
-  color: #000;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  width: 250px; border-radius: 14px; box-shadow: 2px 2px 100px rgba(0,0,0,.09);
+  background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
 }
-
-/* 마우스 오버 시 약간 커짐 */
-.video-card:hover {
-  transform: translateY(-5px) scale(1.03);
-}
-
-.video-thumbnail {
-  width: 100%;
-  height: 140px;        /* 비율 맞추려면 고정 높이 */
-  object-fit: cover;    /* or contain */
-  background: #fff;     /* ★ 여기서도 하얀 배경 */
-}
-.video-info {
-  padding: 10px 10px 8px 10px;
-}
-.video-title {
-  font-weight: bold;
-  font-size: 15px;
-}
-.video-channel {
-  font-size: 11px;
-  color: #6d6d6d;
-}
-
+.video-card:hover { transform: translateY(-5px) scale(1.03); }
+.video-thumbnail { width: 100%; height: 140px; object-fit: cover; background: #fff; }
+.video-info { padding: 10px 10px 8px 10px; }
+.video-title { font-weight: bold; font-size: 15px; }
+.video-channel { font-size: 11px; color: #6d6d6d; }
 @media (max-width: 700px) {
-  .video-list-section {
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    padding: 30px 20px;
-  }
-  .video-list-section-text {
-    white-space: normal;
-    text-align: center;
-  }
-
-  .video-grid {
-    justify-content: center;
-  }
+  .video-list-section { flex-direction: column; align-items: center; gap: 30px; padding: 30px 20px; }
+  .video-list-section-text { white-space: normal; text-align: center; padding-left: 0; padding-right: 0; }
+  .video-grid { justify-content: center; }
 }
 
-/* 슬라이더 (Slider.css) 새로 만든 뒤 추가 예정*/
+/* ===== 공지 상세 ===== */
+.notice-detail-inner { padding-left: 24px; max-width: 980px; }
+@media (max-width: 768px) { .notice-detail-inner { padding-left: 16px; } }
 
-
-
-
-
-
-
-
-
-
-/* Login.css */
-
-/* 로그인/회원가입 페이지 흰 박스 */
-.login-corp-box {
-  min-width: 200px;
-  max-width: 450px;
-  text-align: center;
-}
-
-/* 회원가입 h2에만 적용되는듯 */
-.login-corp-box h2 {
-  color: #0c355c;
-  margin-bottom: 32px;
-  font-size: 1.6rem;
-}
-
-.login-corp-box input[type="text"],
-.login-corp-box input[type="password"] {
-  width: 90%;
-  padding: 13px 14px;
-  margin-bottom: 18px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #dde1ea;
-  background: #f7f9fc;
-  outline: none;
-  transition: border 0.2s;
-}
-
-.login-corp-box input:focus {
-  border: 1.5px solid #3ba2f3;
-}
-
-
-/* 로그인-로그인 버튼 */
-.main-btn1 {
-  width: 100%;
-  font-size: 16px;
-  padding: 14px 0;
-  border-radius: 6px;
+.faq-detail-backbtn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #000;
   font-weight: 700;
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-
-/* 회원가입 메인-기업/관공업 */
-.main-btn-01 {
-  font-size: 20px;
-  margin: 0 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 190px;
-  height: 200px;
-  box-sizing: border-box;
-}
-/* 로그인 서버오류 안내 멘트 */
-.login-error {
-  color: #dc143c;
-  margin-bottom: 12px;
-  font-size: 0.98rem;
-}
-
-/* 로그인 아래 비밀번호를 잊으셨나요? <- 바꿀 예정 */
-.login-link-area {
-  margin-top: 14px;
-  color: #555;
-  font-size: 0.96rem;
-}
-
-/* 로그인 아래 비밀번호를 잊으셨나요?와 회원가입 링크 가운데 나누는 "|" */
-.login-link-area .divider {
-  margin: 0 10px;
-  color: #bbb;
-}
-
-/* 로그인 아래 회원가입 링크 */
-.login-link-area .join-link {
-  color: #0077cb;
-  text-decoration: underline;
-  font-weight: 600;
+  font-size: 16px;
+  padding: 0;
   cursor: pointer;
+  margin-bottom: 12px;
 }
-.login-link-area .join-link:hover {
-  color: #085cab;
+.faq-detail-backbtn:hover { text-decoration: underline; }
+
+.notice-detail-title { font-size: 2.25em; font-weight: 800; line-height: 1.25; }
+.notice-detail-content { white-space: pre-wrap; line-height: 1.6; margin-top: 12px; font-size: 16px; }
+.notice-detail-img {
+  max-width: 100%; height: auto; display: block; margin-top: 16px;
+  border-radius: 8px; max-height: 75vh; object-fit: contain;
+}
+.notice-detail-file {
+  display: inline-block; margin-top: 12px; color: #1d5fc4;
+  text-decoration: underline; font-weight: 600;
 }
 
-/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼 구역 */
-.login-switch-btn-area {
-  display: flex;
-  justify-content: center;
-  gap: 18px;
-  margin-bottom: 8px;
+/* ===== Support 페이지 ===== */
+/* 탭바 */
+.support-banner-tabbar{
+  display:flex; gap:12px; justify-content:center; align-items:center;
+  padding:16px 12px; background:#f8f9fd; border-bottom:1px solid #edf0f6;
 }
-/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼*/
-.login-switch-btn {
-  padding: 7px 22px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  background: #f8f8f8;
-  transition: background 0.2s, color 0.2s, border 0.2s;
+.support-banner-tab{
+  padding:10px 18px; border-radius:999px; border:1px solid #dde3ef;
+  background:#fff; font-weight:700; font-size:15px; color:#344054;
+  cursor:pointer; transition:all .18s ease;
+}
+.support-banner-tab:hover{ box-shadow:0 2px 10px rgba(16,24,40,.06); }
+.support-banner-tab.active{ border-color:#5b7fff; color:#1d3df0; background:#eef3ff; }
+
+/* 중앙 카드 */
+.support-main-wrapper{
+  display:flex; justify-content:center; align-items:center;
+  min-height:420px; padding:32px 16px;
+}
+.support-center-card{
+  display:flex; flex-direction:column; gap:16px; align-items:center;
 }
 
-.login-switch-btn.active,
-.login-switch-btn:hover {
-  background: #0098d8;
-  color: #fff;
-  border: 1.5px solid #0098d8;
+/* 큰, 둥근 버튼 */
+.support-card-btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:360px; min-height:76px; padding:18px 24px;
+  font-size:20px; font-weight:800; color:#111;
+  background:#fff; border:1px solid #e3e6ef; border-radius:16px;
+  box-shadow:0 8px 24px rgba(17,24,39,.06);
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
+}
+.support-card-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 28px rgba(17,24,39,.10);
+  background:#fafbff; border-color:#cfd6e4;
+}
+.support-card-btn:active{
+  transform:translateY(0);
+  box-shadow:0 6px 18px rgba(17,24,39,.08);
 }
 
-
-
-
-
-
-
-
-/* Join.css */
-.join-corp-box {
-  min-width: 320px;
-  max-width: 520px;
-  box-sizing: border-box;
-  text-align: center;
-}
-.join-corp-box h2 {
-  text-align: center;
-  color: #0c355c;
-  margin-bottom: 24px;
-}
-.join-corp-box form {
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-.join-corp-box input[type="text"],
-.join-corp-box input[type="password"],
-.join-corp-box input[type="email"],
-.join-corp-box input[type="tel"] {
-  padding: 11px 14px;
-  font-size: 16px;
-  border: 1.5px solid #e1e4e8;
-  border-radius: 8px;
-  transition: border 0.2s;
-}
-.join-corp-box input:focus {
-  border: 1.5px solid #0098d8;
-  outline: none;
-}
-.upload-section {
-  font-size: 14px;
-  color: #888;
-  margin-bottom: 8px;
-  text-align: left;
-}
-.terms {
-  font-size: 15px;
-  margin: 10px 0 4px 0;
-  color: #666;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: left;
+@media (max-width: 480px){
+  .support-card-btn{ width:92%; font-size:18px; min-height:64px; border-radius:14px; }
 }
 
-.join-btn {
-  
-  padding: 13px 0;
-  /* margin-top: 12px; */
-}
+/* 안전 오버라이드 */
+section.slider-section{ min-height:auto !important; height:auto !important; flex:0 0 auto !important; margin:0 !important; padding:0 !important; }
+.mySwiper, .swiper-wrapper-custom{ height:auto !important; }
+/* ===================== end main.css ===================== */

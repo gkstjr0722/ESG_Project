@@ -8,7 +8,6 @@ import './CSS/Common.css';
 
 // 메인 페이지
 import App from './Pages/App.jsx';
-import Slider from './Pages/Slider.jsx';
 
 // 위치찾기
 import Map from './Pages/Map.jsx';
@@ -36,48 +35,44 @@ import MyPage from './Pages/MyPage.jsx';
 // 전력사용현황
 import CalcMain from './Pages/CalcMain.jsx';
 import PowerBill from './component/PowerBill.jsx';
-import ElecUsed from './component/ElecUsed.jsx';
 import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
 
-
-// 링크연결
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
       {/* 메인페이지 */}
       <Route path="/" element={<App />} />
-      <Route path="/slider" element={<Slider />} />
-
 
       {/* 위치찾기 */}
       <Route path="/map" element={<Map />} />
 
       {/* 고객센터 */}
-      <Route path="/support" element={<Support />}></Route>
-      <Route path="/notice" element={<Notice />}></Route>ㅋ
+      <Route path="/support" element={<Support />} />
+      <Route path="/notice" element={<Notice />} />
+      {/* 공지 상세(배너에서 /notice/:id로 이동할 때 필요) */}
+      <Route path="/notice/:id" element={<Notice />} />
 
       {/* 고객문의 */}
-      <Route path="/faq" element={<FAQ />}></Route>
-      <Route path="/faq/:id" element={<FaqDetail />}></Route>
-      <Route path="/inquiry" element={<Inquiry />}></Route>
-      <Route path="/inquiry/:id" element={<InquiryDetail />}></Route>
-      <Route path="/inquiry/write" element={<InquiryWrite />}></Route>
+      <Route path="/faq" element={<FAQ />} />
+      <Route path="/faq/:id" element={<FaqDetail />} />
+      <Route path="/inquiry" element={<Inquiry />} />
+      <Route path="/inquiry/:id" element={<InquiryDetail />} />
+      <Route path="/inquiry/write" element={<InquiryWrite />} />
       <Route path="/inquiry/edit/:id" element={<InquiryWrite />} />
 
       {/* 로그인 */}
       <Route path="/login" element={<Login />} />
 
       {/* 가입 */}
-      <Route path="/join/*" element={<Join/>} />
+      <Route path="/join/*" element={<Join />} />
 
       {/* 마이페이지 */}
       <Route path="/mypage" element={<MyPage />} />
 
       {/* 전력사용현황 */}
       <Route path="/calcmain" element={<CalcMain />} />
-      <Route path="/elecused" element={<ElecUsed />} />
       <Route path="/monthused" element={<MonthUsed />} />
       <Route path="/powerbill" element={<PowerBill />} />
       <Route path="/poweravg" element={<PowerAVG />} />
@@ -85,4 +80,3 @@ createRoot(document.getElementById('root')).render(
     </Routes>
   </BrowserRouter>
 );
-
