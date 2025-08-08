@@ -189,7 +189,7 @@ body {
   color: #fff;  
 }
 
-}
+
 .support-card-btn:active{ transform:translateY(0); box-shadow:0 8px 22px rgba(17,24,39,.10); }
 .support-card-btn:focus{ outline:none; }
 
