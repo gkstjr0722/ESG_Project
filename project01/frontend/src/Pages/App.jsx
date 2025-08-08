@@ -1,13 +1,9 @@
-// import React, { useState } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import '../CSS/Main.css';
+import { useNavigate } from 'react-router-dom';
 import Header from '../component/Header';
 import Slider from './Slider';
-import { useNavigate } from 'react-router-dom';
+import '../CSS/Main.css';
 
-// 유튜브 썸네일 데이터
 const videoData = [
-
   {
     title: '한전 파워플래너 소개',
     channel: 'KEPCO 공식',
@@ -28,24 +24,36 @@ const videoData = [
   },
 ];
 
-// 메인 페이지 컴포넌트
 function App() {
   const navigate = useNavigate();
 
   return (
     <div className="main-page-root">
-      <Header/>
-      <div className="app-container">
-      <section className="slider-section">
-        <Slider/>
-      </section>
-    </div>
+      <Header />
 
-        <button className='banner-button'
-        onClick={() => navigate('/support')}>공지사항 바로가기</button>
+      {/* 부모 영역에 position: relative 필수 */}
+      <div className="app-container" style={{ position: 'relative' }}>
         
-        <div className="video-list-section">
-          <div className='video-list-section-text'>
+        {/* 공지사항 바로가기 버튼 (기존 css 유지 + 위치만 absolute로 슬라이더 위에) */}
+        <button
+          className="banner-button"
+          onClick={() => navigate('/support')}
+          type="button"
+          style={{
+            zIndex: 9999,  // 슬라이더 위에 최상단
+          }}
+        >
+          공지사항 바로가기
+        </button>
+
+        {/* 슬라이더 */}
+        <section className="slider-section" style={{ position: 'relative', zIndex: 1 }}>
+          <Slider />
+        </section>
+
+        {/* 홍보영상 리스트 */}
+        <div className="video-list-section" style={{ marginTop: '24px' }}>
+          <div className="video-list-section-text">
             <h1>홍보영상</h1>
             <h1>보러가기</h1>
           </div>
@@ -70,11 +78,10 @@ function App() {
               </a>
             ))}
           </div>
-        {/* </div> */}
+        </div>
       </div>
     </div>
   );
 }
-
 
 export default App;
