@@ -159,10 +159,10 @@ const InquiryWrite = () => {
             />
           </div>
           <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
               {loading ? (isEdit ? '저장 중...' : '등록 중...') : (isEdit ? '저장' : '등록')}
             </button>
-            <button type="button" className="faq-write-cancel" onClick={handleCancel} disabled={loading}>
+            <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
             </button>
           </div>
