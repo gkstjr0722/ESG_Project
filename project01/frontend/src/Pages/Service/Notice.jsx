@@ -60,9 +60,7 @@ const Notice = () => {
 
   // 프리뷰 메모리 해제
   useEffect(() => {
-    return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-    };
+    return () => { if (previewUrl) URL.revokeObjectURL(previewUrl); };
   }, [previewUrl]);
 
   // 등록 요청
@@ -85,7 +83,6 @@ const Notice = () => {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('공지사항이 등록되었습니다!');
-      // 초기화 후 목록으로
       setMode('list');
       setForm({ TITLE: '', CONTENT: '' });
       setFile(null);
@@ -194,7 +191,6 @@ const Notice = () => {
 
   /* ───────── 상세보기 ───────── */
   if (mode === 'view' && selectedNotice) {
-    // 파일 경로 보정
     let fileUrl = '';
     if (selectedNotice.FILE_PATH) {
       fileUrl = selectedNotice.FILE_PATH.startsWith('http')
@@ -203,22 +199,11 @@ const Notice = () => {
     }
     const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
 
-    // ⬇ 인라인 스타일로 정렬/간격/배경 제거를 강제
-    const wrapSx = {
-      paddingLeft: '24px',
-      maxWidth: '980px',
-      margin: 0,
-    };
+    const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
     const backBtnSx = {
-      background: 'transparent',
-      border: 'none',
-      boxShadow: 'none',
-      color: '#000',
-      fontWeight: 700,
-      fontSize: '16px',
-      padding: 0,
-      cursor: 'pointer',
-      margin: '0 0 12px 0',
+      background: 'transparent', border: 'none', boxShadow: 'none',
+      color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
+      cursor: 'pointer', margin: '0 0 12px 0'
     };
     const zeroLeft = { marginLeft: 0, paddingLeft: 0 };
 
@@ -243,21 +228,9 @@ const Notice = () => {
 
           {fileUrl && (
             isImage ? (
-              <img
-                src={fileUrl}
-                alt="첨부파일"
-                className="notice-detail-img"
-                loading="lazy"
-                style={{ ...zeroLeft }}
-              />
+              <img src={fileUrl} alt="첨부파일" className="notice-detail-img" loading="lazy" style={{ ...zeroLeft }} />
             ) : (
-              <a
-                className="notice-detail-file"
-                href={fileUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ ...zeroLeft }}
-              >
+              <a className="notice-detail-file" href={fileUrl} target="_blank" rel="noopener noreferrer" style={{ ...zeroLeft }}>
                 첨부파일 열기/다운로드
               </a>
             )
@@ -274,7 +247,7 @@ const Notice = () => {
       <div className="faq-page-wrap">
         <h1 className="faq-title">공지사항</h1>
 
-        <div className="faq-search-row">
+        <div className="faq-search-row" style={{ alignItems: 'center', gap: 12 }}>
           <span className="faq-search-icon">N</span>
           <input
             className="faq-search-input"
@@ -285,6 +258,8 @@ const Notice = () => {
           />
           {isAdmin && (
             <button
+              className="notice-add-btn"   // ⬅ 둥근 버튼 클래스 적용
+              type="button"
               onClick={() => {
                 setMode('write');
                 setForm({ TITLE: '', CONTENT: '' });
