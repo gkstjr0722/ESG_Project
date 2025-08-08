@@ -36,7 +36,6 @@ import MyPage from './Pages/MyPage.jsx';
 // 전력사용현황
 import CalcMain from './Pages/CalcMain.jsx';
 import PowerBill from './component/PowerBill.jsx';
-import ElecUsed from './component/ElecUsed.jsx';
 import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
@@ -77,7 +76,6 @@ createRoot(document.getElementById('root')).render(
 
       {/* 전력사용현황 */}
       <Route path="/calcmain" element={<CalcMain />} />
-      <Route path="/elecused" element={<ElecUsed />} />
       <Route path="/monthused" element={<MonthUsed />} />
       <Route path="/powerbill" element={<PowerBill />} />
       <Route path="/poweravg" element={<PowerAVG />} />
