@@ -101,7 +101,7 @@ body {
 }
 .video-grid { display: flex; gap: 50px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
 .video-card {
-  width: 250px; border-radius: 14px; box-shadow: 2px 2px 100px rgba(0,0,0,.09);
+  width: 250px;  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
   background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
 }
 .video-card:hover { transform: translateY(-5px) scale(1.03); }
