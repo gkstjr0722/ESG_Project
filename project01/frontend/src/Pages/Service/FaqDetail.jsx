@@ -76,9 +76,9 @@ const FaqDetail = () => {
         <div className="faq-detail-content">{question.CONTENT}</div>
         {/* 답변이 있을 경우만 노출 */}
         {question.ANSWER && question.ANSWER.trim() !== "" && (
-          <div className="faq-answer-box" style={{ marginTop: 32 }}>
+          <div className="faq-answer-box" style={{ marginTop: 32 }}>  {/* css 존재하지 않음 */}
             <strong>관리자 답변</strong>
-            <div className="faq-answer-content">{question.ANSWER}</div>
+            <div className="faq-answer-content">{question.ANSWER}</div>  {/* css 존재하지 않음 */}
           </div>
         )}
       </div>

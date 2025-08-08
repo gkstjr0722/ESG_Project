@@ -88,7 +88,7 @@ const Inquiry = () => {
           )}
         </div>
         {isLoggedIn && !isAdmin && (
-          <button className="floating-write-btn" onClick={handleWriteClick}>
+          <button className="common-btn floating-write-btn" onClick={handleWriteClick}>
             +
           </button>
         )}

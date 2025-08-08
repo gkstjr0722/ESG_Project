@@ -170,10 +170,10 @@ const Notice = () => {
             )}
           </div>
           <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
               {loading ? '처리 중...' : '등록'}
             </button>
-            <button type="button" className="faq-write-cancel" onClick={handleCancel} disabled={loading}>
+            <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
             </button>
           </div>
@@ -227,7 +227,7 @@ const Notice = () => {
             onChange={e => setSearch(e.target.value)}
           />
           {isAdmin && (
-            <button onClick={() => {
+            <button className='common-btn notice-main-uplode' onClick={() => {
               setMode('write');
               setForm({ TITLE: '', CONTENT: '' });
               setFile(null);
