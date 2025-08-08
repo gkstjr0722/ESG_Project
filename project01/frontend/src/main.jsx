@@ -82,6 +82,9 @@ createRoot(document.getElementById('root')).render(
       <Route path="/powerbill" element={<PowerBill />} />
       <Route path="/poweravg" element={<PowerAVG />} />
       <Route path="/carbon" element={<Carbon />} />
+
+      {/* 전력사용현황 */}
+      <Route path="/" element={<Slider />} />
     </Routes>
   </BrowserRouter>
 );

@@ -3,6 +3,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import '../CSS/Main.css';
 import Header from '../component/Header';
 import Slider from './Slider';
+import { useNavigate } from 'react-router-dom';
 
 // 유튜브 썸네일 데이터
 const videoData = [
@@ -29,6 +30,7 @@ const videoData = [
 
 // 메인 페이지 컴포넌트
 function App() {
+  const navigate = useNavigate();
 
   return (
     <div className="main-page-root">
@@ -39,7 +41,8 @@ function App() {
       </section>
     </div>
 
-        <button className='banner-button'>공지사항 바로가기</button>
+        <button className='banner-button'
+        onClick={() => navigate('/support')}>공지사항 바로가기</button>
         
         <div className="video-list-section">
           <div className='video-list-section-text'>
