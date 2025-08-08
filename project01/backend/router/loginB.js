@@ -3,7 +3,7 @@ const router = express.Router();
 const conn = require('../config/db');
 const bcrypt = require('bcrypt');
 
-// 기업 로그인 (id, pw 확인)
+// 1. 기업 로그인 기능 라우터 (id, pw 확인)
 router.post('/corp', (req, res) => {
   const { id, pw } = req.body;
   const sql = "SELECT * FROM CORP_MEMBER WHERE id=?";
@@ -22,7 +22,7 @@ router.post('/corp', (req, res) => {
     const isMatch = await bcrypt.compare(pw, user.pw);
 
     if (isMatch) {
-      // 로그인 성공 - 정보도 같이 응답
+      // 로그인 성공 시  - 정보도 같이 응답
       return res.json({
         result: 'success',
         id: user.id,             // 아이디
@@ -30,12 +30,13 @@ router.post('/corp', (req, res) => {
         email: user.email,       // 이메일
       });
     } else {
-      // 비밀번호 불일치
+      // 비밀번호 불일치 시 
       return res.json({ result: 'fail', msg: '비밀번호가 틀렸습니다.' });
     }
   });
 
- 
 });
 
 module.exports = router;
+
+// 2025-08-08 코드 수정 완료 

@@ -1,3 +1,5 @@
+// 전기 요금
+
 import React, { useState } from 'react';
 
 const POWER_RATE_I = [
@@ -104,62 +106,71 @@ export default function PowerBill() {
   };
 
   return (
-    <div className='box'>
-      <div className="power-calc-bg">
-        <div className="power-calc-box">
-          <h2>산업용(갑) 전력요금 계산기</h2>
-          <form onSubmit={handleCalc}>
-            <div className="row">
-              <label>요금종별:&nbsp;</label>
-              <label><input type="radio" name="type" checked={type==="I"} onChange={()=>setType("I")} /> 갑I</label>
-              <label><input type="radio" name="type" checked={type==="II"} onChange={()=>setType("II")} style={{marginLeft:12}} /> 갑II</label>
-            </div>
-            <div className="row" style={{margin:'10px 0'}}>
-              <label>옵션:&nbsp;</label>
-              <select value={option} onChange={e=>setOption(e.target.value)}>
-                {(type === "I" ? POWER_RATE_I : POWER_RATE_II).map(opt=>
-                  <option value={opt.key} key={opt.key}>{opt.label}</option>
-                )}
-              </select>
-            </div>
-            <div className="row">
-              <label>계절:&nbsp;</label>
-              <select value={season} onChange={e=>setSeason(e.target.value)}>
-                {SEASONS.map(s=>
-                  <option value={s.key} key={s.key}>{s.label}</option>
-                )}
-              </select>
-            </div>
-            <div className="row">
-              <label>계약전력 (kW):&nbsp;</label>
-              <input type="number" min="0" value={contractPower} onChange={e=>setContractPower(e.target.value)} required />
-            </div>
-            {type === "I" ? (
-              <div className="row">
-                <label>전력 사용량 (kWh):&nbsp;</label>
-                <input type="number" min="0" value={usage} onChange={e=>setUsage(e.target.value)} required />
-              </div>
-            ) : (
-              <div style={{margin:'10px 0'}}>
-                <label>시간대별 전력 사용량 (kWh):</label>
-                <div className="row">경부하&nbsp; <input type="number" min="0" value={usageTimes[0]} onChange={e=>setUsageTimes({...usageTimes,0:e.target.value})} required /></div>
-                <div className="row">중간부 <input type="number" min="0" value={usageTimes[1]} onChange={e=>setUsageTimes({...usageTimes,1:e.target.value})} required /></div>
-                <div className="row">최대부하 <input type="number" min="0" value={usageTimes[2]} onChange={e=>setUsageTimes({...usageTimes,2:e.target.value})} required /></div>
-                <p>시간대 : 경부하(22시~08시), 중간부하(08~16시), 최대부하(16시~22시)
-                  <br></br>
-                  ※ 제주특별자치도의 시간대별 구분은 모든 계절에 적용
-                </p>
-              </div>
-            )}
-            <button className="main" type="submit">요금 계산하기</button>
-          </form>
-          {result !== null && (
-            <div className="power-calc-result">
-              <b>예상 요금:</b> {result.toLocaleString()} 원
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+    <>
+    
+    </>
+
+
+
+
+
+
+
+
+      // <div className="power-calc-bg">
+      //   <div className="power-calc-box">
+      //     <h2>산업용(갑) 전력요금 계산기</h2>
+      //     <form onSubmit={handleCalc}>
+      //       <div className="row">
+      //         <label>요금종별:&nbsp;</label>
+      //         <label><input type="radio" name="type" checked={type==="I"} onChange={()=>setType("I")} /> 갑I</label>
+      //         <label><input type="radio" name="type" checked={type==="II"} onChange={()=>setType("II")} style={{marginLeft:12}} /> 갑II</label>
+      //       </div>
+      //       <div className="row" style={{margin:'10px 0'}}>
+      //         <label>옵션:&nbsp;</label>
+      //         <select value={option} onChange={e=>setOption(e.target.value)}>
+      //           {(type === "I" ? POWER_RATE_I : POWER_RATE_II).map(opt=>
+      //             <option value={opt.key} key={opt.key}>{opt.label}</option>
+      //           )}
+      //         </select>
+      //       </div>
+      //       <div className="row">
+      //         <label>계절:&nbsp;</label>
+      //         <select value={season} onChange={e=>setSeason(e.target.value)}>
+      //           {SEASONS.map(s=>
+      //             <option value={s.key} key={s.key}>{s.label}</option>
+      //           )}
+      //         </select>
+      //       </div>
+      //       <div className="row">
+      //         <label>계약전력 (kW):&nbsp;</label>
+      //         <input type="number" min="0" value={contractPower} onChange={e=>setContractPower(e.target.value)} required />
+      //       </div>
+      //       {type === "I" ? (
+      //         <div className="row">
+      //           <label>전력 사용량 (kWh):&nbsp;</label>
+      //           <input type="number" min="0" value={usage} onChange={e=>setUsage(e.target.value)} required />
+      //         </div>
+      //       ) : (
+      //         <div style={{margin:'10px 0'}}>
+      //           <label>시간대별 전력 사용량 (kWh):</label>
+      //           <div className="row">경부하&nbsp; <input type="number" min="0" value={usageTimes[0]} onChange={e=>setUsageTimes({...usageTimes,0:e.target.value})} required /></div>
+      //           <div className="row">중간부 <input type="number" min="0" value={usageTimes[1]} onChange={e=>setUsageTimes({...usageTimes,1:e.target.value})} required /></div>
+      //           <div className="row">최대부하 <input type="number" min="0" value={usageTimes[2]} onChange={e=>setUsageTimes({...usageTimes,2:e.target.value})} required /></div>
+      //           <p>시간대 : 경부하(22시~08시), 중간부하(08~16시), 최대부하(16시~22시)
+      //             <br></br>
+      //             ※ 제주특별자치도의 시간대별 구분은 모든 계절에 적용
+      //           </p>
+      //         </div>
+      //       )}
+      //       <button className="main" type="submit">요금 계산하기</button>
+      //     </form>
+      //     {result !== null && (
+      //       <div className="power-calc-result">
+      //         <b>예상 요금:</b> {result.toLocaleString()} 원
+      //       </div>
+      //     )}
+      //   </div>
+      // </div>
   );
 }

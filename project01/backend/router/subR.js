@@ -1,4 +1,3 @@
-// DB/router/subR.js
 const express = require('express');
 const router = express.Router();
 
@@ -7,3 +6,5 @@ router.post('/', (req, res) => {
 });
 
 module.exports = router;
+
+// 2025-08-08 코드 수정 완료

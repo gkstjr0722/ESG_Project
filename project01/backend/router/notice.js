@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// 업로드 폴더 자동생성
+// 1. 업로드 폴더 자동생성 ( 공지사항 이미지 업로드용 )
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = 'uploads/notice';
@@ -19,12 +19,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// ========== 공지 등록 ==========
+// ========== 공지 등록 라우터 ==========
 router.post('/add', upload.single('file'), (req, res) => {
   const {
     WRITER_ID, WRITER_NAME, TITLE, CONTENT
   } = req.body;
-
   const NOTICE_ID = 'notice_' + Date.now();
   const NOTICE_DT = new Date().toISOString().slice(0, 19).replace('T', ' ');
   const UPDATE_DT = null; // 최초 등록 시 null
@@ -47,7 +46,7 @@ router.post('/add', upload.single('file'), (req, res) => {
   });
 });
 
-// ========== 공지 목록 ==========
+// ========== 공지 목록 라우터  ==========
 router.get('/list', (req, res) => {
   const sql = `SELECT * FROM NOTICE_BOARD ORDER BY NOTICE_DT DESC`;
   conn.query(sql, (err, rows) => {
@@ -56,7 +55,7 @@ router.get('/list', (req, res) => {
   });
 });
 
-// ========== 단일 공지 상세 ==========
+// ========== 단일 공지 상세 라우터  ==========
 router.get('/:notice_id', (req, res) => {
   const { notice_id } = req.params;
   const sql = `SELECT * FROM NOTICE_BOARD WHERE NOTICE_ID = ?`;
@@ -70,3 +69,5 @@ router.get('/:notice_id', (req, res) => {
 });
 
 module.exports = router;
+
+// 2025-08-08 코드 수정 완료
