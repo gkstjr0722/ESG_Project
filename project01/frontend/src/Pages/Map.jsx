@@ -143,6 +143,8 @@ axios.get("http://localhost:3001/api/proxy/list")
     map.setCenter(new window.kakao.maps.LatLng(SEOUL_CENTER.lat, SEOUL_CENTER.lng));
   }, [loading, stations]);
 
+
+  //==================css 수정=================================================================
   return (
     <div className="evmap-mainwrap">
       <div className="evmap-topnav">
