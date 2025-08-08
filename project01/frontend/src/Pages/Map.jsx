@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 // import "../CSS/MapEVCharger.css";
 import '../CSS/Sub.css';
+import Header from '../component/Header';
 
 // 동적 스크립트 로딩
 function loadKakaoSdk() {
@@ -146,18 +147,21 @@ axios.get("http://localhost:3001/api/proxy/list")
 
   //==================css 수정=================================================================
   return (
-    <div className="evmap-mainwrap">
-      <div className="evmap-topnav">
-        <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
+    <div>
+      <Header />
+      <div className="evmap-mainwrap">
+        <div className="evmap-topnav">
+          <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
+        </div>
+        <div className="evmap-content">
+          {loading ? (
+            <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+          ) : (
+            <div id="ev-map" className="evmap-map"></div>
+          )}
+        </div>
       </div>
-      <div className="evmap-content">
-        {loading ? (
-          <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
-        ) : (
-          <div id="ev-map" className="evmap-map"></div>
-        )}
-      </div>
-    </div>
+    </div>  
   );
 };
 

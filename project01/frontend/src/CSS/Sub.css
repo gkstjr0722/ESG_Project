@@ -31,15 +31,28 @@
 }
 
 /* ===================== Map.css ===================== */
-.evmap-mainwrap { min-height: 100vh; background: #e6f7f3; }
+.evmap-mainwrap { min-height: 100vh; background: #fff; }
 .evmap-topnav {
-  background: #e6f7f3; padding: 32px 0 10px; font-size: 1.4rem;
+  background: #fff; padding: 32px 0 10px; font-size: 1.4rem;
   color: #202844; font-weight: 400; letter-spacing: 0.01em; width: 100vw; min-width: 1080px;
+  display: flex;
+  justify-content: flex-start; /* 왼쪽으로 정렬! */
+  align-items: center;
+  height: 48px;  /* 필요에 따라 높이 조절 */
+  padding-left: 215px; /* 왼쪽 여백 (옵션) */
 }
-.evmap-path b { font-weight: 600; color: #24243b; letter-spacing: 0.03em; }
+.evmap-path {
+  font-size: 1.2rem; /* 위치찾기 전체 글씨 크기 기준을 작게 잡음 */
+  color: #222;
+}
+.evmap-path b { 
+  font-weight: 600; color: #24243b; letter-spacing: 0.03em;
+  font-size: 1.5rem;
+  color: #222;
+}
 .evmap-content {
   max-width: 1400px; margin: 0 auto; background: #fff; box-shadow: 0 2px 16px #0002;
-  border-radius: 20px; margin-top: 20px; padding: 30px 40px 38px; min-height: 670px;
+  border-radius: 20px; margin-top: 20px; padding: 30px 40px 38px; min-height: 500px;
 }
 .evmap-map {
   width: 100%; min-height: 600px; height: 62vh; border-radius: 18px; box-shadow: 0 1px 6px #0001;
