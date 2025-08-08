@@ -26,37 +26,52 @@ const videoData = [
   },
 ];
 
-// ── 메인 공지 캐러셀 (이 파일 안에 포함)
-function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) {
+// ── 메인 공지 캐러셀
+function HomeNoticeCarousel({ limit = 6, intervalMs = 3000 }) { // ★ 3초 기본값
   const nav = useNavigate();
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);
-  const timer = useRef(null);
-  const hovering = useRef(false);
+  const visibleRef = useRef(true); // 탭 가시성 상태
 
   // 공지 N개 가져오기
   useEffect(() => {
     let alive = true;
     (async () => {
       try {
-        const { data } = await axios.get(`http://localhost:3001/api/notice/banner?limit=${limit}`);
+        const { data } = await axios.get(
+          `http://localhost:3001/api/notice/banner?limit=${limit}`
+        );
         if (alive) setItems(data.notices || []);
       } catch {
         if (alive) setItems([]);
       }
     })();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, [limit]);
 
-  // 자동 넘김
+  // 페이지 가시성 감지(백그라운드일 때 타이머 멈춤)
+  useEffect(() => {
+    const onVis = () => {
+      visibleRef.current = document.visibilityState === 'visible';
+    };
+    document.addEventListener('visibilitychange', onVis);
+    onVis();
+    return () => document.removeEventListener('visibilitychange', onVis);
+  }, []);
+
+  // 자동 넘김: setTimeout 루프 (hover 정지 없음)
   useEffect(() => {
     if (!items.length) return;
-    clearInterval(timer.current);
-    timer.current = setInterval(() => {
-      if (!hovering.current) setIdx(i => (i + 1) % items.length);
+    if (!visibleRef.current) return;
+
+    const t = setTimeout(() => {
+      setIdx((i) => (i + 1) % items.length);
     }, intervalMs);
-    return () => clearInterval(timer.current);
-  }, [items, intervalMs]);
+
+    return () => clearTimeout(t);
+  }, [idx, items.length, intervalMs]);
 
   const go = (i) => setIdx((i + items.length) % items.length);
   const current = useMemo(() => items[idx] || null, [items, idx]);
@@ -64,12 +79,14 @@ function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) {
   if (!items.length) return null;
 
   return (
-    <div
-      className="notice-hero"
-      onMouseEnter={() => (hovering.current = true)}
-      onMouseLeave={() => (hovering.current = false)}
-    >
-      <button className="notice-hero__nav prev" onClick={() => go(idx - 1)} aria-label="이전">‹</button>
+    <div className="notice-hero">
+      <button
+        className="notice-hero__nav prev"
+        onClick={() => go(idx - 1)}
+        aria-label="이전"
+      >
+        ‹
+      </button>
 
       <div
         className="notice-hero__content"
@@ -77,12 +94,20 @@ function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) {
         role="button"
       >
         <div className="notice-hero__eyebrow">공지사항</div>
-        <div className="notice-hero__title" title={current.TITLE}>{current.TITLE}</div>
+        <div className="notice-hero__title" title={current.TITLE}>
+          {current.TITLE}
+        </div>
         <div className="notice-hero__date">{current.NOTICE_DT?.slice(0, 10)}</div>
         <div className="notice-hero__cta">공지사항 바로가기 →</div>
       </div>
 
-      <button className="notice-hero__nav next" onClick={() => go(idx + 1)} aria-label="다음">›</button>
+      <button
+        className="notice-hero__nav next"
+        onClick={() => go(idx + 1)}
+        aria-label="다음"
+      >
+        ›
+      </button>
 
       <div className="notice-hero__dots">
         {items.map((_, i) => (
@@ -125,11 +150,7 @@ function App() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <img
-                className="video-thumbnail"
-                src={video.thumbnail}
-                alt={video.title}
-              />
+              <img className="video-thumbnail" src={video.thumbnail} alt={video.title} />
               <div className="video-info">
                 <div className="video-title">{video.title}</div>
                 <div className="video-channel">{video.channel}</div>
