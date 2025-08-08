@@ -56,6 +56,20 @@ body {
 .main-page-root { min-height: 100vh; display: flex; flex-direction: column; }
 .app-container { flex: 1 0 auto; display: flex; flex-direction: column; }
 .notice-section { flex: 1 1 auto; display: flex; }
+
+/* 🔧 공지 배너가 화면 가로를 항상 꽉 채우도록 강제 */
+.notice-section,
+.notice-hero {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
+/* 섹션이 가로 중앙 정렬로 좁아지지 않도록 */
+.main-page-root .app-container > section.notice-section {
+  flex: 1 1 auto !important;
+  align-self: stretch !important;
+}
+
 .banner-button { display: none !important; }
 
 /* 슬라이더(안전 기본값) */
@@ -194,3 +208,165 @@ body {
 section.slider-section{ min-height:auto !important; height:auto !important; flex:0 0 auto !important; margin:0 !important; padding:0 !important; }
 .mySwiper, .swiper-wrapper-custom{ height:auto !important; }
 /* ===================== end main.css ===================== */
+
+
+/* ======================= (추가) Login.css ======================= */
+/* 로그인/회원가입 페이지 흰 박스 */
+.login-corp-box {
+  min-width: 200px;
+  max-width: 450px;
+  text-align: center;
+}
+
+/* 회원가입 h2에만 적용되는듯 */
+.login-corp-box h2 {
+  color: #0c355c;
+  margin-bottom: 32px;
+  font-size: 1.6rem;
+}
+
+.login-corp-box input[type="text"],
+.login-corp-box input[type="password"] {
+  width: 90%;
+  padding: 13px 14px;
+  margin-bottom: 18px;
+  font-size: 1rem;
+  border-radius: 8px;
+  border: 1px solid #dde1ea;
+  background: #f7f9fc;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-corp-box input:focus {
+  border: 1.5px solid #3ba2f3;
+}
+
+/* 로그인-로그인 버튼 */
+.main-btn1 {
+  width: 100%;
+  font-size: 16px;
+  padding: 14px 0;
+  border-radius: 6px;
+  font-weight: 700;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+/* 회원가입 메인-기업/관공업 */
+.main-btn-01 {
+  font-size: 20px;
+  margin: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 190px;
+  height: 200px;
+  box-sizing: border-box;
+}
+
+/* 로그인 서버오류 안내 멘트 */
+.login-error {
+  color: #dc143c;
+  margin-bottom: 12px;
+  font-size: 0.98rem;
+}
+
+/* 로그인 아래 비밀번호를 잊으셨나요? <- 바꿀 예정 */
+.login-link-area {
+  margin-top: 14px;
+  color: #555;
+  font-size: 0.96rem;
+}
+
+/* 로그인 아래 비밀번호를 잊으셨나요?와 회원가입 링크 가운데 나누는 "|" */
+.login-link-area .divider {
+  margin: 0 10px;
+  color: #bbb;
+}
+
+/* 로그인 아래 회원가입 링크 */
+.login-link-area .join-link {
+  color: #0077cb;
+  text-decoration: underline;
+  font-weight: 600;
+  cursor: pointer;
+}
+.login-link-area .join-link:hover {
+  color: #085cab;
+}
+
+/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼 구역 */
+.login-switch-btn-area {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 8px;
+}
+/* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼*/
+.login-switch-btn {
+  padding: 7px 22px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+}
+
+.login-switch-btn.active,
+.login-switch-btn:hover {
+  background: #0098d8;
+  color: #fff;
+  border: 1.5px solid #0098d8;
+}
+
+/* ======================= (추가) Join.css ======================= */
+.join-corp-box {
+  min-width: 320px;
+  max-width: 520px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.join-corp-box h2 {
+  text-align: center;
+  color: #0c355c;
+  margin-bottom: 24px;
+}
+.join-corp-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.join-corp-box input[type="text"],
+.join-corp-box input[type="password"],
+.join-corp-box input[type="email"],
+.join-corp-box input[type="tel"] {
+  padding: 11px 14px;
+  font-size: 16px;
+  border: 1.5px solid #e1e4e8;
+  border-radius: 8px;
+  transition: border 0.2s;
+}
+.join-corp-box input:focus {
+  border: 1.5px solid #0098d8;
+  outline: none;
+}
+.upload-section {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: left;
+}
+.terms {
+  font-size: 15px;
+  margin: 10px 0 4px 0;
+  color: #666;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+}
+
+.join-btn {
+  padding: 13px 0;
+  /* margin-top: 12px; */
+}

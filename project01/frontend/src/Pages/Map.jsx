@@ -37,6 +37,16 @@ const Map = () => {
     let isMounted = true;
 
     async function fetchAll() {
+
+axios.get("http://localhost:3001/api/proxy/list")
+  .then(res => console.log(res.data))
+  .catch(err => {
+    console.error("에러 코드:", err.code);
+    console.error("에러 메시지:", err.message);
+    console.error("응답 객체:", err.response?.data);
+  });
+
+
       setLoading(true);
       await loadKakaoSdk();
 
