@@ -5,7 +5,6 @@ import Header from '../component/Header';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-// 유튜브 썸네일 데이터
 const videoData = [
   {
     title: '한전 파워플래너 소개',
