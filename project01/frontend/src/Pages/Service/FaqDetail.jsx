@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Header from '../../component/Header';
-import '../../CSS/Faq.css';
+// import '../../CSS/Faq.css';
+import '../../CSS/Sub.css';
 import axios from 'axios';
 
 const FaqDetail = () => {
@@ -73,11 +74,16 @@ const FaqDetail = () => {
         <br /><br />
         <div className="faq-detail-title">{question.TITLE}</div>
         <div className="faq-detail-content">{question.CONTENT}</div>
+        {/* 답변이 있을 경우만 노출 */}
+        {question.ANSWER && question.ANSWER.trim() !== "" && (
+          <div className="faq-answer-box" style={{ marginTop: 32 }}>
+            <strong>관리자 답변</strong>
+            <div className="faq-answer-content">{question.ANSWER}</div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default FaqDetail;
-
-// FAQ기능구현완료!!

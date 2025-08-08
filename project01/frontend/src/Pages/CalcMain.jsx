@@ -1,7 +1,8 @@
 import React from 'react'
 
 // 그냥 구분용 디자인
-import '../CSS/Calc.css';
+// import '../CSS/Calc.css';
+import '../CSS/Sub.css';
 import ElecUsed from '../component/ElecUsed';
 import MonthUsed from '../component/MonthUsed';
 import PowerAVG from '../component/PowerAVG';

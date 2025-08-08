@@ -56,7 +56,7 @@ createRoot(document.getElementById('root')).render(
 
       {/* 고객센터 */}
       <Route path="/support" element={<Support />}></Route>
-      <Route path="/notice" element={<Notice />}></Route>
+      <Route path="/notice" element={<Notice />}></Route>ㅋ
 
       {/* 고객문의 */}
       <Route path="/faq" element={<FAQ />}></Route>

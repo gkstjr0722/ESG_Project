@@ -1,5 +1,0 @@
-.box{
-  border: 2px solid #aaa;   /* 얇은 회색 테두리 */
-  padding: 10px;            /* 안쪽 여백 */
-  box-sizing: border-box;
-}
