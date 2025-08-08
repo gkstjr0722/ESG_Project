@@ -1,9 +1,8 @@
-// DB/router/mainR.js
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
 
-// 메인 페이지
+// 1. 메인 페이지
 router.post('/', (req, res) => {
   res.send('메인 페이지입니다!');
 });
@@ -17,3 +16,5 @@ router.post('/users', (req, res) => {
 });
 
 module.exports = router;
+
+// 2025-08-08 코드 수정 완료 
