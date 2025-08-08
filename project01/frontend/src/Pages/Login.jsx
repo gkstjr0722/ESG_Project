@@ -79,6 +79,7 @@ const Login = () => {   // 함수명 통일!
         <div className="common-box login-corp-box">
           <div className="login-switch-btn-area">
             <button
+              className="commin.login-text"
               className={mode === 'business' ? 'login-switch-btn active' : 'login-switch-btn'}
               onClick={() => { setMode('business'); setId(''); setPw(''); setError(''); }}
               type="button"
