@@ -8,7 +8,7 @@ import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
 const Carbon = () => {
   useEffect(() => {
     // Root 생성
-    let root = am5.Root.new("chartdiv");
+    let root = am5.Root.new("Carbon");
 
     // 테마
     root.setThemes([am5themes_Animated.new(root)]);
@@ -130,7 +130,7 @@ const Carbon = () => {
 
   // 반드시 이 div의 id와 루트 생성시 id가 같아야 함!
   return (
-    <div id="chartdiv" style={{ width: "100%", height: "200px" }}></div>
+    <div id="Carbon" style={{ width: "100%", height: "300px" }}></div>
   );
 };
 
