@@ -6,7 +6,7 @@ import '../../CSS/Sub.css';
 import Notice from './Notice';
 
 const Support = () => {
-  const [activeTab, setActiveTab] = useState('qna');
+  const [activeTab, setActiveTab] = useState('notice');
   const navigate = useNavigate(); // << 이거 꼭 필요!
 
   return (

@@ -1,4 +1,89 @@
-/* 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통 + login-switch-btn + support-banner-tab */
+/* 헤더, 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통 + login-switch-btn + support-banner-tab */
+
+/* 헤더 */
+.body {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'IBM Plex Sans KR', 'Noto Sans KR', '맑은 고딕', Arial, sans-serif;
+  background: #fcfdfe;
+}
+/* 헤더(상단 고정) */
+.navbar {
+  min-width: 1100px;
+  height: 85px;
+  background: #fff;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 80px;
+  align-items: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+}
+
+/* 로고 */
+.logo {
+  font-size: 25px;
+  font-weight: bold;
+  color: #1d5fc4;
+  letter-spacing: 1px;
+
+}
+
+/* 오른쪽 아이콘 */
+.nav-icons {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 18px;
+  transform: translateX(-50px); /* 더 왼쪽 */
+}
+
+/* 로그인 */
+.login-text {
+  font-size: 17px;
+  font-weight: bold;
+  margin-left: 8px;
+  color: #1d5fc4;
+  text-decoration: none;
+}
+
+/* 메뉴 바 */
+.menu-buttons {
+  display: flex;
+  gap: 120px;
+  justify-content: center;
+  align-items: center;
+}
+
+.menu-main-text {
+  font-weight: 700;
+  font-size: 19px;
+  color: #1c2328;
+  padding: 17px 0 16px 0;
+  cursor: pointer;
+  transition: color 0.18s;
+}
+
+.menu-main-text:hover {
+  color: #0098d8;
+}
+.menu-wrapper {
+  position: relative;
+  z-index: 1100;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.userpage {
+  text-decoration: none;
+}
+
+
+
+
 .common-btn {
     background: #1d5fc4;
     color: #fff;
