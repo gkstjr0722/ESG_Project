@@ -27,7 +27,7 @@ const videoData = [
 ];
 
 // ── 메인 공지 캐러셀
-function HomeNoticeCarousel({ limit = 6, intervalMs = 3000 }) { // ★ 3초 기본값
+function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) { // ★ 3초 기본값
   const nav = useNavigate();
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);

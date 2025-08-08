@@ -527,3 +527,10 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+/* Sub.css 에 추가 */
+.faq-detail-title.notice-detail-title { 
+  font-size: 2rem !important; 
+  font-weight: 800; 
+  line-height: 1.3;
+}

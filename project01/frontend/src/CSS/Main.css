@@ -195,7 +195,67 @@ body {
 }
 
 
+/* ===== 공지 상세 ===== */
+
+/* (NEW) 공지 상세 내부 레이아웃: 돌아가기/제목/본문/이미지 왼쪽 라인 통일 */
+.notice-detail-inner {
+  padding-left: 24px;         /* ← 이 값으로 돌아가기와 제목의 왼쪽 기준선을 맞춥니다 */
+  max-width: 980px;
+}
+@media (max-width: 768px) {
+  .notice-detail-inner { padding-left: 16px; }
+}
+
+/* 돌아가기 버튼을 텍스트 링크처럼, 아래 제목과 간격 */
+.faq-detail-backbtn {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: #000;      /* ← 검은색으로 변경 */
+  font-weight: 700;
+  font-size: 16px;
+  padding: 0;
+  cursor: pointer;
+  margin-bottom: 12px;
+}
+.faq-detail-backbtn:hover { text-decoration: underline; }
+
+/* 상세 제목 조금 더 크게 */
+.notice-detail-title {
+  font-size: 2.25em;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+/* 본문 줄바꿈/띄어쓰기 유지하고 가독성 */
+.notice-detail-content {
+  white-space: pre-wrap;    /* \n 줄바꿈 반영 */
+  line-height: 1.6;
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+/* 첨부 이미지: 원본 비율, 화면에 알맞게 */
+.notice-detail-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin-top: 16px;
+  border-radius: 8px;
+  max-height: 75vh;
+  object-fit: contain;
+}
+
+/* 첨부 파일 링크 */
+.notice-detail-file {
+  display: inline-block;
+  margin-top: 12px;
+  color: #1d5fc4;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+
 /* ───────────────── 안전 오버라이드(충돌 방지) ───────────────── */
 section.slider-section { min-height: auto !important; height: auto !important; flex: 0 0 auto !important; margin: 0 !important; padding: 0 !important; }
 .mySwiper, .swiper-wrapper-custom { height: auto !important; }
-
