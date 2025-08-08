@@ -154,4 +154,4 @@ router.put('/password-update', async (req, res) => {
 
 module.exports = router;
 
-// 2025-08-08 코드 수정 완료 ( mypageR.js -> userR.js 통합 )
+// 2025-08-08 코드 수정 완료 ( mypageR.js -> userR.js 통합 및 코드 정리 )
