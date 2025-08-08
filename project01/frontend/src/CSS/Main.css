@@ -178,7 +178,7 @@ body {
 .video-card {
   width: 250px;
   /* height: 200px; */
-  border-radius: 14px;
+  /* border-radius: 14px; */
   box-shadow: 2px 2px 100px rgba(0, 0, 0, 0.09);
   background: #fff; 
   text-decoration: none;
