@@ -1,3 +1,5 @@
+// 전력사용현황 메인 페이지
+
 import React, { useState } from 'react';
 import '../CSS/Sub.css';
 import MonthUsed from '../component/MonthUsed';
