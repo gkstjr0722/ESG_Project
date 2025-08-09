@@ -1,13 +1,16 @@
 // src/Pages/Service/Support.jsx
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import Header from '../../component/Header';
 import '../../CSS/Sub.css';
 import Notice from './Notice';
 
 const Support = () => {
-  const [activeTab, setActiveTab] = useState('notice'); // 기본 탭
+  const location = useLocation();
   const navigate = useNavigate();
+
+  const pathname = location?.pathname || '/';
+  const isNotice = pathname === '/notice' || pathname.startsWith('/notice/');
 
   return (
     <>
@@ -17,22 +20,24 @@ const Support = () => {
       <div className="support-banner-tabbar">
         <button
           type="button"
-          className={`support-banner-tab${activeTab === 'qna' ? ' active' : ''}`}
-          onClick={() => setActiveTab('qna')}
+          className={`support-banner-tab${!isNotice ? ' active' : ''}`}
+          onClick={() => navigate('/support')}
         >
           고객문의
         </button>
         <button
           type="button"
-          className={`support-banner-tab${activeTab === 'notice' ? ' active' : ''}`}
-          onClick={() => setActiveTab('notice')}
+          className={`support-banner-tab${isNotice ? ' active' : ''}`}
+          onClick={() => navigate('/notice')}
         >
           공지사항
         </button>
       </div>
 
       {/* 콘텐츠 */}
-      {activeTab === 'qna' ? (
+      {isNotice ? (
+        <Notice />
+      ) : (
         <div className="support-main-wrapper">
           <div className="support-center-card">
             <button
@@ -42,7 +47,6 @@ const Support = () => {
             >
               자주 묻는 질문
             </button>
-
             <button
               type="button"
               className="support-card-btn"
@@ -52,13 +56,9 @@ const Support = () => {
             </button>
           </div>
         </div>
-      ) : (
-        <Notice />
       )}
     </>
   );
 };
-
-
 
 export default Support;

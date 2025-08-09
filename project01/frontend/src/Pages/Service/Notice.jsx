@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import '../../CSS/Sub.css';
 import axios from 'axios';
+import { useParams, useNavigate } from 'react-router-dom'; // ★ 추가
 
 const Notice = () => {
   const [notices, setNotices] = useState([]);
@@ -14,6 +15,10 @@ const Notice = () => {
   const [form, setForm] = useState({ TITLE: '', CONTENT: '' });
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState('');
+
+  // 라우터 파라미터/네비게이터 ★ 추가
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   // 관리자 판별
   const userId = localStorage.getItem('id');
@@ -35,7 +40,42 @@ const Notice = () => {
     }
   };
 
+  // 단건 불러오기 ★ 추가
+  const fetchOne = async (noticeId) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await axios.get(`http://localhost:3001/api/notice/${noticeId}`);
+      if (data?.notice) {
+        setSelectedNotice(data.notice);
+        setForm({ TITLE: data.notice.TITLE, CONTENT: data.notice.CONTENT });
+        setMode('view');
+      } else {
+        setSelectedNotice(null);
+        setMode('list');
+        setError('해당 공지를 찾을 수 없습니다.');
+      }
+    } catch (e) {
+      setError('공지 정보를 불러오지 못했습니다.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 최초 목록 로드
   useEffect(() => { fetchNotice(); }, []);
+
+  // URL에 id가 있으면 상세 조회, 아니면 목록 모드 ★ 추가
+  useEffect(() => {
+    if (id) {
+      fetchOne(id);
+    } else {
+      // /notice 로 들어온 경우
+      setMode('list');
+      setSelectedNotice(null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   // 검색(대소문자 구분 없이)
   const q = (search || '').trim().toLowerCase();
@@ -89,6 +129,7 @@ const Notice = () => {
       setPreviewUrl('');
       setSelectedNotice(null);
       fetchNotice();
+      navigate('/notice'); // ★ 등록 후 목록 주소로
     } catch (err) {
       alert('등록에 실패했습니다.');
     }
@@ -101,24 +142,22 @@ const Notice = () => {
     setFile(null);
     setPreviewUrl('');
     setSelectedNotice(null);
+    navigate('/notice'); // ★ 목록 주소로
   };
 
-  // 상세 진입
+  // 목록 아이템 클릭 → 주소 이동 ★ 수정
   const handleNoticeClick = (notice) => {
-    setSelectedNotice(notice);
-    setForm({ TITLE: notice.TITLE, CONTENT: notice.CONTENT });
-    setFile(null);
-    setPreviewUrl('');
-    setMode('view');
+    navigate(`/notice/${notice.NOTICE_ID}`);
   };
 
-  // 목록으로
+  // 목록으로(상세에서 뒤로가기) ★ 수정
   const handleViewBack = () => {
     setMode('list');
     setSelectedNotice(null);
     setForm({ TITLE: '', CONTENT: '' });
     setFile(null);
     setPreviewUrl('');
+    navigate('/notice');
   };
 
   /* ───────── 등록 폼 (관리자만) ───────── */
@@ -258,7 +297,7 @@ const Notice = () => {
           />
           {isAdmin && (
             <button
-              className="notice-add-btn"   // ⬅ 둥근 버튼 클래스 적용
+              className="notice-add-btn"
               type="button"
               onClick={() => {
                 setMode('write');
@@ -266,6 +305,7 @@ const Notice = () => {
                 setFile(null);
                 setPreviewUrl('');
                 setSelectedNotice(null);
+                navigate('/notice'); // 작성은 목록 경로에서 진행
               }}
             >
               공지사항 등록
@@ -285,7 +325,7 @@ const Notice = () => {
               <div
                 key={n.NOTICE_ID}
                 className="faq-question-item"
-                onClick={() => handleNoticeClick(n)}
+                onClick={() => handleNoticeClick(n)} // ★ 클릭 시 URL 이동
                 style={{ cursor: 'pointer' }}
               >
                 <span className="faq-q-icon">N</span>

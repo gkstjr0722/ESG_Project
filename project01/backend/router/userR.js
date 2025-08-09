@@ -1,4 +1,3 @@
-// backend/router/userR.js  (기업용: 가입 + 조회 + 수정 + 비번변경 통합)
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');

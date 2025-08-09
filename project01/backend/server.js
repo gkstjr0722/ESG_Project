@@ -30,7 +30,7 @@ app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
 
 // 3. 파일 업로드 설정 
-// 업로드된 파일 정적 제공 
+//    업로드된 파일 정적 제공 
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 

@@ -77,20 +77,20 @@ router.put('/update_gov_pw', async (req, res) => {
   );
 });
 
-// 4. 관공업 회원가입 (government_users)
+// 4. 관공업 회원가입 (government_users 테이블)
 router.post('/join_gov', async (req, res) => {
   try {
     const {
-      corpName,        // NOT NULL
-      ceo,             // NOT NULL
-      dept,            // NULL 허용
-      manager,         // NOT NULL
-      phone,           // NOT NULL
-      email,           // NOT NULL
-      corpTel,         // NULL 허용
-      address,         // NOT NULL
-      id,              // PK, NOT NULL
-      pw               // NOT NULL (bcrypt 해시)
+      corpName,       
+      ceo,             
+      dept,           
+      manager,         
+      phone,          
+      email,          
+      corpTel,         
+      address,         
+      id,             
+      pw               
     } = req.body;
 
     // (1) 필수값 검증
