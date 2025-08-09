@@ -344,9 +344,9 @@ body {
 
 .login-switch-btn.active,
 .login-switch-btn:hover {
-  background: #0098d8;
+  background: #1d5fc4;
   color: #fff;
-  border: 1.5px solid #0098d8;
+  border: 1.5px solid #1d5fc4;
 }
 
 /* Join.css */
@@ -700,13 +700,6 @@ section.slider-section{ min-height:auto !important; height:auto !important; flex
   border: 1px solid #ddd;
   background: #f8f8f8;
   transition: background 0.2s, color 0.2s, border 0.2s;
-}
-
-.login-switch-btn.active,
-.login-switch-btn:hover {
-  background: #0098d8;
-  color: #fff;
-  border: 1.5px solid #0098d8;
 }
 
 /* ======================= (추가) Join.css ======================= */
