@@ -28,6 +28,14 @@
   gap: 22px;
   margin: 0 auto;
   max-width: 1000px;
+  min-width: 900px;
+  min-height: 700px;
+}
+.grid-wrapper {
+  display: flex;
+  justify-content: center; /* 가로 중앙 */
+  align-items: center;     /* 세로 중앙 */
+  min-height: 90vh;       /* 화면 높이 꽉 채움 */
 }
 
 /* ===================== Map.css ===================== */
@@ -185,7 +193,7 @@ body {
 .support-card-btn:hover{
   transform:translateY(-2px);
   box-shadow:0 16px 36px rgba(17,24,39,.12);
-  background: #00519c;
+  background: #5791ef;
   color: #fff;  
 }
 
