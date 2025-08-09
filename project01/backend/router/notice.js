@@ -1,4 +1,3 @@
-// backend/router/notice.js
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
@@ -109,6 +108,105 @@ router.get('/:notice_id', (req, res) => {
     // 조회수 +1 (에러는 무시)
     conn.query('UPDATE NOTICE_BOARD SET VIEW_COUNT = VIEW_COUNT + 1 WHERE NOTICE_ID = ?', [notice_id], () => {});
     res.json({ notice: rows[0] });
+  });
+});
+
+// 6. 공지 수정 ( admin 관리자 전용 )
+router.put('/:notice_id', upload.single('file'), (req, res) => {
+  const { notice_id } = req.params;
+  const {
+    TITLE,
+    CONTENT,
+    EDITOR_ID,
+    EDITOR_NAME,
+    WRITER_ID,
+    WRITER_NAME,
+    CLEAR_FILE,
+  } = req.body;
+
+  // admin만 허용 (둘 중 하나로 넘어와도 admin인지 확인)
+  const editorId = (EDITOR_ID || WRITER_ID || '').trim();
+  const editorName = (EDITOR_NAME || WRITER_NAME || '').trim();
+
+  if (editorId !== 'admin') {
+    return res.status(403).json({ ok: false, message: '관리자(admin)만 수정 가능' });
+  }
+  if (!TITLE || !CONTENT) {
+    return res.status(400).json({ ok: false, message: '제목/내용은 필수' });
+  }
+
+  // 1) 기존 파일경로 조회
+  const selectSql = `SELECT FILE_PATH FROM NOTICE_BOARD WHERE NOTICE_ID = ?`;
+  conn.query(selectSql, [notice_id], (selErr, selRows) => {
+    if (selErr) {
+      console.error('DB 오류[update:select]:', selErr);
+      return res.status(500).json({ ok: false, message: 'DB 오류' });
+    }
+    if (!selRows || selRows.length === 0) {
+      return res.status(404).json({ ok: false, message: 'NOT_FOUND' });
+    }
+
+    const oldFilePath = selRows[0].FILE_PATH || null;
+    let newFilePath = oldFilePath;
+
+    // 2) 파일 교체/삭제 처리
+    if (req.file) {
+      newFilePath = `/uploads/notice/${req.file.filename}`;
+    }
+    if (!req.file && (CLEAR_FILE === '1' || CLEAR_FILE === 'true')) {
+      newFilePath = null;
+    }
+
+    // 3) UPDATE
+    const fileChanged = newFilePath !== oldFilePath;
+    const updateSql = fileChanged
+      ? `UPDATE NOTICE_BOARD SET TITLE=?, CONTENT=?, UPDATE_DT=NOW(), FILE_PATH=? WHERE NOTICE_ID=?`
+      : `UPDATE NOTICE_BOARD SET TITLE=?, CONTENT=?, UPDATE_DT=NOW() WHERE NOTICE_ID=?`;
+
+    const updateParams = fileChanged
+      ? [TITLE, CONTENT, newFilePath, notice_id]
+      : [TITLE, CONTENT, notice_id];
+
+    conn.query(updateSql, updateParams, (updErr) => {
+      if (updErr) {
+        console.error('DB 오류[update]:', updErr);
+        return res.status(500).json({ ok: false, message: 'DB 오류' });
+      }
+
+      // 4) 수정 이력 기록 (NOTICE_EDIT)
+      const EDIT_ID = `edit_${Date.now()}`;
+      const editSql = `
+        INSERT INTO NOTICE_EDIT
+          (EDIT_ID, NT_ID, EDITOR_ID, EDITOR_NAME, EDIT_TITLE, EDIT_DATE)
+        VALUES (?, ?, ?, ?, ?, NOW())
+      `;
+      const editParams = [
+        EDIT_ID,
+        notice_id,
+        editorId,                // 'admin'
+        editorName || '관리자',
+        TITLE,                   // 수정된 제목
+      ];
+
+      conn.query(editSql, editParams, (editErr) => {
+        if (editErr) {
+          console.error('DB 오류[edit-log]:', editErr);
+          // 이력 실패해도 업데이트는 성공 처리
+        }
+
+        // 5) 기존 파일 삭제 (필요 시)
+        if (fileChanged && oldFilePath) {
+          const abs = path.join(process.cwd(), oldFilePath.replace(/^\//, ''));
+          fs.unlink(abs, (unlinkErr) => {
+            if (unlinkErr) {
+              console.warn('파일 삭제 경고[update]:', unlinkErr.message);
+            }
+          });
+        }
+
+        return res.json({ ok: true, noticeId: notice_id, editId: EDIT_ID });
+      });
+    });
   });
 });
 

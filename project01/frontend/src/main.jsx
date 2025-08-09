@@ -14,7 +14,7 @@ import Map from './Pages/Map.jsx';
 
 // 고객센터
 import Support from './Pages/Service/Support.jsx';
-import Notice from './Pages/Service/Notice.jsx';
+// import Notice from './Pages/Service/Notice.jsx'; // ← 더 이상 직접 라우트에서 안 씀
 
 // 고객문의
 import FAQ from './Pages/Service/FAQ.jsx';
@@ -39,6 +39,7 @@ import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
 
+// createRoot route
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
@@ -50,9 +51,10 @@ createRoot(document.getElementById('root')).render(
 
       {/* 고객센터 */}
       <Route path="/support" element={<Support />} />
-      <Route path="/notice" element={<Notice />} />
-      {/* 공지 상세(배너에서 /notice/:id로 이동할 때 필요) */}
-      <Route path="/notice/:id" element={<Notice />} />
+
+      {/* 공지사항: 헤더/탭 유지 위해 Support로 렌더 */}
+      <Route path="/notice" element={<Support />} />
+      <Route path="/notice/:id" element={<Support />} />
 
       {/* 고객문의 */}
       <Route path="/faq" element={<FAQ />} />

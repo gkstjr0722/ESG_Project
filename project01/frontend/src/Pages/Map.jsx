@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 // import "../CSS/MapEVCharger.css";
 import '../CSS/Sub.css';
+import Header from '../component/Header';
 
 // 동적 스크립트 로딩
 function loadKakaoSdk() {
@@ -25,7 +26,7 @@ function loadKakaoSdk() {
   });
 }
 
-const SEOUL_CENTER = { lat: 37.5665, lng: 126.9780 };
+const GWANGJU_CENTER = { lat: 35.1595, lng: 126.8526 };
 
 const Map = () => {
   const [stations, setStations] = useState([]);
@@ -37,6 +38,8 @@ const Map = () => {
     let isMounted = true;
 
     async function fetchAll() {
+      setLoading(true);
+      await loadKakaoSdk();
 
 axios.get("http://localhost:3001/api/proxy/list")
   .then(res => console.log(res.data))
@@ -46,27 +49,24 @@ axios.get("http://localhost:3001/api/proxy/list")
     console.error("응답 객체:", err.response?.data);
   });
 
-
-      setLoading(true);
-      await loadKakaoSdk();
-
       let raw = [];
       try {
         const { data } = await axios.get("http://localhost:3001/api/proxy/list");
-        raw = data;
+        // 광주 지역 충전소만 필터링 (주소에 '광주' 포함)
+        raw = data.filter(st => st.stnAddr.includes("광주"));
       } catch (err) {
         alert("충전소 데이터 요청 실패");
         setLoading(false);
         return;
       }
 
-      // 5개만 주소 → 좌표 변환
+      // 좌표 변환 (최대 5개까지 표시 예시)
       const geocoder = new window.kakao.maps.services.Geocoder();
       const results = await Promise.all(
         raw.slice(0, 5).map(st =>
           new Promise(resolve => {
             geocoder.addressSearch(st.stnAddr, (result, status) => {
-              if (status === window.kakao.maps.services.Status.OK) {
+              if (status === window.kakao.maps.services.Status.OK && result[0]) {
                 resolve({
                   ...st,
                   lat: Number(result[0].y),
@@ -84,6 +84,7 @@ axios.get("http://localhost:3001/api/proxy/list")
         setLoading(false);
       }
     }
+
     fetchAll();
 
     return () => {
@@ -103,19 +104,21 @@ axios.get("http://localhost:3001/api/proxy/list")
     if (!container) return;
     container.innerHTML = "";
 
-    // 서울 중심
+    // 지도 생성 (광주 중심)
     const map = new window.kakao.maps.Map(container, {
-      center: new window.kakao.maps.LatLng(SEOUL_CENTER.lat, SEOUL_CENTER.lng),
+      center: new window.kakao.maps.LatLng(GWANGJU_CENTER.lat, GWANGJU_CENTER.lng),
       level: 7
     });
     mapRef.current = map;
 
+    // 기존 마커/팝업 삭제
     markersRef.current.forEach(obj => {
       obj.marker.setMap(null);
       if (obj.infowindow) obj.infowindow.close();
     });
     markersRef.current = [];
 
+    // 마커 생성
     stations.forEach(st => {
       if (!st.lat || !st.lng) return;
       const marker = new window.kakao.maps.Marker({
@@ -139,23 +142,29 @@ axios.get("http://localhost:3001/api/proxy/list")
       markersRef.current.push({ marker, infowindow });
     });
 
-    // 지도 중심은 서울
-    map.setCenter(new window.kakao.maps.LatLng(SEOUL_CENTER.lat, SEOUL_CENTER.lng));
+    map.setCenter(new window.kakao.maps.LatLng(GWANGJU_CENTER.lat, GWANGJU_CENTER.lng));
   }, [loading, stations]);
 
+  
+
+
+  //==================css 수정=================================================================
   return (
-    <div className="evmap-mainwrap">
-      <div className="evmap-topnav">
-        <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
+    <div>
+      <Header />
+      <div className="evmap-mainwrap">
+        <div className="evmap-topnav">
+          <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
+        </div>
+        <div className="evmap-content">
+          {loading ? (
+            <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+          ) : (
+            <div id="ev-map" className="evmap-map"></div>
+          )}
+        </div>
       </div>
-      <div className="evmap-content">
-        {loading ? (
-          <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
-        ) : (
-          <div id="ev-map" className="evmap-map"></div>
-        )}
-      </div>
-    </div>
+    </div>  
   );
 };
 

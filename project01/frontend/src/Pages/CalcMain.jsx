@@ -1,3 +1,5 @@
+// 전력사용현황 메인 페이지
+
 import React, { useState } from 'react';
 import '../CSS/Sub.css';
 import MonthUsed from '../component/MonthUsed';
@@ -55,22 +57,24 @@ const CalcMain = () => {
   return (
     <>
       <Header />
-      <div className='grid-2x2'>
-        <div className='box'>
-          <div>전기요금</div>
-          <PowerBill onCalculationComplete={handleCalculationComplete} />
-        </div>
-        <div className='box'>
-          <div>한달 예측 사용량</div>
-          <MonthUsed data={viewDataMonthly} />
-        </div>
-        <div className='box'>
-          <div>평균 전력량</div>
-          <PowerAVG data={viewDataAvg} />
-        </div>
-        <div className='box'>
-          <div>탄소사용현황</div>
-          <Carbon data={viewDataMonthly} />
+      <div className='grid-wrapper'>
+        <div className='grid-2x2'>
+          <div className='box'>
+            <div>전기요금</div>
+            <PowerBill onCalculationComplete={handleCalculationComplete} />
+          </div>
+          <div className='box'>
+            <div>한달 예측 사용량</div>
+            <MonthUsed data={viewDataMonthly} />
+          </div>
+          <div className='box'>
+            <div>평균 전력량</div>
+            <PowerAVG data={viewDataAvg} />
+          </div>
+          <div className='box'>
+            <div>탄소사용현황</div>
+            <Carbon data={viewDataMonthly} />
+          </div>
         </div>
       </div>
     </>

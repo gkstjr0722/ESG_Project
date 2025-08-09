@@ -344,9 +344,9 @@ body {
 
 .login-switch-btn.active,
 .login-switch-btn:hover {
-  background: #0098d8;
+  background: #1d5fc4;
   color: #fff;
-  border: 1.5px solid #0098d8;
+  border: 1.5px solid #1d5fc4;
 }
 
 /* Join.css */
@@ -397,10 +397,37 @@ body {
 }
 
 .join-btn {
-  
-  padding: 13px 0;
-  /* margin-top: 12px; */
+    background: #1d5fc4;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+    width: 50%;
 }
+.join-btn:hover {
+  background-color: #1951a6;
+}
+
+.join-back {
+    background: #9a9ea3;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
+    transition: background 0.2s;
+    width: 50%;
+}
+.join-back:hover {
+  background-color: #767c83;
+}
+
 
 
 
@@ -566,52 +593,6 @@ body {
   text-decoration: underline; font-weight: 600;
 }
 
-/* ===== Support 페이지 ===== */
-/* 탭바 */
-.support-banner-tabbar{
-  display:flex; gap:12px; justify-content:center; align-items:center;
-  padding:16px 12px; background:#f8f9fd; border-bottom:1px solid #edf0f6;
-}
-.support-banner-tab{
-  padding:10px 18px; border-radius:999px; border:1px solid #dde3ef;
-  background:#fff; font-weight:700; font-size:15px; color:#344054;
-  cursor:pointer; transition:all .18s ease;
-}
-.support-banner-tab:hover{ box-shadow:0 2px 10px rgba(16,24,40,.06); }
-.support-banner-tab.active{ border-color:#5b7fff; color:#1d3df0; background:#eef3ff; }
-
-/* 중앙 카드 */
-.support-main-wrapper{
-  display:flex; justify-content:center; align-items:center;
-  min-height:420px; padding:32px 16px;
-}
-.support-center-card{
-  display:flex; flex-direction:column; gap:16px; align-items:center;
-}
-
-/* 큰, 둥근 버튼 */
-.support-card-btn{
-  display:inline-flex; align-items:center; justify-content:center;
-  width:360px; min-height:76px; padding:18px 24px;
-  font-size:20px; font-weight:800; color:#111;
-  background:#fff; border:1px solid #e3e6ef; border-radius:16px;
-  box-shadow:0 8px 24px rgba(17,24,39,.06);
-  cursor:pointer;
-  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
-}
-.support-card-btn:hover{
-  transform:translateY(-2px);
-  box-shadow:0 14px 28px rgba(17,24,39,.10);
-  background:#fafbff; border-color:#cfd6e4;
-}
-.support-card-btn:active{
-  transform:translateY(0);
-  box-shadow:0 6px 18px rgba(17,24,39,.08);
-}
-
-@media (max-width: 480px){
-  .support-card-btn{ width:92%; font-size:18px; min-height:64px; border-radius:14px; }
-}
 
 /* 안전 오버라이드 */
 section.slider-section{ min-height:auto !important; height:auto !important; flex:0 0 auto !important; margin:0 !important; padding:0 !important; }
@@ -719,13 +700,6 @@ section.slider-section{ min-height:auto !important; height:auto !important; flex
   border: 1px solid #ddd;
   background: #f8f8f8;
   transition: background 0.2s, color 0.2s, border 0.2s;
-}
-
-.login-switch-btn.active,
-.login-switch-btn:hover {
-  background: #0098d8;
-  color: #fff;
-  border: 1.5px solid #0098d8;
 }
 
 /* ======================= (추가) Join.css ======================= */
