@@ -87,7 +87,7 @@
 
 /* 공통 버튼 */
 .common-btn {
-    background: #1d5fc4;
+    background: #3c79d5;
     color: #fff;
     border: none;
     border-radius: 8px;
@@ -98,7 +98,7 @@
     transition: background 0.2s;
 }
 .common-btn:hover {
-  background: #00519c;
+  background: #2d69c4;
   color: #fff;  
 }
 

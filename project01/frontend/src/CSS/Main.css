@@ -340,13 +340,17 @@ body {
   border: 1px solid #ddd;
   background: #f8f8f8;
   transition: background 0.2s, color 0.2s, border 0.2s;
+  border-radius: 8px;
+  width: 150px;
 }
 
 .login-switch-btn.active,
 .login-switch-btn:hover {
-  background: #1d5fc4;
+  background: #3c79d5;
   color: #fff;
-  border: 1.5px solid #1d5fc4;
+  border: 1.5px solid #3c79d5;
+  border-radius: 8px;
+  width: 150px;
 }
 
 /* Join.css */
@@ -397,19 +401,20 @@ body {
 }
 
 .join-btn {
-    background: #1d5fc4;
+    background: #3c79d5;
     color: #fff;
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 17px;
     text-align: center;
     text-decoration: none;
     transition: background 0.2s;
+    height: 50px;
     width: 50%;
 }
 .join-btn:hover {
-  background-color: #1951a6;
+  background-color: #2d69c4;
 }
 
 .join-back {
@@ -418,7 +423,7 @@ body {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 17px;
     text-align: center;
     text-decoration: none;
     transition: background 0.2s;
