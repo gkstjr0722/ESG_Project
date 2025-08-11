@@ -39,7 +39,9 @@ import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
 
-// createRoot route
+// 비밀번호 재설정
+import PasswordReset from './Pages/Service/PasswordReset.jsx';
+
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <Routes>
@@ -79,6 +81,11 @@ createRoot(document.getElementById('root')).render(
       <Route path="/powerbill" element={<PowerBill />} />
       <Route path="/poweravg" element={<PowerAVG />} />
       <Route path="/carbon" element={<Carbon />} />
+
+      {/* 비밀번호 재설정 */}
+      <Route path="/password/reset" element={<PasswordReset />} />
+      {/* 기존 경로도 임시 유지 (원하면 삭제 가능) */}
+      <Route path="/passwordreset" element={<PasswordReset />} />
     </Routes>
   </BrowserRouter>
 );
