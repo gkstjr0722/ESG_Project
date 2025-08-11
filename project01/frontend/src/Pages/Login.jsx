@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router-dom';
 import '../CSS/Main.css';
 import Header from '../component/Header';
 
-const Login = () => {   // 함수명 통일!
+// API Base (환경변수 없으면 로컬)
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
+
+const Login = () => {
   const [mode, setMode] = useState('business');
   const [id, setId] = useState('');
   const [pw, setPw] = useState('');
@@ -26,10 +29,10 @@ const Login = () => {   // 함수명 통일!
     }
   }, [mode]);
 
-  // 각각 로그인 엔드포인트 지정
+  // 각각 로그인 엔드포인트 지정 (fetch 그대로 유지)
   const loginEndpoints = {
-    business: 'http://localhost:3001/loginB/corp',
-    government: 'http://localhost:3001/loginG/corp'
+    business: `${API_BASE}/loginB/corp`,
+    government: `${API_BASE}/loginG/corp`,
   };
 
   const handleLogin = async (e) => {
@@ -49,45 +52,48 @@ const Login = () => {   // 함수명 통일!
       const data = await res.json();
 
       if (data.result === 'success') {
-        // 로그인 성공 시: localStorage에 아이디 저장/삭제
-        if (saveId) {
-          localStorage.setItem(savedIdKey, id);
-        } else {
-          localStorage.removeItem(savedIdKey);
-        }
-      
+        if (saveId) localStorage.setItem(savedIdKey, id);
+        else localStorage.removeItem(savedIdKey);
+
         localStorage.setItem(mode === 'business' ? 'id' : 'gov_id', id);
         localStorage.setItem('userName', data.userName || '');
         localStorage.setItem('email', data.email || '');
-      
-        // ★ 로그인 성공 시 이름/이메일도 저장 (백엔드에서 응답해야 함!)
-        
 
         navigate('/');
       } else {
         setError(data.msg || '로그인 실패! 아이디/비밀번호를 확인하세요.');
       }
-    } catch (err) {
+    } catch {
       setError('서버 오류! 잠시 후 다시 시도해 주세요.');
     }
   };
 
   return (
     <div>
-      <Header/>
+      <Header />
       <div className="common-bg">
         <div className="common-box login-corp-box">
           <div className="login-switch-btn-area">
             <button
               className={mode === 'business' ? 'login-switch-btn active' : 'login-switch-btn'}
-              onClick={() => { setMode('business'); setId(''); setPw(''); setError(''); }}
+              onClick={() => {
+                setMode('business');
+                setId('');
+                setPw('');
+                setError('');
+              }}
               type="button"
             >
               기업 로그인
             </button>
             <button
               className={mode === 'government' ? 'login-switch-btn active' : 'login-switch-btn'}
-              onClick={() => { setMode('government'); setId(''); setPw(''); setError(''); }}
+              onClick={() => {
+                setMode('government');
+                setId('');
+                setPw('');
+                setError('');
+              }}
               type="button"
             >
               관공업 로그인
@@ -97,12 +103,13 @@ const Login = () => {   // 함수명 통일!
           <h2 style={{ marginTop: '22px' }}>
             {mode === 'business' ? '기업·공공기관 로그인' : '관공업 로그인'}
           </h2>
+
           <form onSubmit={handleLogin}>
             <input
               type="text"
               placeholder={mode === 'business' ? '기업/기관 아이디' : '관공업 아이디'}
               value={id}
-              onChange={e => setId(e.target.value)}
+              onChange={(e) => setId(e.target.value)}
               autoFocus
               required
             />
@@ -110,10 +117,10 @@ const Login = () => {   // 함수명 통일!
               type="password"
               placeholder="비밀번호"
               value={pw}
-              onChange={e => setPw(e.target.value)}
+              onChange={(e) => setPw(e.target.value)}
               required
             />
-            {/* 아이디 저장 체크박스 */}
+
             <div style={{ margin: '12px 0 0 0', textAlign: 'left' }}>
               <input
                 type="checkbox"
@@ -125,13 +132,26 @@ const Login = () => {   // 함수명 통일!
                 아이디 저장
               </label>
             </div>
+
             {error && <div className="login-error">{error}</div>}
-            <button className="common-btn main-btn1" type="submit">로그인</button>
+
+            <button className="common-btn main-btn1" type="submit">
+              로그인
+            </button>
           </form>
+
           <div className="login-link-area">
-            <span>비밀번호를 잊으셨나요?</span>
+            <button
+              className="linklike"
+              type="button"
+              onClick={() => navigate('/password/reset')} // ← 페이지로 이동
+            >
+              비밀번호 찾기
+            </button>
             <span className="divider">|</span>
-            <a href="/join" className="join-link">회원가입</a>
+            <a href="/join" className="join-link">
+              회원가입
+            </a>
           </div>
         </div>
       </div>

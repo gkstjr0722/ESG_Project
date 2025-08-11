@@ -92,6 +92,27 @@ const Mypage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // 회원 탈퇴 처리 (오른쪽 아래 버튼용)
+  const userDelete = async () => {
+    if (!user) return;
+    const ok = window.confirm('정말로 회원탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
+    if (!ok) return;
+    try {
+      if (userType === 'business') {
+        await axios.delete('http://localhost:3001/user/delete', { data: { id: user.id } });
+      } else {
+        await axios.delete('http://localhost:3001/userg/delete_gov', { data: { id: user.id } });
+      }
+      alert('탈퇴가 완료되었습니다.');
+      localStorage.removeItem('id');
+      localStorage.removeItem('gov_id');
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+      alert('회원 탈퇴에 실패했습니다. 잠시 후 다시 시도해주세요.');
+    }
+  };
+
   // 수정 완료 시 변경사항 즉시 반영
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -179,30 +200,25 @@ const Mypage = () => {
 
   if (!user)
     return (
-      <div>
+      <div className="mypage-root">
         <Header />
-        <div style={{ marginTop: 120 }}>사용자 정보를 불러오는 중입니다...</div>
+        <div className="mypage-loading">사용자 정보를 불러오는 중입니다...</div>
       </div>
     );
 
   if (editMode) {
     // 수정 모드 렌더링
     return (
-      <div>
+      <div className="mypage-root">
         <Header />
-        <div>
-          <br />
-          <br />
-          <br />
-          <br />
-          <h2>회원 정보 수정 {userType === 'business' ? '(기업용)' : '(관공업용)'}</h2>
-          <form
-            onSubmit={handleSubmit}
-            style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxWidth: '500px' }}
-          >
-            <label>
-              회사/기관명 :<br />
+        <div className="mypage-edit-wrap">
+          <h2 className="mypage-title">회원 정보 수정 {userType === 'business' ? '(기업용)' : '(관공업용)'}</h2>
+
+          <form onSubmit={handleSubmit} className="mypage-form">
+            <label className="mypage-field">
+              <span className="mypage-field-label">회사/기관명</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="corpName"
                 placeholder="회사/기관명"
@@ -211,22 +227,25 @@ const Mypage = () => {
                 required
               />
             </label>
+
             {userType === 'business' && (
-              <label>
-                사업자등록번호 :<br />
+              <label className="mypage-field">
+                <span className="mypage-field-label">사업자등록번호</span>
                 <input
+                  className="mypage-input"
                   type="text"
                   name="corpRegNum"
                   placeholder="사업자등록번호"
                   value={formData.corpRegNum}
                   disabled
-                  style={{ backgroundColor: '#f0f0f0' }}
                 />
               </label>
             )}
-            <label>
-              대표자명 :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">대표자명</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="ceo"
                 placeholder="대표자명"
@@ -235,19 +254,23 @@ const Mypage = () => {
                 required
               />
             </label>
-            <label>
-              부서/팀명 [선택] :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">부서/팀명 (선택)</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="dept"
-                placeholder="부서/팀명 [선택]"
+                placeholder="부서/팀명 (선택)"
                 value={formData.dept}
                 onChange={handleChange}
               />
             </label>
-            <label>
-              담당자명 :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">담당자명</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="manager"
                 placeholder="담당자명"
@@ -256,9 +279,11 @@ const Mypage = () => {
                 required
               />
             </label>
-            <label>
-              연락처 :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">연락처</span>
               <input
+                className="mypage-input"
                 type="tel"
                 name="phone"
                 placeholder="연락처(휴대폰)"
@@ -267,9 +292,11 @@ const Mypage = () => {
                 required
               />
             </label>
-            <label>
-              이메일 :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">이메일</span>
               <input
+                className="mypage-input"
                 type="email"
                 name="email"
                 placeholder="이메일"
@@ -278,19 +305,23 @@ const Mypage = () => {
                 required
               />
             </label>
-            <label>
-              회사(기관) 전화 [선택] :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">회사(기관) 전화 (선택)</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="corpTel"
-                placeholder="회사(기관) 전화 [선택]"
+                placeholder="회사(기관) 전화 (선택)"
                 value={formData.corpTel}
                 onChange={handleChange}
               />
             </label>
-            <label>
-              회사(기관) 주소 :<br />
+
+            <label className="mypage-field mypage-field--full">
+              <span className="mypage-field-label">회사(기관) 주소</span>
               <input
+                className="mypage-input"
                 type="text"
                 name="address"
                 placeholder="회사(기관) 주소"
@@ -300,18 +331,21 @@ const Mypage = () => {
               />
             </label>
 
-            <label>
-              비밀번호 변경 :<br />
+            <label className="mypage-field">
+              <span className="mypage-field-label">새 비밀번호</span>
               <input
+                className="mypage-input"
                 type="password"
                 placeholder="새 비밀번호"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
               />
             </label>
-            <label>
-              새 비밀번호 확인 :<br />
+
+            <label className="mypage-field">
+              <span className="mypage-field-label">새 비밀번호 확인</span>
               <input
+                className="mypage-input"
                 type="password"
                 placeholder="새 비밀번호 확인"
                 value={confirmNewPassword}
@@ -319,16 +353,16 @@ const Mypage = () => {
               />
             </label>
 
-            <div style={{ display: 'flex', gap: '12px', marginTop: '12px' }}>
-              <button type="submit" style={{ flex: 1 }}>
-                정보 수정 완료
-              </button>
+            <div className="mypage-btn-wrap">
+              <button type="submit" className="mypage-btn-primary">정보 수정 완료</button>
+              <button type="button" className="mypage-btn-secondary" onClick={() => setEditMode(false)}>취소</button>
+              {/* 오른쪽 아래에 배치 (CSS에서 마지막 버튼을 오른쪽으로 밀어줌) */}
               <button
                 type="button"
-                onClick={() => setEditMode(false)}
-                style={{ flex: 1 }}
+                className="mypage-btn-secondary"
+                onClick={userDelete}
               >
-                취소
+                회원 탈퇴
               </button>
             </div>
           </form>
@@ -339,56 +373,72 @@ const Mypage = () => {
 
   // 기본 모드 렌더링
   return (
-    <div>
+    <div className="mypage-root">
       <Header />
-      <div style={{ marginTop: 80 }}>
-        <h2>마이페이지</h2>
-        <div>
-          <p>
-            <strong>아이디:</strong> {user.id}
-          </p>
-          <p>
-            <strong>회사/기관명:</strong> {user.corpName}
-          </p>
+      <div className="mypage-view-wrap">
+        <h2 className="mypage-title">마이페이지</h2>
+
+        <div className="mypage-info">
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">아이디</span>
+            <span className="mypage-kv-value">{user.id}</span>
+          </div>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">회사/기관명</span>
+            <span className="mypage-kv-value">{user.corpName}</span>
+          </div>
+
           {userType === 'business' && (
-            <p>
-              <strong>사업자등록번호:</strong> {user.corpRegNum}
-            </p>
+            <div className="mypage-kv-row">
+              <span className="mypage-kv-label">사업자등록번호</span>
+              <span className="mypage-kv-value">{user.corpRegNum}</span>
+            </div>
           )}
-          <p>
-            <strong>대표자명:</strong> {user.ceo}
-          </p>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">대표자명</span>
+            <span className="mypage-kv-value">{user.ceo}</span>
+          </div>
+
           {user.dept && (
-            <p>
-              <strong>부서/팀명:</strong> {user.dept}
-            </p>
+            <div className="mypage-kv-row">
+              <span className="mypage-kv-label">부서/팀명</span>
+              <span className="mypage-kv-value">{user.dept}</span>
+            </div>
           )}
-          <p>
-            <strong>담당자명:</strong> {user.manager}
-          </p>
-          <p>
-            <strong>연락처(휴대폰):</strong> {user.phone}
-          </p>
-          <p>
-            <strong>이메일:</strong> {user.email}
-          </p>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">담당자명</span>
+            <span className="mypage-kv-value">{user.manager}</span>
+          </div>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">연락처(휴대폰)</span>
+            <span className="mypage-kv-value">{user.phone}</span>
+          </div>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">이메일</span>
+            <span className="mypage-kv-value">{user.email}</span>
+          </div>
+
           {user.corpTel && (
-            <p>
-              <strong>회사(기관) 전화:</strong> {user.corpTel}
-            </p>
+            <div className="mypage-kv-row">
+              <span className="mypage-kv-label">회사(기관) 전화</span>
+              <span className="mypage-kv-value">{user.corpTel}</span>
+            </div>
           )}
-          <p>
-            <strong>회사(기관) 주소:</strong> {user.address}
-          </p>
+
+          <div className="mypage-kv-row">
+            <span className="mypage-kv-label">회사(기관) 주소</span>
+            <span className="mypage-kv-value">{user.address}</span>
+          </div>
         </div>
-        <br />
-        <button
-          className="main-btn"
-          onClick={() => setEditMode(true)}
-          style={{ padding: '8px 16px', cursor: 'pointer' }}
-        >
-          정보 수정
-        </button>
+
+        <div className="mypage-btn-wrap">
+          <button className="mypage-btn-primary" onClick={() => setEditMode(true)}>정보 수정</button>
+        </div>
       </div>
     </div>
   );

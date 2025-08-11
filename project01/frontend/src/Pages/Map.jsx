@@ -1,148 +1,110 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-// import "../CSS/MapEVCharger.css";
-import '../CSS/Sub.css';
 import Header from '../component/Header';
+// Header나 CSS는 기존 것 그대로 사용하면 됩니다.
 
-// 동적 스크립트 로딩
-function loadKakaoSdk() {
-  return new Promise((resolve, reject) => {
-    if (window.kakao && window.kakao.maps && window.kakao.maps.services) {
-      resolve();
-      return;
-    }
-    if (document.getElementById("kakao-map-sdk")) {
-      document.getElementById("kakao-map-sdk").onload = () => {
-        window.kakao.maps.load(resolve);
-      };
-      return;
-    }
-    const script = document.createElement("script");
-    script.id = "kakao-map-sdk";
-    script.src = "https://dapi.kakao.com/v2/maps/sdk.js?appkey=98fa8b3fe19d88d993f89ee04c382b3c&autoload=false&libraries=services";
-    script.onload = () => window.kakao.maps.load(resolve);
-    script.onerror = reject;
-    document.head.appendChild(script);
-  });
-}
+const DEFAULT_CENTER = { lat: 35.1595454, lng: 126.8526012 }; // 초기: 광주
 
-const GWANGJU_CENTER = { lat: 35.1595, lng: 126.8526 };
-
-const Map = () => {
-  const [stations, setStations] = useState([]);
+export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
-  const mapRef = useRef(null);
-  const markersRef = useRef([]);
+  const [stations, setStations] = useState([]);
 
+  // 1) 데이터 가져오기 (addr를 프론트에서 바꾸고 싶으면 params로 전달)
   useEffect(() => {
-    let isMounted = true;
+    let alive = true;
 
-    async function fetchAll() {
+    async function fetchData() {
       setLoading(true);
-      await loadKakaoSdk();
-
-axios.get("http://localhost:3001/api/proxy/list")
-  .then(res => console.log(res.data))
-  .catch(err => {
-    console.error("에러 코드:", err.code);
-    console.error("에러 메시지:", err.message);
-    console.error("응답 객체:", err.response?.data);
-  });
-
-      let raw = [];
       try {
-        const { data } = await axios.get("http://localhost:3001/api/proxy/list");
-        // 광주 지역 충전소만 필터링 (주소에 '광주' 포함)
-        raw = data.filter(st => st.stnAddr.includes("광주"));
-      } catch (err) {
-        alert("충전소 데이터 요청 실패");
-        setLoading(false);
-        return;
-      }
+        const { data } = await axios.get(
+          "http://localhost:3001/api/proxy/manage",
+          {
+            // params: { addr: "광주광역시 북구" }, // 필요시 주석 해제해서 지역 바꿔도 됨
+          }
+        );
+        if (!alive) return;
 
-      // 좌표 변환 (최대 5개까지 표시 예시)
-      const geocoder = new window.kakao.maps.services.Geocoder();
-      const results = await Promise.all(
-        raw.slice(0, 5).map(st =>
-          new Promise(resolve => {
-            geocoder.addressSearch(st.stnAddr, (result, status) => {
-              if (status === window.kakao.maps.services.Status.OK && result[0]) {
-                resolve({
-                  ...st,
-                  lat: Number(result[0].y),
-                  lng: Number(result[0].x)
-                });
-              } else {
-                resolve(null);
-              }
-            });
-          })
-        )
-      );
-      if (isMounted) {
-        setStations(results.filter(Boolean));
-        setLoading(false);
+        // lat/longi 문자열 → 숫자 변환 & 유효한 좌표만
+        const parsed = (Array.isArray(data) ? data : [])
+          .map(d => ({
+            ...d,
+            lat: Number(d.lat),
+            lng: Number(d.longi),
+          }))
+          .filter(d => Number.isFinite(d.lat) && Number.isFinite(d.lng));
+
+        setStations(parsed);
+      } catch (e) {
+        alert("충전소 데이터 요청 실패");
+      } finally {
+        if (alive) setLoading(false);
       }
     }
 
-    fetchAll();
-
-    return () => {
-      isMounted = false;
-      markersRef.current.forEach(obj => {
-        obj.marker.setMap(null);
-        if (obj.infowindow) obj.infowindow.close();
-      });
-      markersRef.current = [];
-      if (mapRef.current) mapRef.current = null;
+    // 카카오 SDK 준비 대기 후 호출
+    const waitKakao = () => {
+      if (window.kakao?.maps?.load) {
+        window.kakao.maps.load(fetchData);
+      } else if (window.kakao?.maps) {
+        fetchData();
+      } else {
+        setTimeout(waitKakao, 120);
+      }
     };
+    waitKakao();
+
+    return () => { alive = false; };
   }, []);
 
+  // 2) 지도 + 마커 렌더
   useEffect(() => {
     if (loading) return;
     const container = document.getElementById("ev-map");
     if (!container) return;
-    container.innerHTML = "";
 
-    // 지도 생성 (광주 중심)
-    const map = new window.kakao.maps.Map(container, {
-      center: new window.kakao.maps.LatLng(GWANGJU_CENTER.lat, GWANGJU_CENTER.lng),
-      level: 7
-    });
-    mapRef.current = map;
+    // 지도 초기화는 항상 load 안에서!
+    const draw = () => {
+      container.innerHTML = "";
+      const maps = window.kakao.maps;
 
-    // 기존 마커/팝업 삭제
-    markersRef.current.forEach(obj => {
-      obj.marker.setMap(null);
-      if (obj.infowindow) obj.infowindow.close();
-    });
-    markersRef.current = [];
+      const center = stations.length
+        ? { lat: stations[0].lat, lng: stations[0].lng }
+        : DEFAULT_CENTER;
 
-    // 마커 생성
-    stations.forEach(st => {
-      if (!st.lat || !st.lng) return;
-      const marker = new window.kakao.maps.Marker({
-        map,
-        position: new window.kakao.maps.LatLng(st.lat, st.lng),
-        title: st.stnPlace,
+      const map = new maps.Map(container, {
+        center: new maps.LatLng(center.lat, center.lng),
+        level: 6,
       });
-      const infowindow = new window.kakao.maps.InfoWindow({
-        content: `
+
+      stations.forEach(st => {
+        const marker = new maps.Marker({
+          map,
+          position: new maps.LatLng(st.lat, st.lng),
+          title: st.cpNm || st.csNm || "충전소",
+        });
+
+        const infoHtml = `
           <div class="evmap-popup">
-            <b>${st.stnPlace}</b><br/>
-            <span>${st.stnAddr}</span><br/>
-            <span>급속: ${st.rapidCnt || 0} / 완속: ${st.slowCnt || 0}</span><br/>
-            <span>지원차종: ${st.carType || ""}</span>
-          </div>`,
-        removable: true,
+            <b>${st.cpNm || st.csNm || "충전소"}</b><br/>
+            <span>${st.addr || ""}</span><br/>
+            <span>타입:${st.chargeTp ?? "-"} | 방식:${st.cpTp ?? "-"}</span><br/>
+            <span>상태:${st.cpStat ?? "-"}</span>
+          </div>
+        `;
+        const infowindow = new maps.InfoWindow({ content: infoHtml, removable: true });
+        maps.event.addListener(marker, "click", () => infowindow.open(map, marker));
       });
-      window.kakao.maps.event.addListener(marker, 'click', function () {
-        infowindow.open(map, marker);
-      });
-      markersRef.current.push({ marker, infowindow });
-    });
+    };
 
-    map.setCenter(new window.kakao.maps.LatLng(GWANGJU_CENTER.lat, GWANGJU_CENTER.lng));
+    if (window.kakao?.maps?.load) {
+      window.kakao.maps.load(draw);
+    } else if (window.kakao?.maps) {
+      draw();
+    } else {
+      // 매우 드문 경우 대비
+      const t = setTimeout(() => window.kakao?.maps && draw(), 150);
+      return () => clearTimeout(t);
+    }
   }, [loading, stations]);
 
   
@@ -150,22 +112,13 @@ axios.get("http://localhost:3001/api/proxy/list")
 
   //==================css 수정=================================================================
   return (
-    <div>
-      <Header />
-      <div className="evmap-mainwrap">
-        <div className="evmap-topnav">
-          <span className="evmap-path">위치찾기 &nbsp;&gt;&nbsp;<b>전기차충전소</b></span>
-        </div>
-        <div className="evmap-content">
-          {loading ? (
-            <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
-          ) : (
-            <div id="ev-map" className="evmap-map"></div>
-          )}
-        </div>
-      </div>
-    </div>  
+    <>
+      {/* 상단 헤더/스타일은 기존 그대로 */}
+      {loading ? (
+        <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+      ) : (
+        <div id="ev-map" className="evmap-map" />
+      )}
+    </>
   );
-};
-
-export default Map;
+}

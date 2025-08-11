@@ -111,7 +111,7 @@ router.get('/:notice_id', (req, res) => {
   });
 });
 
-// 6. 공지 수정 ( admin 관리자 전용 )
+// 6. 공지사항글 수정 라우터 ( admin 관리자 전용 기능 )
 router.put('/:notice_id', upload.single('file'), (req, res) => {
   const { notice_id } = req.params;
   const {
@@ -209,5 +209,8 @@ router.put('/:notice_id', upload.single('file'), (req, res) => {
     });
   });
 });
+
+// 7. 공지사항글 삭제 라우터 ( admin 관리자 전용 기능 ) 
+
 
 module.exports = router;
