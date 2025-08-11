@@ -126,7 +126,7 @@ body {
 }
 .faq-tit-loca{
   text-align: center;
-  margin-right: 405px;
+  margin-right: 800px;
 }
 .faq-search-row {
   display: flex;
@@ -354,10 +354,10 @@ body {
 }
 
 .faq-fix1-submit { 
-  background:#d10707;
+  background:#bd3535;
 }
 .faq-fix1-submit:hover { 
-  background:#821919; 
+  background:#9b2525; 
 }
 
 /* ===== 공지 상세 (Notice detail) ===== */
