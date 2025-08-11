@@ -125,3 +125,27 @@ background: #f5f7fa;
 .button-10px28px {
   padding: 10px 28px;
 }
+
+/* === 마이페이지 이미지 ===== */
+:root{
+  --nav-icon-size: 20px;
+  --nav-icon-gap: 8px;
+}
+.nav-icons{
+  display:flex;
+  align-items:center;
+  gap:var(--nav-icon-gap);
+}
+
+.userpage{
+  display:flex;
+  align-items:center;
+}
+.nav-avatar{
+  display:block;
+  inline-size:var(--nav-icon-size);
+  block-size:var(--nav-icon-size);
+  aspect-ratio:1 / 1;
+  object-fit:contain;
+}
+/* ================================= */
