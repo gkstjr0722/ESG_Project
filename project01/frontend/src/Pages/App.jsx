@@ -8,22 +8,29 @@ import axios from 'axios';
 const videoData = [
   {
     title: '한전 파워플래너 소개',
-    channel: 'KEPCO 공식',
     url: 'https://www.youtube.com/watch?v=he5BxBUhOBo',
     thumbnail: 'https://img.youtube.com/vi/he5BxBUhOBo/0.jpg',
   },
   {
     title: '에너지 캐시백',
-    channel: 'KEPCO 공식',
     url: 'https://youtu.be/b5Oa1T0pNho?si=Qi1g6SV_XPMeR3fJ',
     thumbnail: 'https://img.youtube.com/vi/b5Oa1T0pNho/0.jpg',
   },
   {
     title: '1kWh 줄이기 캠페인',
-    channel: 'KEPCO 공식',
     url: 'https://youtu.be/4p0_F3RlBoQ?si=y1AQ35s6XzurzEBO',
     thumbnail: 'https://img.youtube.com/vi/4p0_F3RlBoQ/0.jpg',
   },
+  {
+    title: '중요한 건 하려는 마음!',
+    url: 'https://www.youtube.com/watch?v=isikwGssKZ0',
+    thumbnail: 'https://i.ytimg.com/vi/isikwGssKZ0/maxresdefault.jpg',
+  },
+  {
+    title: '집중호우 피해지역 복구활동',
+    url: 'https://www.youtube.com/watch?v=_4DM-RaGn-E',
+    thumbnail: 'https://i.ytimg.com/vi/_4DM-RaGn-E/maxresdefault.jpg',
+  }
 ];
 
 // ── 메인 공지 캐러셀
@@ -88,17 +95,15 @@ function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) { // ★ 3초 기�
         ‹
       </button>
 
+        <div className="notice-hero__title" title={current.TITLE}>
+          {current.TITLE}
+        </div>
       <div
         className="notice-hero__content"
         onClick={() => nav(`/notice/${current.NOTICE_ID}`)} // 필요 시 `/notice?open=${current.NOTICE_ID}`
         role="button"
       >
-        <div className="notice-hero__eyebrow">공지사항</div>
-        <div className="notice-hero__title" title={current.TITLE}>
-          {current.TITLE}
-        </div>
-        <div className="notice-hero__date">{current.NOTICE_DT?.slice(0, 10)}</div>
-        <div className="notice-hero__cta">공지사항 바로가기 →</div>
+        <div className="notice-hero__cta">바로가기 →</div>
       </div>
 
       <button

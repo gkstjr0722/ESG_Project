@@ -140,54 +140,6 @@ body {
   border-color: #1d5fc4;
 }
 
-/* 영상리스트 영역은 페이지 맨 아래쪽 */
-.video-list-section {
-  width: 100%;
-  padding-bottom: 20px;
-  padding: 20px 60px; 
-  display: flex;
-  background: linear-gradient(180deg, #376ec2 0%);
-  flex-shrink: 0;
-  flex: 1;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  flex-direction: row;        /* 가로 정렬 */
-  align-items: center;
-}
-
-/* 영상리스트 영역 내 텍스트 */
-.video-list-section-text {
-   padding-right: 60px; /* ✅ 영상과 간격은 여기서 조절 */
-  padding-left: 200px; 
-  color: #fff;
-  white-space: nowrap;
-  font-size: clamp(12px, 2.5vw, 22px); /* 화면 크기에 따라 자동 크기 조절 */
-  line-height: 0.5;
-}
-
-/* 썸네일 카드 */
-.video-grid {
-  display: flex;
-  gap: 50px;
-  justify-content: flex-end;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  margin: 0 auto;
-}
-
-.video-card {
-  width: 250px;
-  /* height: 200px; */
-  /* border-radius: 14px; */
-  box-shadow: 2px 2px 100px rgba(0, 0, 0, 0.09);
-  background: #fff; 
-  text-decoration: none;
-  color: #000;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
 /* 마우스 오버 시 약간 커짐 */
 .video-card:hover {
   transform: translateY(-5px) scale(1.03);
@@ -452,21 +404,33 @@ body {
   min-height: 300px;
   overflow: hidden;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
-.notice-hero__content { max-width: 980px; text-align: left; cursor: pointer; }
-.notice-hero__eyebrow { font-size: 22px; letter-spacing: .08em; color: #5b7fff; margin-bottom: 10px; }
-.notice-hero__title { font-size: 42px; font-weight: 900; line-height: 1.25; margin-bottom: 12px; }
-.notice-hero__date { font-size: 22px; color: #8c8c8c; }
-.notice-hero__cta  { margin-top: 14px; font-size: 22px; display: inline-flex; gap: 6px; align-items: center; }
+.notice-hero__content { 
+  max-width: 980px; 
+  text-align: left; 
+  cursor: pointer; 
+  flex-basis: 100%;
+  margin-left: 180px;
+  flex: 0 0 100%;
+}
+.notice-hero__title {
+  font-size: 50px; 
+  font-weight: 900; 
+  line-height: 1.25; 
+  margin: 0 0 6px 180px;
+  flex: 0 0 100%;
+}
+.notice-hero__cta  { margin-top: 0px; font-size: 22px; display: inline-flex; gap: 6px; align-items: center; }
 .notice-hero__nav {
   position: absolute; top: 50%; transform: translateY(-50%);
   border: none; background: rgba(0,0,0,.05);
-  width: 36px; height: 36px; border-radius: 50%;
-  font-size: 22px; cursor: pointer;
+  width: 50px; height: 50px; border-radius: 50%;
+  font-size: 40px; cursor: pointer;
 }
 .notice-hero__nav:hover { background: rgba(0,0,0,.12); }
-.notice-hero__nav.prev { left: 12px; }
-.notice-hero__nav.next { right: 12px; }
+.notice-hero__nav.prev { left: 50px; }
+.notice-hero__nav.next { right: 50px; }
 
 /* 인디케이터 */
 .notice-hero__dots {
@@ -474,12 +438,12 @@ body {
   display: flex; gap: 8px; justify-content: center;
 }
 .notice-hero__dots .dot {
-  width: 10px; height: 10px; border-radius: 50%; border: none;
+  width: 5px; height: 10px; border-radius: 50%; border: none;
   background: #cfd6e4; cursor: pointer;
   transition: transform .18s ease, background-color .18s ease, opacity .18s ease;
   opacity: .95;
 }
-.notice-hero__dots .dot.active { background: #ff8800; transform: scale(1.25); opacity: 1; }
+.notice-hero__dots .dot.active { background: #548bdf; transform: scale(1.4); opacity: 1s; }
 
 @media (max-width: 768px) {
   .notice-hero { padding: 24px; }
@@ -545,18 +509,18 @@ body {
 
 /* 홍보영상 섹션 */
 .video-list-section {
-  width: 100%; padding: 20px 60px 20px;
+  width: 100%; padding: 50px 180px 25px;
   display: flex; background: linear-gradient(180deg, #376ec2 0%);
   flex: 0 0 auto; flex-shrink: 0; flex-wrap: wrap; box-sizing: border-box;
   flex-direction: row; align-items: center;
 }
 .video-list-section-text {
-  padding-right: 60px; padding-left: 200px; color: #fff; white-space: nowrap;
-  font-size: clamp(14px, 2.8vw, 26px); line-height: .5;
+  padding-right: 1px; padding-left: 60px; color: #fff; white-space: nowrap;
+  font-size: clamp(14px, 2.8vw, 10px); line-height: .5;
 }
-.video-grid { display: flex; gap: 50px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
+.video-grid { display: flex; gap: 25px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
 .video-card {
-  width: 250px;  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
+  width: 230px;  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
   background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
 }
 .video-card:hover { transform: translateY(-5px) scale(1.03); }
