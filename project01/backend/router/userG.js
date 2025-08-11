@@ -1,160 +1,164 @@
+// backend/router/userG.js
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
 
-// 1. 관공업 회원정보 조회 기능 라우터 
-router.post('/userinfo_gov', (req, res) => {
-  const { id } = req.body;
-  if (!id) return res.status(400).json({ result: 0, message: "ID 누락" });
+/** ✅ 라우터 로드/마운트 확인(기능 영향 없음) */
+console.log('[userG] router loaded');
+router.get('/_ping', (req, res) => res.json({ ok: true, where: 'userG' }));
 
-  const sql = "SELECT corpName, ceo, dept, manager, phone, email, corpTel, address, id FROM government_users WHERE id = ?";
-  db.query(sql, [id], (err, rows) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ result: 0, message: "DB 오류" });
-    }
-    if (rows.length === 0) {
-      return res.json({ result: 0, message: "회원정보 없음" });
-    }
-    const user = { ...rows[0] };
-    res.json({ result: 1, user });
-  });
-});
-
-// 2. 관공업 회원 정보 수정 기능 라우터
-router.put('/update_gov', (req, res) => {
-  const {
-    id,
-    corpName, ceo, dept, manager,
-    phone, email, corpTel, address
-  } = req.body;
-  if (!id) return res.status(400).json({ result: 0, message: "ID 누락" });
-
-  console.log('[update_gov] req.body:', req.body);
-
-  const sql = `
-    UPDATE government_users
-    SET corpName=?, ceo=?, dept=?, manager=?, phone=?, email=?, corpTel=?, address=?
-    WHERE id=?
-  `;
-  const params = [corpName, ceo, dept, manager, phone, email, corpTel, address, id];
-
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ result: 0, message: "DB 오류" });
-    }
-    if (result.affectedRows > 0) {
-      res.json({ result: 1, message: "정보수정 성공" });
-    } else {
-      res.status(404).json({ result: 0, message: "회원정보 없음" });
-    }
-  });
-});
-
-// 3. 비밀번호 변경 (관공업)
-router.put('/update_gov_pw', async (req, res) => {
-  const { id, newPassword } = req.body;
-  if (!id || !newPassword) return res.status(400).json({ result: 0, message: "필수값 누락" });
-
-  const hash = await bcrypt.hash(newPassword, 10);
-
-  db.query(
-    "UPDATE government_users SET pw=? WHERE id=?",
-    [hash, id],
-    (err, result) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ result: 0, message: "DB 오류" });
-      }
-      if (result.affectedRows > 0) {
-        res.json({ result: 1, message: "비밀번호 변경 성공" });
-      } else {
-        res.status(404).json({ result: 0, message: "회원정보 없음" });
-      }
-    }
-  );
-});
-
-// 4. 관공업 회원가입 (government_users 테이블)
+/* =========================
+ * ✅ 관공업 회원가입 라우터 (추가)
+ *    POST /userg/join_gov
+ *    body: { corpName, ceo, dept?, manager, phone, email, corpTel?, address, id, pw }
+ *    - 필수값 검증
+ *    - id/email 중복 검증 (IS_DELETED=0)
+ *    - 비번 bcrypt 해시 후 INSERT
+ * ========================= */
 router.post('/join_gov', async (req, res) => {
   try {
-    const {
-      corpName,       
-      ceo,             
-      dept,           
-      manager,         
-      phone,          
-      email,          
-      corpTel,         
-      address,         
-      id,             
-      pw               
-    } = req.body;
+    const f = req.body || {};
 
-    // (1) 필수값 검증
-    if (!corpName || !ceo || !manager || !phone || !email || !address || !id || !pw) {
-      return res.status(400).json({ result: 0, message: '필수값 누락' });
+    // 필수값 체크
+    const required = ['corpName','ceo','manager','phone','email','address','id','pw'];
+    for (const k of required) {
+      const v = (f[k] ?? '').toString().trim();
+      if (!v) return res.status(400).json({ result: 0, message: `필수값 누락: ${k}` });
     }
 
-    // (2) ID 중복 체크 (PK라 DB가 막아주긴 하지만, 사전 체크로 친절하게 메시지 제공)
-    const dupSql = 'SELECT 1 FROM government_users WHERE id = ?';
-    db.query(dupSql, [id], async (dupErr, dupRows) => {
-      if (dupErr) {
-        console.error('[join_gov] 중복체크 오류:', dupErr);
-        return res.status(500).json({ result: 0, message: 'DB 오류(중복검사)' });
-      }
-      if (dupRows.length > 0) {
-        return res.status(409).json({ result: 0, message: '이미 존재하는 ID입니다.' });
-      }
+    const corpName = f.corpName.trim();
+    const ceo      = f.ceo.trim();
+    const dept     = (f.dept ?? '').trim() || null;
+    const manager  = f.manager.trim();
+    const phone    = f.phone.trim();
+    const email    = f.email.trim();
+    const corpTel  = (f.corpTel ?? '').trim() || null;
+    const address  = f.address.trim();
+    const id       = f.id.trim();
+    const pw       = String(f.pw);
 
-      // (3) 비밀번호 해시
-      let hashedPw;
-      try {
-        hashedPw = await bcrypt.hash(pw, 10);
-      } catch (hashErr) {
-        console.error('[join_gov] bcrypt 오류:', hashErr);
-        return res.status(500).json({ result: 0, message: '비밀번호 암호화 실패' });
-      }
-
-      // (4) INSERT (reg_date는 DEFAULT CURRENT_TIMESTAMP)
-      const insertSql = `
-        INSERT INTO government_users
-          (corpName, ceo, dept, manager, phone, email, corpTel, address, id, pw)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-      `;
-      const params = [
-        corpName,
-        ceo,
-        dept ?? null,
-        manager,
-        phone,
-        email,
-        corpTel ?? null,
-        address,
-        id,
-        hashedPw
-      ];
-
-      db.query(insertSql, params, (insErr, result) => {
-        if (insErr) {
-          console.error('[join_gov] DB INSERT 오류:', insErr);
-          // PK 충돌 등
-          if (insErr.code === 'ER_DUP_ENTRY') {
-            return res.status(409).json({ result: 0, message: '이미 존재하는 ID입니다.' });
-          }
-          return res.status(500).json({ result: 0, message: 'DB 오류(회원가입)' });
-        }
-        return res.json({ result: 1, message: '회원가입 성공' });
+    // 중복 체크 (id, email) — IS_DELETED = 0
+    const dupSql = `
+      SELECT
+        COALESCE(SUM(id = ?), 0)    AS idDup,
+        COALESCE(SUM(email = ?), 0) AS emailDup
+      FROM government_users
+      WHERE IS_DELETED = 0
+    `;
+    const dup = await new Promise((resolve, reject) => {
+      db.query(dupSql, [id, email], (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows && rows[0]);
       });
     });
-  } catch (e) {
-    console.error('[join_gov] 서버 오류:', e);
+    if (dup?.idDup > 0)    return res.status(409).json({ result: 0, message: '이미 존재하는 ID입니다.' });
+    if (dup?.emailDup > 0) return res.status(409).json({ result: 0, message: '이미 등록된 이메일입니다.' });
+
+    // 비밀번호 해시
+    const rounds = Number(process.env.BCRYPT_ROUNDS || 12);
+    const hashed = await bcrypt.hash(pw, rounds);
+
+    // INSERT
+    const insSql = `
+      INSERT INTO government_users
+        (corpName, ceo, dept, manager, phone, email, corpTel, address, id, pw)
+      VALUES
+        (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    await new Promise((resolve, reject) => {
+      db.query(
+        insSql,
+        [corpName, ceo, dept, manager, phone, email, corpTel, address, id, hashed],
+        (err, r) => (err ? reject(err) : resolve(r))
+      );
+    });
+
+    return res.status(201).json({ result: 1, message: '관공업 회원가입 성공' });
+  } catch (err) {
+    if (err && err.code === 'ER_DUP_ENTRY') {
+      return res.status(409).json({ result: 0, message: '중복된 값이 있습니다.' });
+    }
+    console.error('[userG:join_gov] error:', err);
     return res.status(500).json({ result: 0, message: '서버 오류' });
   }
 });
 
-module.exports = router;
+// 관공업 회원정보 조회 라우터 
+router.post('/userinfo_gov', (req, res) => {
+  let { id } = req.body || {};
+  if (typeof id === 'string') id = id.trim();
+  if (!id) return res.status(400).json({ result: 0, message: 'ID 누락' });
 
-// 2025-08-08 코드 수정 완료
+  const sql = `
+    SELECT corpName, ceo, dept, manager, phone, email, corpTel, address, id
+      FROM government_users
+     WHERE id = ? AND IS_DELETED = 0
+  `;
+  db.query(sql, [id], (err, rows) => {
+    if (err) return res.status(500).json({ result: 0, message: 'DB 오류' });
+    if (!rows || rows.length === 0) return res.status(404).json({ result: 0, message: '회원정보 없음' });
+    return res.json({ result: 1, user: rows[0] });
+  });
+});
+
+// 관공업 회원정보 수정 라우터 
+router.put('/update_gov', (req, res) => {
+  let { id, corpName, ceo, dept, manager, phone, email, corpTel, address } = req.body || {};
+  if (typeof id === 'string') id = id.trim();
+  if (!id) return res.status(400).json({ result: 0, message: 'ID 누락' });
+
+  const sql = `
+    UPDATE government_users
+       SET corpName=?, ceo=?, dept=?, manager=?, phone=?, email=?, corpTel=?, address=?
+     WHERE id=? AND IS_DELETED = 0
+  `;
+  db.query(sql, [corpName, ceo, dept, manager, phone, email, corpTel, address, id], (err, r) => {
+    if (err) return res.status(500).json({ result: 0, message: 'DB 오류' });
+    if (r.affectedRows > 0) return res.json({ result: 1, message: '정보수정 성공' });
+    return res.status(404).json({ result: 0, message: '회원정보 없음' });
+  });
+});
+
+// 관공업 비밀번호 변경 라우터 
+router.put('/update_gov_pw', async (req, res) => {
+  let { id, newPassword } = req.body || {};
+  if (typeof id === 'string') id = id.trim();
+  if (!id || !newPassword) return res.status(400).json({ result: 0, message: '필수값 누락' });
+
+  try {
+    const rounds = Number(process.env.BCRYPT_ROUNDS || 12);
+    const hash = await bcrypt.hash(newPassword, rounds);
+    db.query(
+      'UPDATE government_users SET pw=? WHERE id=? AND IS_DELETED = 0',
+      [hash, id],
+      (err, r) => {
+        if (err) return res.status(500).json({ result: 0, message: 'DB 오류' });
+        if (r.affectedRows > 0) return res.json({ result: 1, message: '비밀번호 변경 성공' });
+        return res.status(404).json({ result: 0, message: '회원정보 없음' });
+      }
+    );
+  } catch {
+    return res.status(500).json({ result: 0, message: '서버 오류' });
+  }
+});
+
+// 관공업 회원가입 탈퇴 라우터 
+router.delete('/delete_gov', (req, res) => {
+  let { id } = req.body || {};
+  if (typeof id === 'string') id = id.trim();
+  if (!id) return res.status(400).json({ ok: false, msg: 'BAD_REQUEST' });
+
+  const sql = `
+    UPDATE government_users
+       SET IS_DELETED = 1, DELETED_AT = NOW()
+     WHERE id = ? AND IS_DELETED = 0
+  `;
+  db.query(sql, [id], (err, r) => {
+    if (err) return res.status(500).json({ ok: false, msg: 'DB_ERROR' });
+    if (r.affectedRows === 0) return res.status(404).json({ ok: false, msg: 'NOT_FOUND_OR_ALREADY' });
+    return res.json({ ok: true });
+  });
+});
+
+module.exports = router;

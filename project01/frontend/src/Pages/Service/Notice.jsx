@@ -151,6 +151,28 @@ const Notice = () => {
     }
   };
 
+  // ★ 삭제 요청
+  const handleDelete = async () => {
+    if (!selectedNotice) return;
+    if (!window.confirm('정말 삭제하시겠습니까? 삭제 후 복구할 수 없습니다.')) return;
+
+    try {
+      await axios.delete(`http://localhost:3001/api/notice/${selectedNotice.NOTICE_ID}`, {
+        data: {
+          EDITOR_ID: userId || govId,              // 서버에서 'admin' 체크
+          EDITOR_NAME: userName || '관리자'
+        }
+      });
+      alert('삭제되었습니다.');
+      navigate('/notice');
+      await fetchNotice();
+      setMode('list');
+      setSelectedNotice(null);
+    } catch {
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
   const handleCancel = () => {
     setMode('list');
     setForm({ TITLE: '', CONTENT: '' });
@@ -278,9 +300,9 @@ const Notice = () => {
             )
           )}
 
-          {/* ★ 여기! 글 내용 & 첨부파일 아래 왼쪽 정렬로 수정 버튼 배치 */}
+          {/* 수정/삭제 버튼: 본문 아래, 왼쪽 정렬 (관리자만) */}
           {isAdmin && (
-            <div style={{ marginTop: '16px', textAlign: 'left' }}>
+            <div style={{ marginTop: '16px', textAlign: 'left', display: 'flex', gap: 8 }}>
               <button
                 type="button"
                 className="notice-add-btn"
@@ -292,6 +314,14 @@ const Notice = () => {
                 }}
               >
                 수정
+              </button>
+
+              <button
+                type="button"
+                className="notice-add-btn"
+                onClick={handleDelete}
+              >
+                삭제
               </button>
             </div>
           )}
@@ -437,4 +467,4 @@ const Notice = () => {
 
 export default Notice;
 
-// 2025-08-08 공지사항 수정 기능 구현 완료 
+// 2025-08-08 공지사항 수정/삭제 기능 구현 완료
