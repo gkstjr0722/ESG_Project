@@ -177,7 +177,7 @@ const Notice = () => {
   if (mode === 'write' && isAdmin) {
     return (
       <div className="faq-page-wrap">
-        <h1 className="faq-title">공지사항 등록</h1>
+        <h1 className="faq-title faq-tit-loca">공지사항 등록</h1>
         <form className="faq-write-form" onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="faq-write-row">
             <label className="faq-write-label">제목</label>
@@ -218,11 +218,11 @@ const Notice = () => {
               </div>
             )}
           </div>
-          <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+          <div className="common-btn-flexend common-btn-gap">
+            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
               {loading ? '처리 중...' : '등록'}
             </button>
-            <button type="button" className="faq-write-cancel" onClick={handleCancel} disabled={loading}>
+            <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
             </button>
           </div>
@@ -242,17 +242,17 @@ const Notice = () => {
     const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
 
     const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
-    const backBtnSx = {
-      background: 'transparent', border: 'none', boxShadow: 'none',
-      color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
-      cursor: 'pointer', margin: '0 0 12px 0'
-    };
+    // const backBtnSx = {
+    //   background: 'transparent', border: 'none', boxShadow: 'none',
+    //   color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
+    //   cursor: 'pointer', margin: '0 0 12px 0'
+    // };
     const zeroLeft = { marginLeft: 0, paddingLeft: 0 };
 
     return (
       <div className="faq-page-wrap">
         <div className="notice-detail-inner" style={wrapSx}>
-          <button className="faq-detail-backbtn" onClick={handleViewBack} style={backBtnSx}>
+          <button className="faq-detail-backbtn" onClick={handleViewBack}>
             ← 돌아가기
           </button>
 
@@ -304,7 +304,7 @@ const Notice = () => {
   if (mode === 'edit' && isAdmin && selectedNotice) {
     return (
       <div className="faq-page-wrap">
-        <h1 className="faq-title">공지사항 수정</h1>
+        <h1 className="faq-title faq-tit-loca">공지사항 수정</h1>
 
         <form className="faq-write-form" onSubmit={handleUpdate} encType="multipart/form-data">
           <div className="faq-write-row">
@@ -349,13 +349,13 @@ const Notice = () => {
             )}
           </div>
 
-          <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+          <div className="faq-write-btns common-btn-gap common-btn-flexend">
+            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
               {loading ? '처리 중...' : '저장'}
             </button>
             <button
               type="button"
-              className="faq-write-cancel"
+              className="common-btn button-10px28px faq-write-cancel"
               onClick={() => {
                 setMode('view');
                 setFile(null);
