@@ -163,25 +163,32 @@ const InquiryDetail = () => {
 
         {/* 관리자: 답변/수정/삭제 가능 */}
         {isAdmin && (
-          <div>
+          <div className='test'>
             {!showAnswerInput ? (
+              <>
               <button className="common-btn button-10px28px" onClick={handleShowAnswerInput}>
                 {question.ANSWER ? '답변 수정' : '답변 작성'}
               </button>
+              <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
+              </>
             ) : (
+              <div className='edit-input'>
               <div>
-                <textarea
+                 <textarea
                   value={answerInput}
                   onChange={e => setAnswerInput(e.target.value)}
                   rows={4}
-                />
+                /> 
+                <div>
                 <button onClick={handleAnswerSubmit} disabled={answerLoading}>
                   {answerLoading ? '저장 중...' : '저장'}
                 </button>
                 <button onClick={handleShowAnswerInput}>취소</button>
+                </div>
+                </div>
+                <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
               </div>
             )}
-            <button className="faq-fix1-submit" onClick={handleDelete}>삭제</button>
           </div>
         )}
       </div>
