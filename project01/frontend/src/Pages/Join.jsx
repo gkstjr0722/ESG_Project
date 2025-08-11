@@ -62,15 +62,15 @@ function BusinessJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="common-btn join-btn" style={{ flex: 1}}>회원가입 완료</button>
-        <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
+        <button type="button" onClick={goBack} className="join-back">돌아가기</button>
+        <button type="submit" className="join-btn">회원가입 완료</button>
       </div>
     </form>
   );
 }
 
 
-// 관공용  회원가입 페이지
+// 관공업 회원가입 페이지
 function GovernmentJoinForm({ goBack }) {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -78,24 +78,50 @@ function GovernmentJoinForm({ goBack }) {
   });
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [agreePrivacy, setAgreePrivacy] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = e => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = e =>
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
   const handleSubmit = async e => {
     e.preventDefault();
     if (!agreeTerms || !agreePrivacy) return alert('약관 및 개인정보 동의는 필수입니다.');
     if (formData.pw !== formData.pw2) return alert('비밀번호가 일치하지 않습니다.');
-    // 관공업 백엔드 연결
+
+    const payload = {
+      corpName: formData.corpName.trim(),
+      ceo: formData.ceo.trim(),
+      dept: formData.dept.trim() || null,
+      manager: formData.manager.trim(),
+      phone: formData.phone.trim(),
+      email: formData.email.trim(),
+      corpTel: formData.corpTel.trim() || null,
+      address: formData.address.trim(),
+      id: formData.id.trim(),
+      pw: formData.pw,
+    };
+
     try {
-      const res = await axios.post('http://localhost:3001/userg/joinGovernment', formData);
-      if (res.data.result === 1) {
-        alert('관공업 회원가입 성공!');
+      setLoading(true);
+      // ✅ 서버 마운트 경로에 맞춰 소문자 g 사용
+      const url = 'http://localhost:3001/userg/join_gov';
+
+      const res = await axios.post(url, payload, {
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      if (res.data?.result === 1) {
+        alert('관공업 회원가입 성공! 로그인 해주세요.');
         navigate('/login');
       } else {
-        alert('관공업 회원가입 실패!');
+        alert(res.data?.message || '관공업 회원가입 실패!');
       }
-    } catch {
-      alert('서버 오류 또는 네트워크 오류!');
+    } catch (err) {
+      if (err.response?.status === 409) alert('이미 존재하는 ID입니다.');
+      else if (err.response?.status === 400) alert('필수값을 확인해 주세요.');
+      else alert('서버 오류 또는 네트워크 오류!');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -112,17 +138,24 @@ function GovernmentJoinForm({ goBack }) {
       <input type="text" name="id" placeholder="아이디 (영문+숫자)" value={formData.id} onChange={handleChange} required />
       <input type="password" name="pw" placeholder="비밀번호" value={formData.pw} onChange={handleChange} required />
       <input type="password" name="pw2" placeholder="비밀번호 확인" value={formData.pw2} onChange={handleChange} required />
+
       <div className="terms" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
         <label><input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} required />약관 동의</label>
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
+
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="submit" className="common-btn join-btn" style={{ flex: 1}}>회원가입 완료</button>
-        <button type="button" onClick={goBack} style={{ flex: 1, backgroundColor: '#ccc', color: '#333' }}>돌아가기</button>
+        <button type="button" onClick={goBack} className="join-back">
+          돌아가기
+        </button>
+        <button type="submit" className="join-btn" disabled={loading}>
+          {loading ? '가입 중...' : '회원가입 완료'}
+        </button>
       </div>
     </form>
   );
 }
+
 
 const Join = () => {
   const navigate = useNavigate();

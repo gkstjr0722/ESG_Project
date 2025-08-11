@@ -46,8 +46,8 @@ const Mypage = () => {
     const userId = id || govId;
 
     const endpoint = govId
-      ? 'http://localhost:3001/userg/userinfo_gov'
-      : 'http://localhost:3001/api/mypage/userinfo';
+      ? 'http://localhost:3001/userg/userinfo_gov'    // ✅ 관공업: userG 라우터
+      : 'http://localhost:3001/user/userinfo';        // ✅ 기업: user 라우터로 통합
 
     try {
       const res = await axios.post(endpoint, { id: userId });
@@ -129,19 +129,20 @@ const Mypage = () => {
 
     try {
       if (userType === 'business') {
-        await axios.put('http://localhost:3001/api/mypage/update', {
+        // ✅ 기업: user 라우터로 통일
+        await axios.put('http://localhost:3001/user/update', {
           ...formData,
           id: formData.id,
         });
 
         if (newPassword) {
-          await axios.put('http://localhost:3001/api/mypage/password-update', {
+          await axios.put('http://localhost:3001/user/password-update', {
             id: formData.id,
             newPassword,
           });
         }
       } else {
-        // 관공업용 수정 시 키값 정확히 맞추고, 비밀번호 수정 라우터도 정확해야 함
+        // ✅ 관공업: userg 라우터 경로 유지
         await axios.put('http://localhost:3001/userg/update_gov', {
           corpName: formData.corpName,
           ceo: formData.ceo,
@@ -155,7 +156,7 @@ const Mypage = () => {
         });
 
         if (newPassword) {
-          await axios.put('http://localhost:3001/userg/password-update_gov', {
+          await axios.put('http://localhost:3001/userg/update_gov_pw', {
             id: formData.gov_id,
             newPassword,
           });

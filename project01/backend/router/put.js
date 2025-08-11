@@ -1,9 +1,8 @@
-// router/mypageR.js
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
 
-// 회원 정보 업데이트 (기업 or 관공업)
+// 1. 회원 정보 업데이트 라우터 (기업 or 관공업)
 router.put('/putR', (req, res) => {
   const {
     type,     // 'corp' 또는 'gov'
@@ -20,7 +19,7 @@ router.put('/putR', (req, res) => {
 
   if (!id || !type) return res.status(400).json({ msg: 'id, type 필요' });
 
-  // 어떤 테이블을 수정할지 구분
+  // 2. 어떤 테이블을 수정할지 구분하는 목적 
   let tableName;
   if (type === 'corp') {
     tableName = 'CORP_MEMBER';
@@ -51,3 +50,5 @@ router.put('/putR', (req, res) => {
 });
 
 module.exports = router;
+
+// 2025-08-08 코드 수정 완료
