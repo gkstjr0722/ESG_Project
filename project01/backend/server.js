@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+require('dotenv').config();
 
 app.use(cors());           
 app.use(express.json());   
@@ -16,6 +17,7 @@ const loginGRouter  = require('./router/loginG');
 const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
 const noticeRouter = require('./router/notice');
+const passwordRouter = require('./router/password');
 
 // 2. 라우터 미들웨어 설정 
 app.use('/main', mainRouter);
@@ -28,11 +30,17 @@ app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
 app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
+app.use('/api/password', passwordRouter);
 
 // 3. 파일 업로드 설정 
 //    업로드된 파일 정적 제공 
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// 비밀번호 재설정 관련 
+
+
+
 
 // 4, 서버 시작 
 app.get('/', (req, res) => {
