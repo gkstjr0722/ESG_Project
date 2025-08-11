@@ -1,10 +1,12 @@
-// 회원가입
+// frontend/src/Pages/Join.jsx
 import '../CSS/Main.css';
 // import '../CSS/Join.css';
 import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../component/Header';
+
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
 
 // 기업용 회원가입 페이지
 function BusinessJoinForm({ goBack }) {
@@ -22,20 +24,28 @@ function BusinessJoinForm({ goBack }) {
     e.preventDefault();
     if (!agreeTerms || !agreePrivacy) return alert('약관 및 개인정보 동의는 필수입니다.');
     if (formData.pw !== formData.pw2) return alert('비밀번호가 일치하지 않습니다.');
-    // 기업 백엔드 연결
+    if (!/^\d{10}$/.test(formData.corpRegNum)) return alert('사업자등록번호는 숫자 10자리여야 합니다.');
+
     try {
       const data = new FormData();
       Object.keys(formData).forEach(key => data.append(key, formData[key]));
       if (bizCert) data.append('bizCert', bizCert);
-      const res = await fetch('http://localhost:3001/user/joinCorp', { method: 'POST', body: data });
-      if (res.ok) {
-        alert('기업 회원가입 성공!');
+
+      // ✅ API_BASE 사용 + multipart 헤더 명시(안정성)
+      const res = await axios.post(`${API_BASE}/user/joinCorp`, data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      if (res.status === 201 || res.data?.result === 1) {
+        alert(res.data?.message || '기업 회원가입 성공!');
         navigate('/login');
       } else {
-        alert('기업 회원가입 실패!');
+        alert(res.data?.message || '기업 회원가입 실패!');
       }
-    } catch {
-      alert('서버 오류 또는 네트워크 오류!');
+    } catch (err) {
+      if (err.response?.status === 409) alert(err.response.data?.message || '중복된 값이 있습니다.');
+      else if (err.response?.status === 400) alert(err.response.data?.message || '필수값을 확인하세요.');
+      else alert('서버 오류 또는 네트워크 오류!');
     }
   };
 
@@ -68,7 +78,6 @@ function BusinessJoinForm({ goBack }) {
     </form>
   );
 }
-
 
 // 관공업 회원가입 페이지
 function GovernmentJoinForm({ goBack }) {
@@ -103,8 +112,8 @@ function GovernmentJoinForm({ goBack }) {
 
     try {
       setLoading(true);
-      // ✅ 서버 마운트 경로에 맞춰 소문자 g 사용
-      const url = 'http://localhost:3001/userg/join_gov';
+      const url = `${API_BASE}/userg/join_gov`;     // ✅ 경로: /userg/join_gov (소문자 g)
+      console.log('[JOIN] POST', url);              // 🔎 문제시 실제 전송 경로 확인용(기능영향X)
 
       const res = await axios.post(url, payload, {
         headers: { 'Content-Type': 'application/json' },
@@ -155,7 +164,6 @@ function GovernmentJoinForm({ goBack }) {
     </form>
   );
 }
-
 
 const Join = () => {
   const navigate = useNavigate();

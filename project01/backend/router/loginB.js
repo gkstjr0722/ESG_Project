@@ -19,6 +19,12 @@ router.post('/corp', (req, res) => {
     }
 
     const user = rows[0];
+
+    // 기업 계정 탈퇴 시 로그인 불가 
+    if ( user.IS_DELETED === 1 ) {
+      return res.json({ result: 'fail', msg: '탈퇴 처리된  계정입니다.' });
+    }
+
     const isMatch = await bcrypt.compare(pw, user.pw);
 
     if (isMatch) {

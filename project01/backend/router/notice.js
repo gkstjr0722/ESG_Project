@@ -211,6 +211,46 @@ router.put('/:notice_id', upload.single('file'), (req, res) => {
 });
 
 // 7. 공지사항글 삭제 라우터 ( admin 관리자 전용 기능 ) 
+router.delete('/:notice_id', express.json(), (req, res) => {
+  const { notice_id } = req.params;
+  const { EDITOR_ID, EDITOR_NAME } = req.body || {};
+
+  if ((EDITOR_ID || '').trim() !== 'admin') {
+    return res.status(403).json({ ok: false, message: '관리자만 삭제 가능' });
+  }
+
+  // 1) 기존 파일/제목 조회
+  const sel = 'SELECT FILE_PATH, TITLE FROM NOTICE_BOARD WHERE NOTICE_ID = ?';
+  conn.query(sel, [notice_id], (e1, rows) => {
+    if (e1) return res.status(500).json({ ok: false, message: 'DB 오류(sel)' });
+    if (!rows || rows.length === 0) return res.status(404).json({ ok: false, message: 'NOT_FOUND' });
+
+    const { FILE_PATH, TITLE } = rows[0];
+
+    // 2) 삭제
+    const del = 'DELETE FROM NOTICE_BOARD WHERE NOTICE_ID = ?';
+    conn.query(del, [notice_id], (e2) => {
+      if (e2) return res.status(500).json({ ok: false, message: 'DB 오류(del)' });
+
+      // 3) 파일 삭제(있으면)
+      if (FILE_PATH) {
+        const abs = require('path').join(process.cwd(), FILE_PATH.replace(/^\//, ''));
+        require('fs').unlink(abs, () => {}); // 실패해도 무시
+      }
+
+      // (선택) 삭제 이력 기록
+      const EDIT_ID = `edit_${Date.now()}`;
+      const logSql = `
+        INSERT INTO NOTICE_EDIT
+          (EDIT_ID, NT_ID, EDITOR_ID, EDITOR_NAME, EDIT_TITLE, EDIT_DATE)
+        VALUES (?, ?, ?, ?, ?, NOW())
+      `;
+      conn.query(logSql, [EDIT_ID, notice_id, 'admin', EDITOR_NAME || '관리자', `[삭제] ${TITLE}`], () => {
+        return res.json({ ok: true, noticeId: notice_id });
+      });
+    });
+  });
+});
 
 
 module.exports = router;
