@@ -1,10 +1,16 @@
+const path = require('path');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
 
-app.use(cors());           
-app.use(express.json());   
+
+app.use(cors({ origin: true, credentials: true })); // 요청 Origin 그대로 허용
+app.use(express.json());
+
+// 프론트 정적 파일 서빙
+const STATIC_DIR = process.env.STATIC_DIR || path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(STATIC_DIR));
 
 // 1. 라우터 설정
 const mainRouter = require('./router/main');
@@ -19,7 +25,7 @@ const inquiryRouter = require('./router/inquiry');
 const noticeRouter = require('./router/notice');
 const passwordRouter = require('./router/password');
 
-// 2. 라우터 미들웨어 설정 
+// 2. 라우터 미들웨어 설정
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
 app.use('/user', userRouter);
@@ -32,25 +38,20 @@ app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
 app.use('/api/password', passwordRouter);
 
-// 3. 파일 업로드 설정 
-//    업로드된 파일 정적 제공 
-const path = require('path');
+// 업로드 정적 제공
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 비밀번호 재설정 관련 
+// 헬스 체크 엔드포인트
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
-
-
-
-// 4, 서버 시작 
-app.get('/', (req, res) => {
-  res.send('백엔드 서버 정상 작동 중!');
+// SPA 라우팅 처리
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+  res.sendFile(path.join(STATIC_DIR, 'index.html'));
 });
 
-// 5. 서버 포트 설정 
-app.listen(3001, () => {
-  console.log('✅ Node 서버 실행 중: http://localhost:3001');
+// 서버 시작
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Node 서버 실행 중: http://0.0.0.0:${PORT}`);
 });
-
-// 2025-08-08 코드 수정 완료 
-
