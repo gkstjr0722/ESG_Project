@@ -98,10 +98,20 @@
     transition: background 0.2s;
 }
 .common-btn:hover {
-  background: #2d69c4;
-  color: #fff;  
+  background: #1854ad;
+  /* color: #fff;   */
 }
 
+.common-btn-gap {
+  display: flex;
+  gap: 5px;
+}
+
+.common-btn-flexend {
+  display: flex;
+  justify-content: flex-end;
+  transform: translateX(30px);
+}
 
 /* 로그인, 회원가입 배경 공통 */
 .common-bg {

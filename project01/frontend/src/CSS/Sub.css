@@ -124,6 +124,10 @@ body {
   color: #222;
   letter-spacing: -1.2px;
 }
+.faq-tit-loca{
+  text-align: center;
+  margin-right: 800px;
+}
 .faq-search-row {
   display: flex;
   align-items: center;
@@ -206,7 +210,7 @@ body {
   min-height: 340px;
 }
 .faq-detail-title { 
-  font-size: 1.28rem; 
+  font-size: 30px; 
   font-weight: 700; 
   color: #1d5fc4; 
   margin-bottom: 26px; 
@@ -218,15 +222,16 @@ body {
   margin-bottom: 38px; 
 }
 .faq-detail-backbtn { 
-  color: #23272e; 
+  color: #888c93; 
   font-size: 1rem; 
-  padding: 9px 28px; 
+  padding: 0;
   border: none; 
   border-radius: 5px; 
   cursor: pointer; 
+  
 }
 .faq-detail-backbtn:hover { 
-  color: #464646;
+  color: #6f6f6f;
  }
 .faq-detail-notfound { 
   text-align: center; 
@@ -286,10 +291,12 @@ body {
   box-shadow:0 8px 24px rgba(53,117,246,.24); 
 }
 .faq-write-form { 
-  max-width: 600px; 
+  /* max-width: 600px;  */
   margin: 0 auto; 
-  padding: 32px 28px; 
+  padding: 32px 0px; 
   border-radius: 20px; 
+  padding-right: 30px;
+  margin-top: -25px;
 }
 .faq-write-row {
   margin-bottom: 22px; 
@@ -300,7 +307,7 @@ body {
   border-radius: 10px; 
   border: 1px solid #dbe0ea; 
   background: #fff; 
-  font-size: 1em; 
+  font-size: 16px; 
   outline: none;
 }
 .faq-write-input:focus, .faq-write-textarea:focus { 
@@ -311,59 +318,46 @@ body {
   min-height: 100px; 
   resize: vertical; 
 }
-.faq-write-btns { 
+.faq-write-btn { 
   display: flex; 
   gap: 14px; 
   justify-content: flex-end; 
 }
-.faq-write-submit { 
-  background:#3575f6; 
-  color:#fff; 
-  border:none; 
-  padding:10px 28px; 
-  border-radius:8px; 
-}
-.faq-write-submit:hover { 
-  background:#194e9e; 
-}
+
 .faq-write-cancel { 
   background:#f1f2f6; 
   color:#666; 
-  border:none; 
-  padding:10px 22px; 
-  border-radius:8px; 
 }
 .faq-write-cancel:hover { 
-  background:#e3e8f0; 
-}
-.test{
-  display: flex ;
-  gap: 5px;
-  align-items: center;
+  background:#ced3da; 
+  color:#666;
+ }
+.answer-btn-loca{
+  /* align-items: center; */
   margin-top: 80px; 
   flex-wrap: wrap;
+  display: flex;
   justify-content: flex-end;
 }
-.edit-input{
-  display: flex;
-  justify-content: flex-start;
+
+.edit-input-box{
+  height: 4.625rem;
+  width: 40rem;
+  line-height: 40px;
+  border: 1px solid #a9a9a9;
+  border-radius: 8px;
 }
-.faq-fix-submit { 
-  background:#3575f6; 
-  color:#fff; 
-  border:none; 
-  padding:10px 28px; 
-  border-radius:8px; 
-  margin-right:12px; 
+.edit-input-box:focus{
+  outline: none;
+  border: 1px solid #3c79d5;
+
 }
-.faq-fix-submit:hover { 
-  background:#194e9e; 
-}
+
 .faq-fix1-submit { 
-  background:#bc2d2d;
+  background:#bd3535;
 }
 .faq-fix1-submit:hover { 
-  background:#821919; 
+  background:#9b2525; 
 }
 
 /* ===== 공지 상세 (Notice detail) ===== */
@@ -496,10 +490,10 @@ body {
   border: none;
   outline: none;
   border-radius: 999px; /* 완전 둥글게 */
-  background: #ffffff;
-  font-weight: 800;
+  background: #3c79d5;
+  font-weight: 700;
   font-size: 15px;
-  color: #2b2f38;
+  color: #ffffff;
   line-height: 1;
   cursor: pointer;
   text-decoration: none;
@@ -507,11 +501,11 @@ body {
   box-shadow: 0 6px 16px rgba(17, 24, 39, .06);
 }
 
-.notice-add-btn:hover {
+/* .notice-add-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 8px 20px rgba(17, 24, 39, .08);
   background: #fafbff;
-}
+} */
 
 .notice-add-btn:active {
   transform: translateY(0);
