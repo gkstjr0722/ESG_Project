@@ -278,6 +278,16 @@ body {
   color: #085cab;
 }
 
+/* 로그인 페이지 - 비밀번호 찾기 */
+.pw-find-link {
+  color: gray;
+  font-weight: 550;
+}
+
+.pw-find-link:hover {
+  color: rgb(104, 104, 104);
+}
+
 /* 로그인 위에 기업로그인, 관공업 로그인 선택하는 버튼 구역 */
 .login-switch-btn-area {
   display: flex;
@@ -304,6 +314,7 @@ body {
   border-radius: 8px;
   width: 150px;
 }
+
 
 /* Join.css */
 .join-corp-box {
