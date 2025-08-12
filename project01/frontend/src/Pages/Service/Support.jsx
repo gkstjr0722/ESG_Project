@@ -38,6 +38,7 @@ const Support = () => {
       {isNotice ? (
         <Notice />
       ) : (
+        <div className='bg-common'>
         <div className="support-main-wrapper">
           <div className="support-center-card">
             <button
@@ -55,6 +56,7 @@ const Support = () => {
               고객 문의
             </button>
           </div>
+        </div>
         </div>
       )}
     </>

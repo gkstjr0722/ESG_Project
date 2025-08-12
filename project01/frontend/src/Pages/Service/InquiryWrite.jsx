@@ -121,7 +121,7 @@ const InquiryWrite = () => {
   };
 
   return (
-    <div>
+    <div className='bg-common'>
       <Header/>
       <br /><br /><br />
       <div className="faq-detail-page-wrap">

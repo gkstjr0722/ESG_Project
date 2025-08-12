@@ -121,7 +121,7 @@ const InquiryDetail = () => {
 
   // 고객문의 글 작성 완료 후
   return (
-    <div>
+    <div className='bg-common'>
       <Header />
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
