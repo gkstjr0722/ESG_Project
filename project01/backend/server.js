@@ -1,14 +1,17 @@
-// import 'dotenv/config'            // ❌ (삭제) CommonJS 파일에서 ESM import 섞이면 에러납니다.
+const path = require('path');
 const express = require('express');
 const app = express();
 const cors = require('cors');
 
 require('dotenv').config();
 
-app.use(cors());
+
+app.use(cors({ origin: true, credentials: true })); // 요청 Origin 그대로 허용
 app.use(express.json());
-// ⬇️ [추가] URL-encoded 폼 파서 (multipart는 multer가 처리하지만, 호환성 위해 켜둠)
-app.use(express.urlencoded({ extended: true }));
+
+// 프론트 정적 파일 서빙
+const STATIC_DIR = process.env.STATIC_DIR || path.join(__dirname, '..', 'frontend', 'dist');
+app.use(express.static(STATIC_DIR));
 
 // 1. 라우터 설정
 const mainRouter = require('./router/main');
@@ -22,13 +25,9 @@ const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
 const noticeRouter = require('./router/notice');
 const passwordRouter = require('./router/password');
-const proxyIndustry = require('./router/proxyIndustry');
+const proxyIndustry = require('./router/proxyIndustry')
 
-app.use((req, res, next) => {
-  console.log('[REQ]', req.method, req.path);
-  next();
-});
-
+// 2. 라우터 미들웨어 설정
 // 2. 라우터 미들웨어 설정
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
@@ -51,36 +50,22 @@ app.use('/api/notice', noticeRouter);
 app.use('/api/password', passwordRouter);   // 기존 경로 유지
 app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
 app.use('/kepco', proxyIndustry);
+
 // 3. 파일 업로드 설정 (정적 제공)
-const path = require('path');
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// 4. 서버 상태 체크
-app.get('/', (req, res) => {
-  res.send('백엔드 서버 정상 작동 중!');
+// 헬스 체크 엔드포인트
+app.get('/health', (req, res) => res.status(200).send('OK'));
+
+// SPA 라우팅 처리
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/uploads')) return next();
+  res.sendFile(path.join(STATIC_DIR, 'index.html'));
 });
 
-// ⬇️ [추가] 디버그용: 현재 등록된 /user 하위 라우트 출력 (기능 영향 없음)
-(function logUserRoutes() {
-  try {
-    const stack = app._router?.stack || [];
-    const routes = [];
-    stack.forEach(l => {
-      if (l.handle && l.handle.stack && l.regexp?.toString().includes('^\\/user\\/?')) {
-        l.handle.stack.forEach(r => {
-          const methods = r.route && r.route.methods ? Object.keys(r.route.methods).join(',').toUpperCase() : '';
-          const path = r.route && r.route.path ? r.route.path : '';
-          if (methods && path) routes.push(`${methods} /user${path}`);
-        });
-      }
-    });
-    console.log('[ROUTES:/user]', routes.length ? routes : '(none)');
-  } catch (e) {
-    console.log('[ROUTES:/user] listing failed:', e?.message);
-  }
-})();
-
-// 5. 서버 포트 설정
-app.listen(3001, () => {
-  console.log('✅ Node 서버 실행 중: http://localhost:3001');
+// 서버 시작
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Node 서버 실행 중: http://0.0.0.0:${PORT}`);
 });

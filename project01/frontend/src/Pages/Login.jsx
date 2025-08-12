@@ -141,13 +141,12 @@ const Login = () => {
           </form>
 
           <div className="login-link-area">
-            <button
-              className="linklike"
-              type="button"
-              onClick={() => navigate('/password/reset')} // ← 페이지로 이동
-            >
-              비밀번호 찾기
-            </button>
+            <a
+              className="pw-find-link"
+              href="/password/reset"
+              >
+                비밀번호 찾기
+            </a>
             <span className="divider">|</span>
             <a href="/join" className="join-link">
               회원가입
