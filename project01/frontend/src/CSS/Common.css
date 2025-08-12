@@ -33,7 +33,8 @@
 .logo-badge{
   font-weight: 800;
   font-size: 22px;
-  color: #1d5fc4;
+  font-style: italic; /* 너무 기울여서 조정 필요 */
+  color: #0091ff;
   line-height: 1;
   transform: translateY(-3px);   /* ← 이전 -10px에서 -3px로 ↓ */
 }
@@ -59,9 +60,12 @@
 .nav-icons {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 15px;
   font-size: 18px;
   transform: translateX(-50px); /* 더 왼쪽 */
+}
+.yellow{
+  color: #ffdb00;
 }
 
 /* 로그인 */
@@ -69,7 +73,7 @@
   font-size: 17px;
   font-weight: bold;
   margin-left: 8px;
-  color: #1d5fc4;
+  color: #3c79d5;
   text-decoration: none;
 }
 
@@ -106,8 +110,6 @@
 .userpage {
   text-decoration: none;
 }
-
-
 
 
 
@@ -172,15 +174,18 @@
   --nav-icon-size: 20px;
   --nav-icon-gap: 8px;
 }
-.nav-icons{
+/* .nav-icons{
   display:flex;
   align-items:center;
   gap:var(--nav-icon-gap);
-}
+} */
 
 .userpage{
   display:flex;
   align-items:center;
+  font-size: 17px;
+  font-weight: bold;
+  color: #3c79d5 ;
 }
 .nav-avatar{
   display:block;

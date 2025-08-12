@@ -11,6 +11,9 @@ app.add_middleware(
     allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"],
 )
 
+class Req(BaseModel):
+    value: float
+
 class PredictRequest(BaseModel):
     current_month_kwh: float = Field(..., gt=0)
 
@@ -32,8 +35,8 @@ def predict(req: PredictRequest):
     except Exception as e:
         raise HTTPException(500, f"Model error: {e}")
 
-    def to_map(arr): return {f"{h:02d}:00": float(arr[h]) for h in range(24)}
-    def to_text(arr): return [f"{h:02d}시 : {float(arr[h]):.2f} kWh" for h in range(24)]
+    def to_map(arr): return {f"{h:02d}": f"{float(arr[h]):.2f}" for h in range(24)}
+    def to_text(arr): return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
 
     return PredictResponse(
         next_month_kwh=float(next_total),
