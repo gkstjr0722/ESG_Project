@@ -125,3 +125,4 @@ router.get('/industry/series', async (req, res) => {
 module.exports = router;
 
 // 산업분류별 api 관련 js 
+// sss
