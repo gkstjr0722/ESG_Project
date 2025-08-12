@@ -1,3 +1,5 @@
+// 한달 예측 사용량 그래프
+
 import React, { useEffect, useRef } from "react";
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
@@ -10,7 +12,7 @@ const MonthUsed = ({ data }) => {
 
   useEffect(() => {
     // 혹시 남아있는 차트 정리(메모리릭 방지)
-    const prev = am5.registry.rootElements.find(root => root.dom.id === chartId);
+    const prev = am5.registry.rootElements.find(root => root.dom && root.dom.id === chartId);
     if (prev) prev.dispose();
 
     let root = am5.Root.new(chartId);
@@ -70,8 +72,16 @@ const MonthUsed = ({ data }) => {
       return chart.get("colors").getIndex(series.columns.indexOf(target));
     });
 
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
+    // 안전 보정: data 없거나 포맷 다른 경우 대비
+    const safeData = Array.isArray(data)
+      ? data.map(d => ({
+          month: String(d?.month ?? ""),
+          value: Number(d?.value ?? 0)
+        }))
+      : [];
+
+    xAxis.data.setAll(safeData);
+    series.data.setAll(safeData);
 
     series.appear(1000);
     chart.appear(1000, 100);

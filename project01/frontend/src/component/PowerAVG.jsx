@@ -1,97 +1,298 @@
-// 평균 전력량
+// 평균 전력량 그래프
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as am5 from "@amcharts/amcharts5";
 import * as am5xy from "@amcharts/amcharts5/xy";
 import am5themes_Animated from "@amcharts/amcharts5/themes/Animated";
+import axios from "axios";
 
-// 🔥 부모로부터 data를 props로 받음
-const PowerAVG = ({ data }) => {
-  const chartRef = useRef(null);
-  const xAxisRef = useRef(null);
-  const seriesRef = useRef(null);
+// ⚠️ 프록시(vite.config.js)의 '/kepco' 경로를 타도록 항상 상대경로 사용
+const api = axios.create({ baseURL: "/" });
+const ENDPOINT = "/kepco/industry";
+
+// ▶︎ 추가: 간단 캐시(메모리)
+const cache = new Map();
+
+/**
+ * props
+ * - data: [{ month, value }]
+ * - kepcoValue: number
+ * - filters: { metroCd?, cityCd?, bizCd? }
+ * - labelForAvg: string
+ * - targetYM: { year: number, month: number }
+ */
+const PowerAVG = ({
+  data,
+  kepcoValue = 0,
+  filters = {},
+  labelForAvg = "산업 평균",
+  targetYM,
+}) => {
+  const chartId = useRef(`PowerAVG_${Math.random().toString(36).slice(2)}`).current;
+
+  const [avgVal, setAvgVal] = useState(Number(kepcoValue || 0));
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState("");
+
+  // ▶︎ 동일 조건 중복 호출 방지용 키
+  const lastKeyRef = useRef("");
+
+  const ymLabel =
+    (labelForAvg && String(labelForAvg).trim()) ||
+    (targetYM && Number(targetYM?.year) && Number(targetYM?.month)
+      ? `${targetYM.year}-${String(targetYM.month).padStart(2, "0")} 산업 평균`
+      : "산업 평균");
 
   useEffect(() => {
-    let root = am5.Root.new("PowerAVG");
+    let cancelled = false;
+    const controller = new AbortController();
+
+    const fetchAvg = async () => {
+      if (Number(kepcoValue) > 0) {
+        setAvgVal(Number(kepcoValue));
+        setErr("");
+        return;
+      }
+
+      setLoading(true);
+      setErr("");
+
+      // 조회 연월 계산
+      let year, month;
+      if (targetYM && Number(targetYM.year) && Number(targetYM.month)) {
+        year = Number(targetYM.year);
+        month = String(Number(targetYM.month)).padStart(2, "0");
+      } else {
+        const now = new Date();
+        const curYear = now.getFullYear();
+        const curMonth = now.getMonth() + 1;
+        const prev = new Date(curYear, curMonth - 2, 1);
+        year = prev.getFullYear();
+        month = String(prev.getMonth() + 1).padStart(2, "0");
+      }
+
+      // ▶︎ 키 만들기
+      const key = [
+        year,
+        month,
+        filters?.metroCd || "",
+        filters?.cityCd || "",
+        filters?.bizCd || "",
+        Number(kepcoValue) || 0,
+      ].join("|");
+
+      // ▶︎ 같은 조건이면 재호출 스킵
+      if (lastKeyRef.current === key) {
+        setLoading(false);
+        return;
+      }
+      lastKeyRef.current = key;
+
+      // ▶︎ 캐시 확인
+      if (cache.has(key)) {
+        const cachedVal = cache.get(key);
+        setAvgVal(cachedVal);
+        setErr("");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const params = { year, month };
+        if (filters.metroCd) params.metroCd = String(filters.metroCd);
+        if (filters.cityCd) params.cityCd = String(filters.cityCd);
+        if (filters.bizCd) params.bizCd = String(filters.bizCd);
+
+        const { data: res } = await api.get(ENDPOINT, {
+          params,
+          timeout: 15000,
+          headers: { Accept: "application/json" },
+          signal: controller.signal,
+        });
+
+        if (res?.result !== 1) {
+          console.warn("[PowerAVG] backend non-success:", res?.upStatus, res?.message);
+          if (!cancelled) {
+            setAvgVal(0);
+            setErr(res?.message || "KEPCO 평균 조회 실패");
+          }
+          return;
+        }
+
+        const items = Array.isArray(res?.items) ? res.items : [];
+        console.log("[PowerAVG] /kepco/industry params:", params);
+        console.log("[PowerAVG] result count:", items.length, "upstream:", res?.upstream);
+
+        if (items.length === 0) {
+          if (!cancelled) {
+            setAvgVal(0);
+            setErr("해당 조건의 산업 평균 데이터가 없습니다.");
+          }
+          return;
+        }
+
+        // 가중평균(kWh/고객) = Σ사용량 / Σ고객수
+        const totals = items.reduce(
+          (acc, it) => {
+            const usage = Number(it?.powerUsage || 0);
+            const cust = Number(it?.custCnt || 0);
+            acc.usage += usage;
+            acc.cust += cust;
+            return acc;
+          },
+          { usage: 0, cust: 0 }
+        );
+
+        let avgPerCustomer = 0;
+        if (totals.cust > 0) {
+          avgPerCustomer = totals.usage / totals.cust;
+        } else {
+          const sum = items.reduce((a, it) => a + Number(it?.powerUsage || 0), 0);
+          avgPerCustomer = items.length ? sum / items.length : 0;
+        }
+
+        const rounded = Math.round(avgPerCustomer);
+        if (!cancelled) {
+          setAvgVal(rounded);
+          setErr("");
+          // ▶︎ 성공 응답만 캐시
+          cache.set(key, rounded);
+        }
+      } catch (e) {
+        if (!cancelled) {
+          console.error("[PowerAVG] KEPCO 평균 조회 실패:", e?.response?.status, e?.message, e?.response?.data);
+          setAvgVal(0);
+          setErr("KEPCO 평균 조회 실패");
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    fetchAvg();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [
+    // 객체 전체가 아니라 “필드”만 추적 → 리렌더시 불필요 호출 방지
+    kepcoValue,
+    filters.metroCd,
+    filters.cityCd,
+    filters.bizCd,
+    targetYM?.year,
+    targetYM?.month,
+  ]);
+
+  // 차트 렌더링
+  useEffect(() => {
+    const prevRoot = am5.registry.rootElements.find((r) => r.dom && r.dom.id === chartId);
+    if (prevRoot) prevRoot.dispose();
+
+    const root = am5.Root.new(chartId);
     root.setThemes([am5themes_Animated.new(root)]);
 
-    let chart = root.container.children.push(
+    const chart = root.container.children.push(
       am5xy.XYChart.new(root, {
-        panX: false, panY: false, wheelX: false, wheelY: false,
-        pinchZoomX: false, paddingLeft: 0, paddingRight: 1,
+        panX: false,
+        panY: false,
+        wheelX: false,
+        wheelY: false,
+        pinchZoomX: false,
+        paddingLeft: 0,
+        paddingRight: 1,
       })
     );
-    chartRef.current = chart;
 
-    let cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
+    if (loading || err) {
+      root.container.children.push(
+        am5.Label.new(root, {
+          text: loading ? "로딩 중..." : err,
+          fontSize: 14,
+          centerX: am5.p50,
+          centerY: am5.p50,
+          x: am5.p50,
+          y: am5.p50,
+          background: am5.RoundedRectangle.new(root, {
+            cornerRadiusTL: 8,
+            cornerRadiusTR: 8,
+            cornerRadiusBL: 8,
+            cornerRadiusBR: 8,
+            fillOpacity: 0.05,
+          }),
+          paddingTop: 8,
+          paddingBottom: 8,
+          paddingLeft: 12,
+          paddingRight: 12,
+        })
+      );
+    }
+
+    const cursor = chart.set("cursor", am5xy.XYCursor.new(root, {}));
     cursor.lineY.set("visible", false);
 
-    let xRenderer = am5xy.AxisRendererX.new(root, {
-      minGridDistance: 30, minorGridEnabled: true,
+    const xRenderer = am5xy.AxisRendererX.new(root, {
+      minGridDistance: 30,
+      minorGridEnabled: true,
     });
     xRenderer.labels.template.setAll({
-      rotation: 0, centerY: am5.p50, centerX: am5.p50, paddingRight: 0,
+      rotation: 0,
+      centerY: am5.p50,
+      centerX: am5.p50,
+      paddingRight: 0,
     });
     xRenderer.grid.template.setAll({ location: 1 });
 
-    let xAxis = chart.xAxes.push(
+    const xAxis = chart.xAxes.push(
       am5xy.CategoryAxis.new(root, {
-        maxDeviation: 0.3, categoryField: "month",
-        renderer: xRenderer, tooltip: am5.Tooltip.new(root, {}),
+        maxDeviation: 0.3,
+        categoryField: "month",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {}),
       })
     );
-    xAxisRef.current = xAxis;
 
-    let yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
-    let yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer, })
-    );
+    const yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
+    const yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer }));
 
-    let series = chart.series.push(
+    const series = chart.series.push(
       am5xy.ColumnSeries.new(root, {
-        name: "평군전력량", xAxis: xAxis, yAxis: yAxis,
-        valueYField: "value", sequencedInterpolation: true,
+        name: "평균전력량",
+        xAxis,
+        yAxis,
+        valueYField: "value",
+        sequencedInterpolation: true,
         categoryXField: "month",
         tooltip: am5.Tooltip.new(root, { labelText: "{valueY} kWh" }),
       })
     );
-    seriesRef.current = series;
 
-    series.columns.template.setAll({
-      cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0,
-    });
-    series.columns.template.adapters.add("fill", (fill, target) => {
-      return chart.get("colors").getIndex(series.columns.indexOf(target));
-    });
-    series.columns.template.adapters.add("stroke", (stroke, target) => {
-      return chart.get("colors").getIndex(series.columns.indexOf(target));
-    });
+    series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0 });
+    series.columns.template.adapters.add("fill", (fill, target) => chart.get("colors").getIndex(series.columns.indexOf(target)));
+    series.columns.template.adapters.add("stroke", (stroke, target) => chart.get("colors").getIndex(series.columns.indexOf(target)));
 
-    // 차트 최초 데이터
-    xAxis.data.setAll(data);
-    series.data.setAll(data);
+    const prevItem = Array.isArray(data) && data.length > 0
+      ? { month: String(data[0]?.month ?? "전달"), value: Number(data[0]?.value ?? 0) }
+      : { month: "전달", value: 0 };
 
-    series.appear(1000);
-    chart.appear(1000, 100);
+    const avgItem = { month: ymLabel, value: Number(avgVal ?? 0) };
+
+    const chartData = [prevItem, avgItem];
+
+    xAxis.data.setAll(chartData);
+    series.data.setAll(chartData);
+
+    series.appear(800);
+    chart.appear(800, 80);
 
     return () => {
       root.dispose();
     };
-  }, [data]); // ⭐️ data가 바뀔 때마다 차트 전체 다시 그림
+  }, [data, avgVal, loading, err, ymLabel, chartId]);
 
-  // 만약 차트 자체 재생성이 부담스럽다면, 아래처럼 차트 객체 유지 + data만 갱신하는 useEffect를 유지할 수도 있음
-  /*
-  useEffect(() => {
-    if (xAxisRef.current && seriesRef.current) {
-        xAxisRef.current.data.setAll(data);
-        seriesRef.current.data.setAll(data);
-    }
-  }, [data]);
-  */
-
-  return (
-    <div id="PowerAVG" style={{ width: "100%", height: "200px" }}></div>
-  );
+  return <div id={chartId} style={{ width: "100%", height: "200px" }} />;
 };
+
+
 
 export default PowerAVG;
