@@ -335,13 +335,13 @@ body {
   /* margin-bottom: 8px; */
   flex-wrap: wrap;
 }
-.slider-img01{
-  background-image: url('../assets/slider01.png'); /* 이미지 경로 */
-  background-size: cover;       /* 요소 크기에 맞춰 채움 */
-  background-position: center;  /* 가운데 정렬 */
-  /* background-repeat: no-repeat; 반복 안 함 */
+.slider-img01 {
+  background-image: url('../assets/slider01.png');
+  background-size: cover;
+  background-position: center;
   height: 400px;
 }
+
 .notice-hero__content { 
   max-width: 980px; 
   text-align: left; 
@@ -444,7 +444,7 @@ body {
   flex: 0 0 auto;
 }
 .swiper-wrapper-custom { width: 100%; height: auto; position: relative; }
-.mySwiper { width: 100%; height: auto; position: relative; background: transparent; }
+.mySwiper { width: 100%; height: 400px; position: relative; background: transparent; }
 .mySwiper .swiper-button-prev,
 .mySwiper .swiper-button-next {
   color: #007aff; width: 40px; height: 30px; top: 50%; transform: translateY(-50%);

@@ -1,4 +1,4 @@
-/* 슬라이더 영역 전체 스타일 */
+/* 슬라이더 영역 전체 스타일
 .slider-section {
   width: 100%;
   max-width: 100%;
@@ -26,21 +26,21 @@
 }
 
 /* Swiper 래퍼 */
-.swiper-wrapper-custom {
+/* .swiper-wrapper-custom {
   width: 100%;
   height: 100%;
   position: relative;
-}
+} */
 
 /* Swiper 본체 */
-.mySwiper {
+/* .mySwiper {
   width: 100%;
-  height: 100%;
+  height: 400px;
   position: relative;
-}
+} */
 
 /* 커스텀 네비게이션 버튼 - 좌우 */
-.custom-swiper-button-prev,
+/* .custom-swiper-button-prev,
 .custom-swiper-button-next {
   position: absolute;
   top: 50%;
@@ -74,7 +74,7 @@
 }
 
 /* 진행바 배경 및 위치 (슬라이더 하단 고정) */
-.mySwiper .swiper-pagination-progressbar,
+/* .mySwiper .swiper-pagination-progressbar,
 .swiper-pagination-progressbar-custom,
 .custom-pagination-progressbar {
   position: absolute !important;
@@ -87,18 +87,18 @@
   background-color: rgba(0, 0, 0, 0.08) !important;
   border-radius: 3px !important;
   z-index: 10 !important;
-}
+} */
 
 /* 진행바 채워진 부분 색상 - 주황색 */
-.mySwiper .swiper-pagination-progressbar-fill,
+/* .mySwiper .swiper-pagination-progressbar-fill,
 .swiper-pagination-progressbar-custom .swiper-pagination-progressbar-fill,
 .custom-pagination-progressbar .swiper-pagination-progressbar-fill {
   background-color: orange !important;
   border-radius: 3px !important;
-}
+} */
 
 /* 현재/전체 페이지수 표시 - 오른쪽 아래 */
-.swiper-pagination-fraction-custom {
+/* .swiper-pagination-fraction-custom {
   position: absolute;
   right: 24px;
   bottom: 14px;
@@ -112,10 +112,17 @@
   letter-spacing: 1px;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
   user-select: none;
-}
+} */
 
 /* (필요시) 버튼에 포인터 커서 및 트랜지션 추가 */
-.banner-button {
+/* .banner-button {
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
+
+.slider-img01 {
+  background-image: url('../assets/slider01.png');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+}  */ 
