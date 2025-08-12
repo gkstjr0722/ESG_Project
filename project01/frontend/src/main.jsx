@@ -38,6 +38,7 @@ import PowerBill from './component/PowerBill.jsx';
 import MonthUsed from './component/MonthUsed.jsx';
 import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
+import Model from './Pages/Model.jsx';
 
 // 비밀번호 재설정
 // ⬇️ 파일명을 소문자로 변경했다는 요청에 맞춰 경로 수정
@@ -83,6 +84,7 @@ createRoot(document.getElementById('root')).render(
       <Route path="/powerbill" element={<PowerBill />} />
       <Route path="/poweravg" element={<PowerAVG />} />
       <Route path="/carbon" element={<Carbon />} />
+      <Route path="/model" element={<Model />} /> 
 
       {/* 비밀번호 재설정 */}
       {/* ⬇️ 기존 PasswordReset 컴포넌트명 대신 PasswordResetRequest 사용 */}

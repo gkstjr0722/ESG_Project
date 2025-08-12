@@ -28,8 +28,7 @@ const noticeRouter   = require('./router/notice');
 const passwordRouter = require('./router/password');
 const proxyIndustry = require('./router/proxyIndustry')
 
-// ✅ FastAPI 프록시 라우터 추가
-const fastRouter     = require('./router/fast');
+const fastRouter = require('./router/fast');
 
 /* ----------------------- 라우터 마운트 ------------------------ */
 app.use('/main', mainRouter);
@@ -54,6 +53,7 @@ app.use('/api/notice', noticeRouter);
 app.use('/api/password', passwordRouter);   // 기존 경로 유지
 app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
 app.use('/kepco', proxyIndustry);
+app.use('/fast', fastRouter);
 
 // 3. 파일 업로드 설정 (정적 제공)
 
