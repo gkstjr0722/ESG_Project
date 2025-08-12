@@ -119,6 +119,7 @@ const InquiryDetail = () => {
   const isOwner = question.USER_ID === userId;
   const canEditOrDelete = isOwner && (!question.ANSWER || question.ANSWER.trim() === '');
 
+  // 고객문의 글 작성 완료 후
   return (
     <div>
       <Header />
@@ -155,15 +156,15 @@ const InquiryDetail = () => {
 
         {/* 작성자: 답변 전만 수정/삭제 가능 */}
         {canEditOrDelete && (
-          <div className="faq-write-btns">
-            <button className="faq-fix-submit" onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}>수정</button>
-            <button className="faq-fix1-submit" onClick={handleDelete}>삭제</button>
+          <div className="answer-btn-loca common-btn-gap">
+            <button className="common-btn button-10px28px" onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}>수정</button>
+            <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
           </div>
         )}
 
         {/* 관리자: 답변/수정/삭제 가능 */}
         {isAdmin && (
-          <div className='test'>
+          <div className='answer-btn-loca common-btn-gap'>
             {!showAnswerInput ? (
               <>
               <button className="common-btn button-10px28px" onClick={handleShowAnswerInput}>
@@ -172,21 +173,22 @@ const InquiryDetail = () => {
               <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
               </>
             ) : (
-              <div className='edit-input'>
+              <div className='common-btn-gap'>
               <div>
                  <textarea
+                 className='edit-input-box'
                   value={answerInput}
                   onChange={e => setAnswerInput(e.target.value)}
                   rows={4}
                 /> 
-                <div>
-                <button onClick={handleAnswerSubmit} disabled={answerLoading}>
+                <div className='common-btn-gap'>
+                <button className="common-btn button-10px28px" onClick={handleAnswerSubmit} disabled={answerLoading}>
                   {answerLoading ? '저장 중...' : '저장'}
                 </button>
-                <button onClick={handleShowAnswerInput}>취소</button>
+                <button  className="common-btn button-10px28px faq-write-cancel" onClick={handleShowAnswerInput}>취소</button>
+                {/* <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button> */}
                 </div>
                 </div>
-                <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
               </div>
             )}
           </div>

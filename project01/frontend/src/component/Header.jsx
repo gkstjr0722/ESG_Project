@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+import userIcon from "../assets/userIcon.png";
+import logoImg from "../assets/logo.png"
+
 const mainMenuList = [
   { label: '전력사용현황', path: '/calcmain' },
   { label: '위치찾기', path: '/map' },
@@ -41,18 +44,28 @@ const Header = () => {
     navigate('/');
   };
 
-  // 로고 텍스트 동적 처리
-  let logoText = "Han's";
-  if (isLoggedIn && userType === 'business') logoText += ' 기업용';
-  if (isLoggedIn && userType === 'government') logoText += ' 관공용';
+  // 마이페이지 이미지 로드 실패 시 이모지로 대체
+  const handleAvatarError = (e) => {
+    e.currentTarget.style.display = 'none';
+    const fallback = document.createElement('span');
+    fallback.setAttribute('role', 'img');
+    fallback.setAttribute('aria-label', 'user');
+    fallback.textContent = '👤';
+    e.currentTarget.parentNode.appendChild(fallback);
+  };
 
   return (
     <div className="menu-wrapper">
       <nav className="navbar">
         <span className="logo">
-          <Link to="/" style={{ textDecoration: 'none', color: 'inherit', fontWeight: 'bold' }}>
-            {logoText}
+          <Link to="/" className="logo-link" aria-label="Han's">
+            <img src={logoImg} alt="Han's" className="logo-img" />
           </Link>
+          {isLoggedIn && (userType === 'business' || userType === 'government') && (
+            <span className="logo-badge">
+              {userType === 'business' ? '기업용' : '관공용'}
+            </span>
+          )}
         </span>
         <div className="menu-buttons">
           {mainMenuList.map(menu => (
@@ -64,11 +77,19 @@ const Header = () => {
             >
               {menu.label}
             </Link>
+
           ))}
         </div>
         <div className="nav-icons">
           <Link to="/mypage" className="userpage">
-            <span role="img" aria-label="user">👤</span>
+            <img
+              src={userIcon}
+              alt="마이페이지"
+              className="nav-avatar"
+              width={28}
+              height={28}
+              onError={handleAvatarError}
+            />
           </Link>
           {isLoggedIn ? (
             <span

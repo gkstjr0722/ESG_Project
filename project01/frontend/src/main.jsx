@@ -40,7 +40,9 @@ import PowerAVG from './component/PowerAVG.jsx';
 import Carbon from './component/Carbon.jsx';
 
 // 비밀번호 재설정
-import PasswordReset from './Pages/Service/PasswordReset.jsx';
+// ⬇️ 파일명을 소문자로 변경했다는 요청에 맞춰 경로 수정
+import PasswordResetRequest from './Pages/Service/PasswordResetRequest.jsx';
+import PasswordResetConfirm from './Pages/Service/PasswordResetConfirm.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -83,9 +85,11 @@ createRoot(document.getElementById('root')).render(
       <Route path="/carbon" element={<Carbon />} />
 
       {/* 비밀번호 재설정 */}
-      <Route path="/password/reset" element={<PasswordReset />} />
+      {/* ⬇️ 기존 PasswordReset 컴포넌트명 대신 PasswordResetRequest 사용 */}
+      <Route path="/password/reset" element={<PasswordResetRequest />} />
+      <Route path="/reset-password" element={<PasswordResetConfirm />} />
       {/* 기존 경로도 임시 유지 (원하면 삭제 가능) */}
-      <Route path="/passwordreset" element={<PasswordReset />} />
+      <Route path="/passwordreset" element={<PasswordResetRequest />} />
     </Routes>
   </BrowserRouter>
 );

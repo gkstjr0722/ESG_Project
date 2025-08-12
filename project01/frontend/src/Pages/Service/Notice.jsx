@@ -151,6 +151,28 @@ const Notice = () => {
     }
   };
 
+  // ★ 삭제 요청
+  const handleDelete = async () => {
+    if (!selectedNotice) return;
+    if (!window.confirm('정말 삭제하시겠습니까? 삭제 후 복구할 수 없습니다.')) return;
+
+    try {
+      await axios.delete(`http://localhost:3001/api/notice/${selectedNotice.NOTICE_ID}`, {
+        data: {
+          EDITOR_ID: userId || govId,              // 서버에서 'admin' 체크
+          EDITOR_NAME: userName || '관리자'
+        }
+      });
+      alert('삭제되었습니다.');
+      navigate('/notice');
+      await fetchNotice();
+      setMode('list');
+      setSelectedNotice(null);
+    } catch {
+      alert('삭제에 실패했습니다.');
+    }
+  };
+
   const handleCancel = () => {
     setMode('list');
     setForm({ TITLE: '', CONTENT: '' });
@@ -177,7 +199,7 @@ const Notice = () => {
   if (mode === 'write' && isAdmin) {
     return (
       <div className="faq-page-wrap">
-        <h1 className="faq-title">공지사항 등록</h1>
+        <h1 className="faq-title faq-tit-loca">공지사항 등록</h1>
         <form className="faq-write-form" onSubmit={handleSubmit} encType="multipart/form-data">
           <div className="faq-write-row">
             <label className="faq-write-label">제목</label>
@@ -218,11 +240,11 @@ const Notice = () => {
               </div>
             )}
           </div>
-          <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+          <div className="common-btn-flexend common-btn-gap">
+            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
               {loading ? '처리 중...' : '등록'}
             </button>
-            <button type="button" className="faq-write-cancel" onClick={handleCancel} disabled={loading}>
+            <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
             </button>
           </div>
@@ -242,17 +264,17 @@ const Notice = () => {
     const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
 
     const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
-    const backBtnSx = {
-      background: 'transparent', border: 'none', boxShadow: 'none',
-      color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
-      cursor: 'pointer', margin: '0 0 12px 0'
-    };
+    // const backBtnSx = {
+    //   background: 'transparent', border: 'none', boxShadow: 'none',
+    //   color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
+    //   cursor: 'pointer', margin: '0 0 12px 0'
+    // };
     const zeroLeft = { marginLeft: 0, paddingLeft: 0 };
 
     return (
       <div className="faq-page-wrap">
         <div className="notice-detail-inner" style={wrapSx}>
-          <button className="faq-detail-backbtn" onClick={handleViewBack} style={backBtnSx}>
+          <button className="faq-detail-backbtn" onClick={handleViewBack}>
             ← 돌아가기
           </button>
 
@@ -278,9 +300,9 @@ const Notice = () => {
             )
           )}
 
-          {/* ★ 여기! 글 내용 & 첨부파일 아래 왼쪽 정렬로 수정 버튼 배치 */}
+          {/* 수정/삭제 버튼: 본문 아래, 왼쪽 정렬 (관리자만) */}
           {isAdmin && (
-            <div style={{ marginTop: '16px', textAlign: 'left' }}>
+            <div style={{ marginTop: '16px', textAlign: 'left', display: 'flex', gap: 8 }}>
               <button
                 type="button"
                 className="notice-add-btn"
@@ -293,6 +315,14 @@ const Notice = () => {
               >
                 수정
               </button>
+
+              <button
+                type="button"
+                className="notice-add-btn"
+                onClick={handleDelete}
+              >
+                삭제
+              </button>
             </div>
           )}
         </div>
@@ -304,7 +334,7 @@ const Notice = () => {
   if (mode === 'edit' && isAdmin && selectedNotice) {
     return (
       <div className="faq-page-wrap">
-        <h1 className="faq-title">공지사항 수정</h1>
+        <h1 className="faq-title faq-tit-loca">공지사항 수정</h1>
 
         <form className="faq-write-form" onSubmit={handleUpdate} encType="multipart/form-data">
           <div className="faq-write-row">
@@ -349,13 +379,13 @@ const Notice = () => {
             )}
           </div>
 
-          <div className="faq-write-btns">
-            <button type="submit" className="faq-write-submit" disabled={loading}>
+          <div className="faq-write-btns common-btn-gap common-btn-flexend">
+            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
               {loading ? '처리 중...' : '저장'}
             </button>
             <button
               type="button"
-              className="faq-write-cancel"
+              className="common-btn button-10px28px faq-write-cancel"
               onClick={() => {
                 setMode('view');
                 setFile(null);
@@ -437,4 +467,4 @@ const Notice = () => {
 
 export default Notice;
 
-// 2025-08-08 공지사항 수정 기능 구현 완료 
+// 2025-08-08 공지사항 수정/삭제 기능 구현 완료

@@ -2,6 +2,7 @@ const path = require('path');
 const express = require('express');
 const app = express();
 const cors = require('cors');
+
 require('dotenv').config();
 
 
@@ -26,9 +27,18 @@ const noticeRouter = require('./router/notice');
 const passwordRouter = require('./router/password');
 
 // 2. 라우터 미들웨어 설정
+// 2. 라우터 미들웨어 설정
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
+
+// ✅ /user 라우트 마운트 (joinCorp는 여기 안에 있어야 함)
 app.use('/user', userRouter);
+
+// (직접 바인딩된 엔드포인트도 유지)
+app.post('/user/userinfo', (req, res) => {
+  return res.json({ ok: true, from : 'server.js direct' });
+});
+
 app.use('/userg', userGRouter);
 app.use('/loginB', loginBRouter);
 app.use('/loginG', loginGRouter);
@@ -36,7 +46,8 @@ app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
 app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
-app.use('/api/password', passwordRouter);
+app.use('/api/password', passwordRouter);   // 기존 경로 유지
+app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
 
 // 업로드 정적 제공
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

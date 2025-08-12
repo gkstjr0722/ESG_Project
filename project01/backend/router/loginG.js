@@ -18,6 +18,12 @@ router.post('/corp', (req, res) => {
       return res.json({ result: 'fail', msg: '아이디가 없습니다.' });
     }
     const user = rows[0];
+
+    // 관공업 계정 탈퇴할 경우 로그인 불가 
+    if (user.IS_DELETED === 1) {
+      return res.json({ result: 'fail', msg: '탈퇴 처리된 계정입니다'});
+    }
+
     const isMatch = await bcrypt.compare(pw, user.pw);  
     if (isMatch) {
       return res.json({

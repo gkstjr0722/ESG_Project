@@ -12,7 +12,9 @@ import React, { useState, useEffect } from 'react';
 const POWER_RATE_GAP_I = [
     { key: "low", label: "저압", base: 5550, rate: { summer: 116.2, springFall: 94.4, winter: 114.5 } },
     { key: "a_select1", label: "고압A 선택I", base: 6490, rate: { summer: 124.8, springFall: 101.1, winter: 124.7 } },
-    { key: "a_select2", label: "고압A 선택II", base: 7470, rate: { summer: 120, springFall: 96.5, winter: 118.2 } }
+    { key: "a_select2", label: "고압A 선택II", base: 7470, rate: { summer: 120, springFall: 96.5, winter: 118.2 } },
+    { key: "b_gap1",     label: "고압B 선택I",  base: 6000, rate: { summer: 123.6, springFall: 100.0, winter: 123.2 } },
+    { key: "b_gap2",     label: "고압B 선택II", base: 6900, rate: { summer: 118.9, springFall: 95.4,  winter: 117.1 } }
 ];
 
 // 산업용 전력(갑) II - 구간별 요금 / 순서대로(경부하, 중간부하, 최대부하)
