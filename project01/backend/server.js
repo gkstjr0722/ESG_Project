@@ -25,6 +25,7 @@ const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
 const noticeRouter = require('./router/notice');
 const passwordRouter = require('./router/password');
+const proxyIndustry = require('./router/proxyIndustry')
 
 // 2. 라우터 미들웨어 설정
 // 2. 라우터 미들웨어 설정
@@ -48,8 +49,10 @@ app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
 app.use('/api/password', passwordRouter);   // 기존 경로 유지
 app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
+app.use('/kepco', proxyIndustry);
 
-// 업로드 정적 제공
+// 3. 파일 업로드 설정 (정적 제공)
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // 헬스 체크 엔드포인트
