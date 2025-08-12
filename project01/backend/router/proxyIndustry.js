@@ -1,4 +1,4 @@
-// backend/router/proxyIndustry.js
+// 산업분류별 전력사용량 관련 js 
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
@@ -125,4 +125,3 @@ router.get('/industry/series', async (req, res) => {
 module.exports = router;
 
 // 산업분류별 api 관련 js 
-// sss

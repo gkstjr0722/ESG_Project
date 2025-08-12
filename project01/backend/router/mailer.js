@@ -1,3 +1,4 @@
+// 비밀번호 재설정 이메일 관련 js 
 import nodemailer from 'nodemailer';
 
 const port = Number(process.env.SMTP_PORT || 465);

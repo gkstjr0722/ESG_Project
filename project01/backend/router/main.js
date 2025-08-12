@@ -1,3 +1,4 @@
+// 메인 페이지 js 
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
