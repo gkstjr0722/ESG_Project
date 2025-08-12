@@ -112,13 +112,17 @@ export default function MapEVCharger() {
 
   //==================css 수정=================================================================
   return (
-    <>
-      {/* 상단 헤더/스타일은 기존 그대로 */}
-      {loading ? (
-        <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
-      ) : (
-        <div id="ev-map" className="evmap-map" />
-      )}
-    </>
+    <div>
+      <Header />
+      <div className="evmap-mainwrap">
+        <div className="evmap-content">
+          {loading ? (
+            <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+          ) : (
+            <div id="ev-map" className="evmap-map"></div>
+          )}
+        </div>
+      </div>
+    </div>  
   );
-}
+};
