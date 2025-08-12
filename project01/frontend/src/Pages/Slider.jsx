@@ -49,7 +49,7 @@ export default function Slider() {
         onSlideChange={updateFraction}
         onAfterInit={updateFraction}
       >
-        <SwiperSlide>슬라이드 1</SwiperSlide>
+        <SwiperSlide className='slider-img01'>슬라이드 1</SwiperSlide>
         <SwiperSlide>슬라이드 2</SwiperSlide>
         <SwiperSlide>슬라이드 3</SwiperSlide>
       </Swiper>

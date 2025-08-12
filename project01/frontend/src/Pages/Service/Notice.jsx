@@ -404,7 +404,7 @@ const Notice = () => {
 
   /* ───────── 목록 ───────── */
   return (
-    <div>
+    <div >
       <br /><br />
       <div className="faq-page-wrap">
         <h1 className="faq-title">공지사항</h1>

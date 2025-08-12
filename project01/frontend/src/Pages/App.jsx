@@ -94,16 +94,17 @@ function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) { // ★ 3초 기�
       >
         ‹
       </button>
-
+      <div className='text-group'>
         <div className="notice-hero__title" title={current.TITLE}>
           {current.TITLE}
         </div>
-      <div
+       <div
         className="notice-hero__content"
         onClick={() => nav(`/notice/${current.NOTICE_ID}`)} // 필요 시 `/notice?open=${current.NOTICE_ID}`
         role="button"
       >
         <div className="notice-hero__cta">바로가기 →</div>
+        </div>
       </div>
 
       <button

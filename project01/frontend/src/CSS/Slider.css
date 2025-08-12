@@ -1,6 +1,6 @@
 /* 슬라이더 영역 전체 스타일 */
 .slider-section {
-  width: 100vw;
+  width: 100%;
   max-width: 100%;
   min-height: 32vw;
   margin: 0 auto;
@@ -10,6 +10,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 @media (max-width: 800px) {
