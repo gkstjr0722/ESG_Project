@@ -22,6 +22,7 @@ const proxyEvRouter = require('./router/proxyEv');
 const inquiryRouter = require('./router/inquiry');
 const noticeRouter = require('./router/notice');
 const passwordRouter = require('./router/password');
+const proxyIndustry = require('./router/proxyIndustry');
 
 app.use((req, res, next) => {
   console.log('[REQ]', req.method, req.path);
@@ -49,7 +50,7 @@ app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
 app.use('/api/password', passwordRouter);   // 기존 경로 유지
 app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
-
+app.use('/kepco', proxyIndustry);
 // 3. 파일 업로드 설정 (정적 제공)
 const path = require('path');
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
