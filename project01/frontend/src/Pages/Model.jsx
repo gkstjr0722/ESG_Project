@@ -12,7 +12,7 @@ export default function App() {
       const r = await fetch('/fast/predict', {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify({ value: Number(value) })
+        body: JSON.stringify({ current_month_kwh: Number(value) })
       });
       const data = await r.json();
       setResp(data);
