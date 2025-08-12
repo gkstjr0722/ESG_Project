@@ -1,9 +1,7 @@
 // src/Pages/App.jsx
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import '../CSS/Main.css';
 import Header from '../component/Header';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import Slider from './Slider.jsx';
 
 const videoData = [
   {
@@ -33,7 +31,7 @@ const videoData = [
   }
 ];
 
-// // ── 메인 공지 캐러셀
+// ── 메인 공지 캐러셀
 // function HomeNoticeCarousel({ limit = 6, intervalMs = 4500 }) { // ★ 3초 기본값
 //   const nav = useNavigate();
 //   const [items, setItems] = useState([]);
@@ -134,13 +132,17 @@ function App() {
     <div className="main-page-root">
       <Header />
 
-      <div className="app-container">
+      {/* <div className="app-container">
         {/* 🔹 공지 슬라이드 배너만 남김 */}
-        <section className="notice-section">
+        {/* <section className="notice-section">
           <HomeNoticeCarousel />
         </section>
+      </div>  */}
+      <div>
+        <div>
+          <Slider/>
+        </div>
       </div>
-
       {/* 🔹 홍보영상 섹션 */}
       <div className="video-list-section">
         <div className="video-list-section-text">
