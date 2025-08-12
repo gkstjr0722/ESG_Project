@@ -172,7 +172,6 @@ router.post('/reset/confirm', async (req, res) => {
  * body (프론트 규격과 일치):
  *   - corp: { userType:'corp', id, bizRegNum, email }
  *   - gov : { userType:'gov',  id, email }
- *   (※ 이전의 "email만 받는" 방식에서 수정)
  * 
  * 존재하면 password_reset_tokens에 해시 저장 후 메일 발송(또는 DEV 모드로 콘솔 출력).
  * 존재하지 않아도 같은 응답으로 사용자 정보 노출 방지.
@@ -230,12 +229,12 @@ router.post('/email/request', requestLimiter, async (req, res) => {
       } else {
         try {
           await transporter.sendMail({
-            from: `"Support" <${process.env.SMTP_USER}>`,
+            from: `"HANS-ES" <${process.env.SMTP_USER}>`,
             to: email,
-            subject: '비밀번호 재설정 안내',
+            subject: 'HANS-ES 비밀번호 재설정 안내',
             html: `
               <p>아래 버튼을 눌러 비밀번호를 재설정하세요. 링크는 ${EMAIL_TTL_MIN}분간 유효합니다.</p>
-              <p><a href="${resetUrl}" target="_blank" rel="noopener">비밀번호 재설정</a></p>
+              <p><a href="${resetUrl}" target="_blank" rel="noopener">비밀번호 재설정하기</a></p>
               <p>본인이 요청하지 않았다면 이 메일을 무시하세요.</p>
             `,
           });
@@ -278,62 +277,54 @@ router.get('/email/verify', async (req, res) => {
 });
 
 /* =========================================================
- * 신규: 이메일 방식 ③ — 비밀번호 변경
+ * 신규: 이메일 방식 ③ — 비밀번호 변경 (트랜잭션 없이 견고하게)
  * POST /email/confirm  body: { uid, ut, token, newPw }
- *  - 트랜잭션: 토큰 잠그기 → 비번 업데이트 → 토큰 used=1
+ * 1) 유효 토큰을 조건부로 used=1로 소진 (동시성 안전)
+ * 2) 성공 시 비밀번호 업데이트
  * =======================================================*/
 router.post('/email/confirm', async (req, res) => {
-  const conn = await db.promise().getConnection();
   try {
     const { uid, ut, token, newPw } = req.body || {};
     if (!uid || !ut || !token || !newPw) {
-      conn.release();
       return res.status(400).json({ ok:false, msg:'값 누락' });
     }
     if (String(newPw).length < 8) {
-      conn.release();
       return res.status(400).json({ ok:false, msg:'비밀번호는 8자 이상' });
     }
 
     const tokenHash = sha256hex(token);
-    await conn.beginTransaction();
 
-    const [tok] = await conn.query(
-      `SELECT id FROM password_reset_tokens
-       WHERE user_type=? AND login_id=? AND token_hash=? AND used=0 AND expires_at>NOW()
-       FOR UPDATE`,
+    // 1) 유효 토큰만 소진(used=1). 1건 갱신되면 유효했던 것.
+    const [tokUpd] = await db.promise().query(
+      `UPDATE password_reset_tokens
+         SET used = 1
+       WHERE user_type = ?
+         AND login_id = ?
+         AND token_hash = ?
+         AND used = 0
+         AND expires_at > NOW()`,
       [ut, uid, tokenHash]
     );
-    if (!tok.length) {
-      await conn.rollback();
-      conn.release();
+    if (!tokUpd || tokUpd.affectedRows !== 1) {
       return res.status(400).json({ ok:false, msg:'토큰 만료/무효' });
     }
 
+    // 2) 비밀번호 변경
     const T = TABLES[ut];
     const hash = await bcrypt.hash(newPw, BCRYPT_ROUNDS);
-
-    await conn.query(
+    const [pwUpd] = await db.promise().query(
       `UPDATE \`${T.name}\` SET ${T.pwCol}=? WHERE ${T.idCol}=? LIMIT 1`,
       [hash, uid]
     );
-    await conn.query(
-      `UPDATE password_reset_tokens SET used=1 WHERE id=?`,
-      [tok[0].id]
-    );
+    if (!pwUpd || pwUpd.affectedRows !== 1) {
+      return res.status(500).json({ ok:false, msg:'비밀번호 변경 실패' });
+    }
 
-    await conn.commit();
-    conn.release();
     return res.json({ ok:true, msg:'비밀번호가 변경되었습니다.' });
   } catch (e) {
-    try { await conn.rollback(); } catch {}
-    conn.release();
     console.error('[email/confirm] error:', e);
     return res.status(500).json({ ok:false, msg:'서버 오류' });
   }
 });
 
 module.exports = router;
-
-// 비밀번호 재설정 완료 
-
