@@ -1,87 +1,5 @@
 /* ======================= main.css ======================= */
-/* 헤더, 메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
-
-
-/* 헤더 */
-.body {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  font-family: 'IBM Plex Sans KR', 'Noto Sans KR', '맑은 고딕', Arial, sans-serif;
-  background: #fcfdfe;
-}
-/* 헤더(상단 고정) */
-.navbar {
-  min-width: 1100px;
-  height: 85px;
-  background: #fff;
-  display: flex;
-  justify-content: space-between;
-  padding: 0 80px;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-}
-
-/* 로고 */
-.logo {
-  font-size: 25px;
-  font-weight: bold;
-  color: #1d5fc4;
-  letter-spacing: 1px;
-
-}
-
-/* 오른쪽 아이콘 */
-.nav-icons {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 18px;
-  transform: translateX(-50px); /* 더 왼쪽 */
-}
-
-/* 로그인 */
-.login-text {
-  font-size: 17px;
-  font-weight: bold;
-  margin-left: 8px;
-  color: #1d5fc4;
-  text-decoration: none;
-}
-
-/* 메뉴 바 */
-.menu-buttons {
-  display: flex;
-  gap: 120px;
-  justify-content: center;
-  align-items: center;
-}
-
-.menu-main-text {
-  font-weight: 700;
-  font-size: 19px;
-  color: #1c2328;
-  padding: 17px 0 16px 0;
-  cursor: pointer;
-  transition: color 0.18s;
-}
-
-.menu-main-text:hover {
-  color: #0098d8;
-}
-.menu-wrapper {
-  position: relative;
-  z-index: 1100;
-}
-
-@keyframes slideDown {
-  from { opacity: 0; transform: translateY(-20px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-
-.userpage {
-  text-decoration: none;
-}
+/*  메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
 
 
 
@@ -409,35 +327,61 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background: #f4f8ff;
+  /* background: #f4f8ff; */
   border-radius: 16px;
   padding: 40px 60px;
   min-height: 300px;
   overflow: hidden;
-  margin-bottom: 8px;
+  /* margin-bottom: 8px; */
   flex-wrap: wrap;
+}
+.slider-img01{
+  background-image: url('../assets/slider01.png'); /* 이미지 경로 */
+  background-size: cover;       /* 요소 크기에 맞춰 채움 */
+  background-position: center;  /* 가운데 정렬 */
+  /* background-repeat: no-repeat; 반복 안 함 */
+  height: 400px;
 }
 .notice-hero__content { 
   max-width: 980px; 
   text-align: left; 
   cursor: pointer; 
   flex-basis: 100%;
-  margin-left: 180px;
   flex: 0 0 100%;
+}
+.text-group{
+
+  display: flex;
+  gap: 35px;
+  margin-left: 180px;
+  flex-direction: column;     /* ← 위아래로 정렬 고정 */
+
 }
 .notice-hero__title {
   font-size: 50px; 
   font-weight: 900; 
-  line-height: 1.25; 
-  margin: 0 0 6px 180px;
+  line-height: 1.1; 
   flex: 0 0 100%;
 }
-.notice-hero__cta  { margin-top: 0px; font-size: 22px; display: inline-flex; gap: 6px; align-items: center; }
+.notice-hero__cta  {
+  margin-top: 0px;
+  font-size: 22px;
+  display: inline-flex;
+  /* gap: 6px; */
+  align-items: center;
+  
+}
 .notice-hero__nav {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  border: none; background: rgba(0,0,0,.05);
-  width: 50px; height: 50px; border-radius: 50%;
-  font-size: 40px; cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0,0,0,.05);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 40px;
+  cursor: pointer;
 }
 .notice-hero__nav:hover { background: rgba(0,0,0,.12); }
 .notice-hero__nav.prev { left: 50px; }
@@ -445,8 +389,13 @@ body {
 
 /* 인디케이터 */
 .notice-hero__dots {
-  position: absolute; bottom: 10px; left: 0; right: 0;
-  display: flex; gap: 8px; justify-content: center;
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
 }
 .notice-hero__dots .dot {
   width: 5px; height: 10px; border-radius: 50%; border: none;

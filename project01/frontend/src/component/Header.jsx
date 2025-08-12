@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import userIcon from "../assets/userIcon.png";
-import logoImg from "../assets/logo.png"
+// import logoImg from "../assets/logo.png"
+import logoImg from "../assets/logo01.png"
+
 
 const mainMenuList = [
   { label: '전력사용현황', path: '/calcmain' },
@@ -62,9 +64,11 @@ const Header = () => {
             <img src={logoImg} alt="Han's" className="logo-img" />
           </Link>
           {isLoggedIn && (userType === 'business' || userType === 'government') && (
+            // <Link to="/">
             <span className="logo-badge">
-              {userType === 'business' ? '기업용' : '관공용'}
+               {userType === 'business' ? '기업용' : '관공용'}
             </span>
+            // </Link>
           )}
         </span>
         <div className="menu-buttons">
@@ -81,7 +85,8 @@ const Header = () => {
           ))}
         </div>
         <div className="nav-icons">
-          <Link to="/mypage" className="userpage">
+          <Link to="/mypage" className="userpage">마이<span className="yellow">페이지</span></Link>
+          {/* <Link to="/mypage" className="userpage">
             <img
               src={userIcon}
               alt="마이페이지"
@@ -90,7 +95,7 @@ const Header = () => {
               height={28}
               onError={handleAvatarError}
             />
-          </Link>
+          </Link> */}
           {isLoggedIn ? (
             <span
               className="login-text"
