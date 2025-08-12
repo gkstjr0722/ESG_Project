@@ -139,9 +139,10 @@ function App() {
         </section>
       </div>  */}
       <div>
-        <Slider/>
+        <div>
+          <Slider/>
         </div>
-
+      </div>
       {/* 🔹 홍보영상 섹션 */}
       <div className="video-list-section">
         <div className="video-list-section-text">
