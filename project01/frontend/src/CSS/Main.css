@@ -469,16 +469,38 @@ body {
 
 /* 홍보영상 섹션 */
 .video-list-section {
-  width: 100%; padding: 50px 180px 25px;
-  display: flex; background: linear-gradient(180deg, #376ec2 0%);
-  flex: 0 0 auto; flex-shrink: 0; flex-wrap: wrap; box-sizing: border-box;
-  flex-direction: row; align-items: center;
+  position: fixed;       /* 화면 하단 고정 */
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  padding: 50px 180px 25px;  /* 상, 좌우, 하단 패딩 */
+  
+  display: flex;
+  flex: 0 0 auto; 
+  flex-shrink: 0; 
+  flex-wrap: wrap; 
+  flex-direction: row; 
+  align-items: center;
+
+  background: linear-gradient(180deg, #376ec2 0%);
+  box-sizing: border-box;
+  z-index: 10;           /* 다른 요소 위로 올릴 때 조정 */
 }
 .video-list-section-text {
-  padding-right: 1px; padding-left: 60px; color: #fff; white-space: nowrap;
-  font-size: clamp(14px, 2.8vw, 10px); line-height: .5;
+  padding-right: 1px; 
+  padding-left: 60px; color: #fff; 
+  white-space: nowrap;
+  font-size: clamp(14px, 2.8vw, 10px); 
+  line-height: .5;
 }
-.video-grid { display: flex; gap: 25px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
+.video-grid { 
+  display: flex; 
+  gap: 25px; 
+  justify-content: flex-end; 
+  align-items: flex-start; 
+  flex-wrap: wrap; 
+  margin: 0 auto; 
+}
 .video-card {
   width: 230px;  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
   background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
