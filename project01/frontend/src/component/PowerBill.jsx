@@ -115,11 +115,7 @@ async function fetchPredictedUsage(apiUrl, payload) {
 // ===========================================
 
 // =====  메인 컴포넌트  =========================
-export default function PowerBill({
-  onCalculationComplete,
-  // ▶︎ 기본값을 AI 서버 엔드포인트로 변경(프록시를 /ai → FastAPI /predict 로 맞춰두면 그대로 사용 가능)
-  predictApiUrl = '/ai/predict'
-}) {
+export default function PowerBill({ onCalculationComplete, predictApiUrl = '/api/predict-usage' }) {
   const [mainType, setMainType] = useState('gap');
   const [subType, setSubType] = useState('I');
   const [option, setOption] = useState('low');
@@ -176,36 +172,63 @@ export default function PowerBill({
     try{
       setLoading(true);
 
-      // ▶︎ FastAPI(/predict) 스펙: { current_month_kwh }
-      //    여기서는 '저번달 실사용량'을 현재월 기준으로 입력 받아 '다음달 총량(next_month_kwh)'을 받는다.
-      const apiRes = await fetchPredictedUsage(predictApiUrl, {
-        current_month_kwh: Number(lastMonthKwh)
-      });
+      const payload = {
+        mainType, subType, option,
+        contractPower: Number(contractPower),
+        lastMonthKwh: Number(lastMonthKwh)
+      };
+      const apiRes = await fetchPredictedUsage(predictApiUrl, payload);
 
-      // ▶︎ next_month_kwh = 우리 화면에서 "이번달(예측)" 막대 값으로 사용
-      const nextMonthTotal = Number(apiRes?.next_month_kwh || 0);
+      const thisMonth = apiRes?.thisMonth || {};
+      const times = Array.isArray(thisMonth.times) ? thisMonth.times : null;
+      const totalUsageKwhFromApi = Number(thisMonth.totalKwh || 0);
 
-      // ▶︎ 시간대별은 AI가 시간(00~23)으로 반환 → (갑)II/(을) 요금계산엔 직접 사용 불가
-      //    (필요시 추후 부하대 맵핑 로직 추가)
       let baseCharge = 0;
       let energyCharge = 0;
       let selectedOption;
       let totalUsageKwh = 0;
 
-      // ✅ 예측 유효성 판단: 양수이면 그래프에 반영, 요금은 (갑)I에서만 계산
-      let predictionAvailable = Number.isFinite(nextMonthTotal) && nextMonthTotal > 0;
+      // ✅ 예측 유효성 판단
+      let predictionAvailable = false;
 
-      if (predictionAvailable && mainType === 'gap' && subType === 'I') {
-        selectedOption = POWER_RATE_GAP_I.find(v => v.key === option);
-        baseCharge = floorWon(Number(contractPower) * selectedOption.base);
-        energyCharge = floorWon(nextMonthTotal * selectedOption.rate[season]);
-        totalUsageKwh = nextMonthTotal;
+      if (mainType === 'gap') {
+        if (subType === 'I') {
+          if (Number.isFinite(totalUsageKwhFromApi) && totalUsageKwhFromApi > 0
+              && totalUsageKwhFromApi !== Number(lastMonthKwh)) { // 저번달과 동일하면 예측없음으로 간주
+            predictionAvailable = true;
+            selectedOption = POWER_RATE_GAP_I.find(v => v.key === option);
+            baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+            energyCharge = floorWon(totalUsageKwhFromApi * selectedOption.rate[season]);
+            totalUsageKwh = totalUsageKwhFromApi;
+          }
+        } else {
+          selectedOption = POWER_RATE_GAP_II.find(v => v.key === option);
+          const hasValidTimes = Array.isArray(times) && times.length === 3 && times.some(v => Number(v) > 0);
+          const sumTimes = hasValidTimes ? times.reduce((a,b)=>a+Number(b||0),0) : 0;
+          if (hasValidTimes && sumTimes !== Number(lastMonthKwh)) {
+            predictionAvailable = true;
+            baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+            for (let i = 0; i < 3; i++) {
+              energyCharge += floorWon((Number(times[i]) || 0) * selectedOption.rates[season][i]);
+            }
+            totalUsageKwh = sumTimes;
+          }
+        }
       } else {
-        // (갑)II/(을) 은 시간대 맵핑 없으므로 요금 미표시 유지
-        totalUsageKwh = nextMonthTotal;
+        selectedOption = POWER_RATE_EUL.find(v => v.key === option);
+        const hasValidTimes = Array.isArray(times) && times.length === 3 && times.some(v => Number(v) > 0);
+        const sumTimes = hasValidTimes ? times.reduce((a,b)=>a+Number(b||0),0) : 0;
+        if (hasValidTimes && sumTimes !== Number(lastMonthKwh)) {
+          predictionAvailable = true;
+          baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+          for (let i = 0; i < 3; i++) {
+            energyCharge += floorWon(Number(times[i] || 0) * selectedOption.rates[season][i]);
+          }
+          totalUsageKwh = sumTimes;
+        }
       }
 
-      if (predictionAvailable && mainType === 'gap' && subType === 'I') {
+      if (predictionAvailable) {
         let electricityTotal = baseCharge + energyCharge;
         const vat = roundWon(electricityTotal * 0.1);
         const fund = floorTenWon(electricityTotal * 0.027);
@@ -215,27 +238,28 @@ export default function PowerBill({
         setView('result');
 
         onCalculationComplete && onCalculationComplete({
-          thisMonth: totalUsageKwh,                 // ▶︎ 이번달(예측) = next_month_kwh
+          thisMonth: totalUsageKwh,
           lastMonth: Number(lastMonthKwh),
           fromApi: true
         });
       } else {
-        // ▶︎ 예측값은 그래프에만 반영하고, 요금은 숨김(계산 중... 유지)
+        // ✅ 예측 부재: 결과 화면은 띄우되 '계산 중...'만 표시
         setResult(null);
         setView('result');
 
         onCalculationComplete && onCalculationComplete({
-          thisMonth: predictionAvailable ? nextMonthTotal : null,
+          thisMonth: null,
           lastMonth: Number(lastMonthKwh),
-          fromApi: predictionAvailable
+          fromApi: false
         });
       }
     } catch (err) {
       setError(err?.response?.data?.message || err.message || '예측 중 오류가 발생했습니다.');
+      // ✅ 실패해도 결과 화면 유지 + 금액 비표시
       setResult(null);
       setView('result');
 
-      // ✅ 실패해도 그래프는 '저번달'만 갱신
+      // ✅ 그래프는 '저번달'만 갱신
       onCalculationComplete && onCalculationComplete({
         thisMonth: null,
         lastMonth: Number(lastMonthKwh),
