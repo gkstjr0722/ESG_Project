@@ -1,3 +1,4 @@
+// 회원 정보 수정 관련 js 
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
@@ -29,6 +30,7 @@ router.put('/putR', (req, res) => {
     return res.status(400).json({ msg: 'type 값 오류' });
   }
 
+  
   const sql = `
     UPDATE ${tableName}
     SET corpName=?, ceo=?, dept=?, manager=?, phone=?, email=?, corpTel=?, address=?

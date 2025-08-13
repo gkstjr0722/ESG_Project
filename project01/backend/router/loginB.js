@@ -1,3 +1,4 @@
+// 기업 로그인 관련 js 
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
