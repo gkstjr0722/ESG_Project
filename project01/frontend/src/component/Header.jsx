@@ -1,11 +1,13 @@
+// 헤더
+
+
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import userIcon from "../assets/userIcon.png";
-// import logoImg from "../assets/logo.png"
-import logoImg from "../assets/logo01.png"
+// 로고 이미지
+import logoImg from "../assets/logo.png"
 
-
+// 링크 연결용
 const mainMenuList = [
   { label: '전력사용현황', path: '/calcmain' },
   { label: '위치찾기', path: '/map' },
@@ -46,16 +48,6 @@ const Header = () => {
     navigate('/');
   };
 
-  // 마이페이지 이미지 로드 실패 시 이모지로 대체
-  const handleAvatarError = (e) => {
-    e.currentTarget.style.display = 'none';
-    const fallback = document.createElement('span');
-    fallback.setAttribute('role', 'img');
-    fallback.setAttribute('aria-label', 'user');
-    fallback.textContent = '👤';
-    e.currentTarget.parentNode.appendChild(fallback);
-  };
-
   return (
     <div className="menu-wrapper">
       <nav className="navbar">
@@ -64,11 +56,9 @@ const Header = () => {
             <img src={logoImg} alt="Han's" className="logo-img" />
           </Link>
           {isLoggedIn && (userType === 'business' || userType === 'government') && (
-            // <Link to="/">
-            <span className="logo-badge">
+            <Link className="logo-badge" to="/">
                {userType === 'business' ? '기업용' : '관공용'}
-            </span>
-            // </Link>
+            </Link>
           )}
         </span>
         <div className="menu-buttons">
@@ -77,7 +67,6 @@ const Header = () => {
               key={menu.label}
               to={menu.path}
               className="menu-main-text"
-              style={{ textDecoration: 'none', color: 'inherit' }}
             >
               {menu.label}
             </Link>
@@ -85,17 +74,7 @@ const Header = () => {
           ))}
         </div>
         <div className="nav-icons">
-          <Link to="/mypage" className="userpage">마이<span className="yellow">페이지</span></Link>
-          {/* <Link to="/mypage" className="userpage">
-            <img
-              src={userIcon}
-              alt="마이페이지"
-              className="nav-avatar"
-              width={28}
-              height={28}
-              onError={handleAvatarError}
-            />
-          </Link> */}
+          <Link to="/mypage" className="userpage">마이페이지</Link>
           {isLoggedIn ? (
             <span
               className="login-text"
