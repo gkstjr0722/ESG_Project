@@ -7,10 +7,18 @@ export default defineConfig({
     host: '0.0.0.0',
     port: 3000,
     proxy: {
-      '/fast': {               // ★ 프록시 추가
-        target: 'http://localhost:3001', // 도커면 backend 서비스 주소
-        changeOrigin: true
-      }
-    }
-  }
+      '/fast': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+      // ✅ 추가: /api → 백엔드(3001)로 프록시
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+        secure: false,
+        // rewrite는 불필요(서버가 /api 경로로 마운트되어 있다면 그대로 보냄)
+        // rewrite: (path) => path, 
+      },
+    },
+  },
 });
