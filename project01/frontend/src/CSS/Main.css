@@ -146,9 +146,7 @@ body {
 /* 로그인-로그인 버튼 */
 .main-btn1 {
   width: 100%;
-  font-size: 16px;
   padding: 14px 0;
-  border-radius: 6px;
   font-weight: 700;
   margin-top: 10px;
   margin-bottom: 5px;
