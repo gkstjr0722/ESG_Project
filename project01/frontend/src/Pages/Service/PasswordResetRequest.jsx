@@ -18,7 +18,7 @@ export default function PasswordResetRequest() {
   const inputBase = { width:'100%', padding:'12px 14px', height:44, border:'1px solid #dcdcdc', borderRadius:6, background:'#fff', boxSizing:'border-box', outline:'none', fontSize:14, WebkitAppearance:'none', appearance:'none' };
   const inputFirst = { ...inputBase, marginTop:0, marginBottom:12 };
   const inputSecond = { ...inputBase, marginTop:0, marginBottom:12 };
-  const primaryBtnStyle = { width:'100%', padding:'14px', border:'none', borderRadius:6, background:'#3759e3ff', color:'#fff', fontWeight:600, cursor:'pointer' };
+  // const primaryBtnStyle = { width:'100%', padding:'14px', border:'none', borderRadius:6, background:'#3759e3ff', color:'#fff', fontWeight:600, cursor:'pointer' };
 
   // ✅ 기업: 아이디 + 사업자번호 + 이메일 / 관공: 아이디 + 이메일
   const canVerify =
@@ -54,6 +54,10 @@ export default function PasswordResetRequest() {
       <Header />
       <div className="common-bg">
         <div className="common-box login-corp-box" style={{ maxWidth: 520 }}>
+            <a className="common-btn back-btn" onClick={() => navigate('/login')}>
+                    ← 돌아가기
+                  </a> 
+                  <br />
           <h2 style={{ marginTop: 6 }}>비밀번호 재설정</h2>
 
           <div className="login-switch-btn-area" style={{ marginTop: 12 }}>
@@ -109,18 +113,13 @@ export default function PasswordResetRequest() {
                 style={inputSecond}
               />
             )}
-
-            <button style={primaryBtnStyle} disabled={loading || !canVerify} onClick={requestEmail}>
+            {/* style={primaryBtnStyle} */}
+            <button className='common-btn main-btn1' disabled={loading || !canVerify} onClick={requestEmail}>
               메일 보내기
             </button>
 
             {msg && <div className="login-error" style={{ marginTop: 12 }}>{msg}</div>}
 
-            <div className="login-link-area" style={{ marginTop: 14 }}>
-              <button className="linklike" type="button" onClick={() => navigate('/login')}>
-                로그인으로 돌아가기
-              </button>
-            </div>
           </div>
         </div>
       </div>
