@@ -136,6 +136,7 @@
   max-width: 520px;
   box-sizing: border-box;
   text-align: center;
+  transform: translateY(-30px);
 }
 .join-corp-box h2 { text-align: center; color: #0c355c; margin-bottom: 24px; }
 .join-corp-box form { display: flex; flex-direction: column; gap: 13px; }
@@ -186,9 +187,98 @@
   transition: background 0.2s;
   width: 50%;
 }
-.join-back:hover { background-color: #767c83; }
+.join-back:hover {
+  background-color: #767c83;
+}
 
-/* 인디케이터 (레거시 – 현재는 Slider.css에서 기본 도트 사용) */
+.join-backbtn { 
+  color: #888c93; 
+  font-size: 1rem; 
+  padding: 0;
+  border: none; 
+  cursor: pointer; 
+  font-weight: 700;
+  float: left;
+  
+}
+.join-backbtn:hover { 
+  color: #6f6f6f;
+ }
+
+
+
+
+
+
+
+
+/* 메인 공지 캐러셀 */
+.notice-hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* background: #f4f8ff; */
+  border-radius: 16px;
+  padding: 40px 60px;
+  min-height: 300px;
+  overflow: hidden;
+  /* margin-bottom: 8px; */
+  flex-wrap: wrap;
+}
+.slider-img01 {
+  background-image: url('../assets/slider01.png');
+  background-size: cover;
+  background-position: center;
+  height: 400px;
+}
+
+.notice-hero__content { 
+  max-width: 980px; 
+  text-align: left; 
+  cursor: pointer; 
+  flex-basis: 100%;
+  flex: 0 0 100%;
+}
+.text-group{
+
+  display: flex;
+  gap: 35px;
+  margin-left: 180px;
+  flex-direction: column;     /* ← 위아래로 정렬 고정 */
+
+}
+.notice-hero__title {
+  font-size: 50px; 
+  font-weight: 900; 
+  line-height: 1.1; 
+  flex: 0 0 100%;
+}
+.notice-hero__cta  {
+  margin-top: 0px;
+  font-size: 22px;
+  display: inline-flex;
+  /* gap: 6px; */
+  align-items: center;
+  
+}
+.notice-hero__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0,0,0,.05);
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 40px;
+  cursor: pointer;
+}
+.notice-hero__nav:hover { background: rgba(0,0,0,.12); }
+.notice-hero__nav.prev { left: 50px; }
+.notice-hero__nav.next { right: 50px; }
+
+/* 인디케이터 */
 .notice-hero__dots {
   position: absolute;
   bottom: 10px;

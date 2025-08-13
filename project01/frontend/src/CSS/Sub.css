@@ -108,6 +108,42 @@ body {
   line-height: 1.6;
   min-width: 160px;
 }
+/* 지도와 버튼을 감싸는 래퍼 */
+.map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 고정 버튼 스타일 (상단 중앙) */
+.map-car-button {
+  position: absolute;
+  top: 16px;
+  left: 43%;
+  z-index: 1000; /* 지도 위로 올라오게 */
+  padding: 10px 16px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.map-work-button {
+  position: absolute;
+  top: 16px;
+  right: 43%;
+  z-index: 1000; /* 지도 위로 올라오게 */
+  padding: 10px 16px;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+}
+
+.map-car-button:hover , .map-work-button:hover {
+  background-color: #3482d6;
+  color: #ffffff;
+}
 
 /* ===================== Faq.css ===================== */
 
@@ -444,7 +480,7 @@ body {
   padding:20px 28px;
   border:none !important; 
   outline:none !important;
-  background:#ffffff; 
+  background:#f8f9fd; 
   border-radius:18px;
   box-shadow:0 10px 28px rgba(17,24,39,.08);
   cursor:pointer; 
