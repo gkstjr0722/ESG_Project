@@ -18,6 +18,13 @@ export default defineConfig({
         target: 'http://localhost:3001',
         changeOrigin: true,
       },
+
+      // 개발한 AI 모델
+      '/ai': {
+        target: 'http://localhost:8000',   // FastAPI 주소/포트
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ai/, ''), // "/ai" 접두어 제거
+      },
     },
   },
 });

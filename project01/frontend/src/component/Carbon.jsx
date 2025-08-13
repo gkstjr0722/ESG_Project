@@ -66,7 +66,7 @@ const Carbon = ({ data }) => {
     );
 
     series.columns.template.setAll({
-      cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0,
+      cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0, width: am5.percent(55)
     });
     series.columns.template.adapters.add("fill", (fill, target) => {
       return chart.get("colors").getIndex(series.columns.indexOf(target));
