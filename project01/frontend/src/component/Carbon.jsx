@@ -60,7 +60,7 @@ const Carbon = ({ data }) => {
         categoryXField: "month",
         tooltip: am5.Tooltip.new(root, {
           // 왼쪽=전달, 오른쪽=예측이 한눈에 보이게 표시
-          labelText: "{month}: {co2} kgCO₂ (원용량 {kwh} kWh)"
+          labelText: "{co2} kgCO₂"
         }),
       })
     );

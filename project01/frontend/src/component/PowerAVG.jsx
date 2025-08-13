@@ -27,6 +27,7 @@ const PowerAVG = ({
   filters = {},
   labelForAvg = "산업 평균",
   targetYM,
+  active = false, // ← 추가: 계산 버튼 누르기 전엔 API 호출 않음
 }) => {
   const chartId = useRef(`PowerAVG_${Math.random().toString(36).slice(2)}`).current;
 
@@ -48,6 +49,13 @@ const PowerAVG = ({
     const controller = new AbortController();
 
     const fetchAvg = async () => {
+      // 활성화되기 전에는 API를 호출하지 않음(차트는 0값으로만 렌더)
+      if (!active) {
+        setLoading(false);
+        setErr("");
+        return;
+      }
+
       if (Number(kepcoValue) > 0) {
         setAvgVal(Number(kepcoValue));
         setErr("");
@@ -176,6 +184,7 @@ const PowerAVG = ({
     };
   }, [
     // 객체 전체가 아니라 “필드”만 추적 → 리렌더시 불필요 호출 방지
+    active,            // ← 추가
     kepcoValue,
     filters.metroCd,
     filters.cityCd,
@@ -292,7 +301,5 @@ const PowerAVG = ({
 
   return <div id={chartId} style={{ width: "100%", height: "200px" }} />;
 };
-
-
 
 export default PowerAVG;

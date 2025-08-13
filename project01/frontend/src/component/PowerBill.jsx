@@ -188,50 +188,82 @@ export default function PowerBill({ onCalculationComplete, predictApiUrl = '/api
       let selectedOption;
       let totalUsageKwh = 0;
 
+      // ✅ 예측 유효성 판단
+      let predictionAvailable = false;
+
       if (mainType === 'gap') {
         if (subType === 'I') {
-          if (totalUsageKwhFromApi <= 0) throw new Error("API가 이번달 총 사용량 제공이 안됩니다.");
-          selectedOption = POWER_RATE_GAP_I.find(v => v.key === option);
-          baseCharge = floorWon(Number(contractPower) * selectedOption.base);
-          energyCharge = floorWon(totalUsageKwhFromApi * selectedOption.rate[season]);
-          totalUsageKwh = totalUsageKwhFromApi;
+          if (Number.isFinite(totalUsageKwhFromApi) && totalUsageKwhFromApi > 0
+              && totalUsageKwhFromApi !== Number(lastMonthKwh)) { // 저번달과 동일하면 예측없음으로 간주
+            predictionAvailable = true;
+            selectedOption = POWER_RATE_GAP_I.find(v => v.key === option);
+            baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+            energyCharge = floorWon(totalUsageKwhFromApi * selectedOption.rate[season]);
+            totalUsageKwh = totalUsageKwhFromApi;
+          }
         } else {
           selectedOption = POWER_RATE_GAP_II.find(v => v.key === option);
-          if (!times || times.length !== 3) throw new Error("API가 (갑)II 시간대별 사용량 제공이 안됩니다.");
-          baseCharge = floorWon(Number(contractPower) * selectedOption.base);
-          for (let i = 0; i < 3; i++) {
-            energyCharge += floorWon((Number(times[i]) || 0) * selectedOption.rates[season][i]);
+          const hasValidTimes = Array.isArray(times) && times.length === 3 && times.some(v => Number(v) > 0);
+          const sumTimes = hasValidTimes ? times.reduce((a,b)=>a+Number(b||0),0) : 0;
+          if (hasValidTimes && sumTimes !== Number(lastMonthKwh)) {
+            predictionAvailable = true;
+            baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+            for (let i = 0; i < 3; i++) {
+              energyCharge += floorWon((Number(times[i]) || 0) * selectedOption.rates[season][i]);
+            }
+            totalUsageKwh = sumTimes;
           }
-          totalUsageKwh = times.reduce((a, b) => a + Number(b || 0), 0);
         }
       } else {
         selectedOption = POWER_RATE_EUL.find(v => v.key === option);
-        if (!times || times.length !== 3) throw new Error ("API가 (을) 시간대별 사용량 제공이 안됩니다.");
-        baseCharge = floorWon(Number(contractPower) * selectedOption.base);
-        for (let i = 0; i < 3; i++) {
-          energyCharge += floorWon(Number(times[i] || 0) * selectedOption.rates[season][i]);
+        const hasValidTimes = Array.isArray(times) && times.length === 3 && times.some(v => Number(v) > 0);
+        const sumTimes = hasValidTimes ? times.reduce((a,b)=>a+Number(b||0),0) : 0;
+        if (hasValidTimes && sumTimes !== Number(lastMonthKwh)) {
+          predictionAvailable = true;
+          baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+          for (let i = 0; i < 3; i++) {
+            energyCharge += floorWon(Number(times[i] || 0) * selectedOption.rates[season][i]);
+          }
+          totalUsageKwh = sumTimes;
         }
-        totalUsageKwh = times.reduce((a, b) => a + Number(b || 0), 0);
       }
 
-      let electricityTotal = baseCharge + energyCharge;
-      const vat = roundWon(electricityTotal * 0.1);
-      const fund = floorTenWon(electricityTotal * 0.027);
-      const finalAmount = floorTenWon(electricityTotal + vat + fund);
+      if (predictionAvailable) {
+        let electricityTotal = baseCharge + energyCharge;
+        const vat = roundWon(electricityTotal * 0.1);
+        const fund = floorTenWon(electricityTotal * 0.027);
+        const finalAmount = floorTenWon(electricityTotal + vat + fund);
 
-      setResult(finalAmount);
-      setView('result');
+        setResult(finalAmount);
+        setView('result');
 
-      onCalculationComplete && onCalculationComplete({
-        thisMonth: totalUsageKwh,
-        lastMonth: Number(lastMonthKwh)
-      });
+        onCalculationComplete && onCalculationComplete({
+          thisMonth: totalUsageKwh,
+          lastMonth: Number(lastMonthKwh),
+          fromApi: true
+        });
+      } else {
+        // ✅ 예측 부재: 결과 화면은 띄우되 '계산 중...'만 표시
+        setResult(null);
+        setView('result');
+
+        onCalculationComplete && onCalculationComplete({
+          thisMonth: null,
+          lastMonth: Number(lastMonthKwh),
+          fromApi: false
+        });
+      }
     } catch (err) {
       setError(err?.response?.data?.message || err.message || '예측 중 오류가 발생했습니다.');
-      // ✅ API가 없어 실패해도 그래프는 '저번달 전력량'으로 즉시 갱신
+      // ✅ 실패해도 결과 화면 유지 + 금액 비표시
+      setResult(null);
+      setView('result');
+
+      // ✅ 그래프는 '저번달'만 갱신
       onCalculationComplete && onCalculationComplete({
-        thisMonth: Number(lastMonthKwh),   // 임시로 저번달 값으로 채워서 오른쪽 막대도 보이게
-        lastMonth: Number(lastMonthKwh)
+        thisMonth: null,
+        lastMonth: Number(lastMonthKwh),
+        fromApi: false
       });
     } finally {
       setLoading(false);
@@ -319,7 +351,7 @@ export default function PowerBill({ onCalculationComplete, predictApiUrl = '/api
           <div className="power-calc-result">
             <h3>예상 전기요금</h3>
             <p className='result-amount'>
-              {result ? result.toLocaleString() : '계산 중...'}
+              {result !== null ? result.toLocaleString() : '계산 중...'}
               <span className='unit'>원</span>
             </p>
             <button className="main" onClick={() => setView('calculator')}>다시 계산하기</button>

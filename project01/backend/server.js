@@ -79,18 +79,12 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 // 주의: API/업로드 요청은 건너뛰고, 나머지 GET은 모두 index.html 반환
 app.get('*', (req, res, next) => {
   if (
-<<<<<<< HEAD
     req.path.startsWith('/api') ||             // API는 패스
     req.path.startsWith('/uploads') ||         // 업로드 정적 파일 패스
     req.path.startsWith('/kepco')              // ✅ KEPCO 프록시 라우트 패스 (중요)
   ) {
     return next();
   }
-=======
-    req.path.startsWith('/api') ||
-    req.path.startsWith('/uploads')
-  ) return next();
->>>>>>> 17d74436ca0660f5dc59ec8e5caeac2ecac0df10
   res.sendFile(path.join(STATIC_DIR, 'index.html'));
 });
 
