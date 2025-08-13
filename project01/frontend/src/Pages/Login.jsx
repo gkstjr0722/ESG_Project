@@ -73,6 +73,9 @@ const Login = () => {
       <Header />
       <div className="common-bg">
         <div className="common-box login-corp-box">
+          <h2 style={{ marginTop: '22px' }}>
+            {mode === 'business' ? '기업·공공기관 로그인' : '관공업 로그인'}
+          </h2>
           <div className="login-switch-btn-area">
             <button
               className={mode === 'business' ? 'login-switch-btn active' : 'login-switch-btn'}
@@ -100,9 +103,6 @@ const Login = () => {
             </button>
           </div>
 
-          <h2 style={{ marginTop: '22px' }}>
-            {mode === 'business' ? '기업·공공기관 로그인' : '관공업 로그인'}
-          </h2>
 
           <form onSubmit={handleLogin}>
             <input

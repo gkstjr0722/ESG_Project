@@ -212,7 +212,7 @@ const Mypage = () => {
       <div className="mypage-root">
         <Header />
         <div className="mypage-edit-wrap">
-          <h2 className="mypage-title">회원 정보 수정 {userType === 'business' ? '(기업용)' : '(관공업용)'}</h2>
+          <h2 className="mypage-title">회원 정보 수정</h2>
 
           <form onSubmit={handleSubmit} className="mypage-form">
             <label className="mypage-field">

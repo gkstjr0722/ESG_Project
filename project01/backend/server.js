@@ -55,6 +55,19 @@ app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /a
 app.use('/kepco', proxyIndustry);
 app.use('/fast', fastRouter);
 
+// server.js (또는 app.js)
+app.post('/api/predict-usage', (req, res) => {
+  const { lastMonthKwh = 0 } = req.body || {};
+  // 임시 로직: 지난달과 동일 사용량으로 예측 (시간대 분배 30/40/30)
+  const totalKwh = Number(lastMonthKwh) || 0;
+  const times = [
+    Math.round(totalKwh * 0.3),
+    Math.round(totalKwh * 0.4),
+    Math.max(0, totalKwh - (Math.round(totalKwh * 0.3) + Math.round(totalKwh * 0.4))),
+  ];
+  return res.json({ thisMonth: { totalKwh, times }});
+});
+
 // 3. 파일 업로드 설정 (정적 제공)
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
@@ -66,9 +79,12 @@ app.get('/health', (req, res) => res.status(200).send('OK'));
 // 주의: API/업로드 요청은 건너뛰고, 나머지 GET은 모두 index.html 반환
 app.get('*', (req, res, next) => {
   if (
-    req.path.startsWith('/api') ||
-    req.path.startsWith('/uploads')
-  ) return next();
+    req.path.startsWith('/api') ||             // API는 패스
+    req.path.startsWith('/uploads') ||         // 업로드 정적 파일 패스
+    req.path.startsWith('/kepco')              // ✅ KEPCO 프록시 라우트 패스 (중요)
+  ) {
+    return next();
+  }
   res.sendFile(path.join(STATIC_DIR, 'index.html'));
 });
 

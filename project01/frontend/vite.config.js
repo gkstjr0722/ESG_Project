@@ -1,16 +1,23 @@
+// vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
-    port: 3000,
+    host: '0.0.0.0', // 외부 접속 허용
+    port: 3000,      // 프론트 포트
     proxy: {
-      '/fast': {               // ★ 프록시 추가
-        target: 'http://localhost:3001', // 도커면 backend 서비스 주소
-        changeOrigin: true
-      }
-    }
-  }
+      // KEPCO 산업 평균 API
+      '/kepco': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+      // 일반 API
+      '/api': {
+        target: 'http://localhost:3001',
+        changeOrigin: true,
+      },
+    },
+  },
 });

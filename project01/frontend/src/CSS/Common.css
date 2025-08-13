@@ -1,6 +1,31 @@
 /* 헤더, 로그인-로그인, 회원가입 메인-기업/관공업 버튼 공통 + login-switch-btn + support-banner-tab , 자주 쓰는 버튼 padding */
 
-/* 헤더 */
+/* === 헤더 ================================================= */
+:root {
+  /* 로고 이미지 크기 조정 */
+  --nav-logo-h: 5vw;  /* 기본 로고 높이 = 화면 너비의 5% */
+  --nav-logo-h-lg: 2.2vw;  /* 큰 화면에서는 조금 작게 */
+  /* 기업/관공업 글자 크기 조정 */
+  --badge-fs: 16px;   /* 글자 크기 */
+  --badge-shift: -1px;/* 세로 위치 보정 */
+}
+
+/* 태블릿 이상 */
+@media (min-width: 768px){
+  :root{
+    --badge-fs: 19px;
+    --badge-shift: -2px;
+  }
+}
+
+/* 데스크톱 이상 */
+@media (min-width: 1200px){
+  :root{
+    --badge-fs: 22px;
+    --badge-shift: -3px;
+  }
+}
+
 .body {
   box-sizing: border-box;
   margin: 0;
@@ -31,18 +56,23 @@
 
 /* 배지(기업용/관공용) — 더 아래로 */
 .logo-badge{
+  display: inline-block;
   font-weight: 800;
-  font-size: 22px;
-  font-style: italic; /* 너무 기울여서 조정 필요 */
+  font-size: var(--badge-fs);
+  font-style: italic;
   color: #0091ff;
   line-height: 1;
-  transform: translateY(-3px);   /* ← 이전 -10px에서 -3px로 ↓ */
+  transform: translateY(var(--badge-shift));
+  text-decoration: none;
 }
 
 /* 로고 이미지 */
-.logo-link{ display: inline-flex; align-items: center; }
+.logo-link{
+  display: inline-flex;
+  align-items: center;
+}
 .logo-img{
-  height: var(--nav-logo-h, 22px);
+  height: var(--nav-logo-h);
   width: auto;
   display: block;
   object-fit: contain;
@@ -50,7 +80,9 @@
 
 /* 큰 화면에서는 거의 중앙 정렬 */
 @media (min-width: 1200px){
-  .logo-img{ height: var(--nav-logo-h-lg, 80px); }
+  .logo-img{
+    height: var(--nav-logo-h-lg);
+  }
   .logo-badge{ transform: translateY(-1px); } /* 필요시 0~+2px로 조절 */
 }
 
@@ -65,12 +97,11 @@
   transform: translateX(-50px); /* 더 왼쪽 */
 }
 
-
 /* 로그인 */
 .login-text {
   font-size: 17px;
   font-weight: bold;
-  margin-left: 8px;
+  margin-left: 15px;
   color: #3c79d5;
   text-decoration: none;
 }
@@ -90,11 +121,10 @@
   padding: 17px 0 16px 0;
   cursor: pointer;
   transition: color 0.18s;
+  text-decoration: none;
+  color: 'inherit';
 }
 
-.menu-main-text:hover {
-  color: #0098d8;
-}
 .menu-wrapper {
   position: relative;
   z-index: 1100;
@@ -149,7 +179,7 @@
 }
 
 .bg-common {
-  background: #f8f9fd;
+  background: #fff;
   min-height: 100vh;
 }
 

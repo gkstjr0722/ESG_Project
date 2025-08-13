@@ -240,6 +240,7 @@ body {
   max-width: 520px;
   box-sizing: border-box;
   text-align: center;
+  transform: translateY(-30px);
 }
 .join-corp-box h2 {
   text-align: center;
@@ -314,6 +315,20 @@ body {
   background-color: #767c83;
 }
 
+.join-backbtn { 
+  color: #888c93; 
+  font-size: 1rem; 
+  padding: 0;
+  border: none; 
+  cursor: pointer; 
+  font-weight: 700;
+  float: left;
+  
+}
+.join-backbtn:hover { 
+  color: #6f6f6f;
+ }
+
 
 
 
@@ -335,13 +350,13 @@ body {
   /* margin-bottom: 8px; */
   flex-wrap: wrap;
 }
-.slider-img01{
-  background-image: url('../assets/slider01.png'); /* 이미지 경로 */
-  background-size: cover;       /* 요소 크기에 맞춰 채움 */
-  background-position: center;  /* 가운데 정렬 */
-  /* background-repeat: no-repeat; 반복 안 함 */
+.slider-img01 {
+  background-image: url('../assets/slider01.png');
+  background-size: cover;
+  background-position: center;
   height: 400px;
 }
+
 .notice-hero__content { 
   max-width: 980px; 
   text-align: left; 
@@ -444,7 +459,7 @@ body {
   flex: 0 0 auto;
 }
 .swiper-wrapper-custom { width: 100%; height: auto; position: relative; }
-.mySwiper { width: 100%; height: auto; position: relative; background: transparent; }
+.mySwiper { width: 100%; height: 400px; position: relative; background: transparent; }
 .mySwiper .swiper-button-prev,
 .mySwiper .swiper-button-next {
   color: #007aff; width: 40px; height: 30px; top: 50%; transform: translateY(-50%);
@@ -469,22 +484,38 @@ body {
 
 /* 홍보영상 섹션 */
 .video-list-section {
+  position: fixed;       /* 화면 하단 고정 */
+  left: 0;
+  bottom: 0;
   width: 100%;
-  padding: 20px 20px; 
-  display: flex; 
-  background: linear-gradient(180deg, #376ec2 0%);
+  padding: 50px 180px 25px;  /* 상, 좌우, 하단 패딩 */
+  
+  display: flex;
   flex: 0 0 auto; 
   flex-shrink: 0; 
   flex-wrap: wrap; 
-  box-sizing: border-box;
   flex-direction: row; 
   align-items: center;
+
+  background: linear-gradient(180deg, #376ec2 0%);
+  box-sizing: border-box;
+  z-index: 10;           /* 다른 요소 위로 올릴 때 조정 */
 }
 .video-list-section-text {
-  padding-right: 1px; padding-left: 60px; color: #fff; white-space: nowrap;
-  font-size: clamp(14px, 2.8vw, 10px); line-height: .5;
+  padding-right: 1px; 
+  padding-left: 60px; color: #fff; 
+  white-space: nowrap;
+  font-size: clamp(14px, 2.8vw, 10px); 
+  line-height: .5;
 }
-.video-grid { display: flex; gap: 25px; justify-content: flex-end; align-items: flex-start; flex-wrap: wrap; margin: 0 auto; }
+.video-grid { 
+  display: flex; 
+  gap: 25px; 
+  justify-content: flex-end; 
+  align-items: flex-start; 
+  flex-wrap: wrap; 
+  margin: 0 auto; 
+}
 .video-card {
   width: 230px;  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
   background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
