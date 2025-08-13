@@ -276,8 +276,3 @@ router.get('/industry/series', async (req, res) => {
 });
 
 module.exports = router;
-<<<<<<< HEAD
-
-// 산업분류별 api 관련 js 
-=======
->>>>>>> ba924258d88f6c85e269cb39a4091a1f21a2951e
