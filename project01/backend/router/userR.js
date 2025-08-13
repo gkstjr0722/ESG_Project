@@ -1,4 +1,4 @@
-// backend/router/userR.js
+// 기업용 회원가입 관련 js 
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');
@@ -77,7 +77,7 @@ router.post('/joinCorp', uploadSingleBizCert, async (req, res) => {
     const id         = f.id.trim();
     const pw         = String(f.pw);
 
-    // (보강) 사업자등록번호 서버측 최소 검증: 숫자 10자리
+    // 사업자등록번호 서버측 최소 검증: 숫자 10자리
     if (!/^\d{10}$/.test(corpRegNum)) {
       return res.status(400).json({ result: 0, message: '사업자등록번호는 숫자 10자리여야 합니다.' });
     }
@@ -134,7 +134,7 @@ router.post('/joinCorp', uploadSingleBizCert, async (req, res) => {
   }
 });
 
-// ===== 기업 회원정보 조회 =====
+// 기업 회원정보 조회
 router.post('/userinfo', (req, res) => {
   let { id } = req.body || {};
   if (typeof id === 'string') id = id.trim();
@@ -157,7 +157,7 @@ router.post('/userinfo', (req, res) => {
   });
 });
 
-// ===== 기업 회원정보 수정(비밀번호 제외) =====
+// 기업 회원정보 수정(비밀번호 제외)
 router.put('/update', (req, res) => {
   const { id, corpName, corpRegNum, ceo, dept, manager, phone, email, corpTel, address } = req.body || {};
   if (!id) return res.status(400).json({ msg: 'id 필요' });
@@ -181,7 +181,7 @@ router.put('/update', (req, res) => {
   );
 });
 
-// ===== 기업 비밀번호 수정 =====
+// 기업 비밀번호 수정
 router.put('/password-update', async (req, res) => {
   const { id, newPassword } = req.body || {};
   if (!id || !newPassword) return res.status(400).json({ msg: 'id, newPassword 필요' });
@@ -207,7 +207,7 @@ router.put('/password-update', async (req, res) => {
   }
 });
 
-// ===== 기업 회원 탈퇴 =====
+// 기업 회원 탈퇴
 router.delete('/delete', (req, res) => {
   const { id } = req.body || {};
   if (!id) return res.status(400).json({ ok: false, msg: 'BAD_REQUEST' });

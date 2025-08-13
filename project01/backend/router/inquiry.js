@@ -1,3 +1,4 @@
+// 고객문의 관련 js
 const express = require('express');
 const router = express.Router();
 const conn = require('../config/db');
@@ -29,7 +30,7 @@ router.post('/add', (req, res) => {
   conn.query(
     sql,
     [USER_ID, USER_NAME, EMAIL, TITLE, CONTENT, ANSWER, QS_DATE, QS_NUMBER, AS_DATE, UPDATE_DT, QS_ID],
-    (err, result) => {
+    (err) => {
       if (err) {
         console.error('DB 오류:', err);
         return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
@@ -78,10 +79,10 @@ router.put('/edit/:qs_id', (req, res) => {
       EDIT_DT
     ];
 
-    conn.query(insertSql, values, (err2, result2) => {
+    conn.query(insertSql, values, (err2) => {
       if (err2) {
         console.error('이전 버전 백업 실패:', err2);
-        // 백업 실패해도 수정은 계속 진행할 수 있도록 함 
+        // 백업 실패해도 수정은 계속 진행
       }
 
       // (3). 실제 글 UPDATE
@@ -89,12 +90,32 @@ router.put('/edit/:qs_id', (req, res) => {
         UPDATE USER_QUESTION SET TITLE = ?, CONTENT = ?, UPDATE_DT = ?
         WHERE QS_ID = ?
       `;
-      conn.query(updateSql, [TITLE, CONTENT, UPDATE_DT, qs_id], (err3, result3) => {
+      conn.query(updateSql, [TITLE, CONTENT, UPDATE_DT, qs_id], (err3) => {
         if (err3) return res.status(500).json({ result: 'fail', msg: 'DB 오류(UPDATE)' });
-
         res.json({ result: 'success' });
       });
     });
+  });
+});
+
+// 7. FAQ(자주묻는질문) - 문의글 중 조회수 Top5
+router.get('/faq/top', (req, res) => {
+  const limit = Math.min(parseInt(req.query.limit, 10) || 5, 50);
+
+  const sql = `
+    SELECT QS_ID, TITLE, CONTENT, ANSWER, QS_DATE,
+           COALESCE(VIEWS, 0) AS VIEWS
+      FROM USER_QUESTION
+     ORDER BY COALESCE(VIEWS, 0) DESC, QS_DATE DESC
+     LIMIT ?
+  `;
+
+  conn.query(sql, [limit], (err, rows) => {
+    if (err) {
+      console.error('[FAQ/TOP] DB 오류:', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    }
+    return res.json(rows);
   });
 });
 
@@ -102,16 +123,15 @@ router.put('/edit/:qs_id', (req, res) => {
 router.get('/:qs_id', (req, res) => {
   const { qs_id } = req.params;
 
-  // (1). 조회수 증가
-  const increaseSql = `UPDATE USER_QUESTION SET VIEWS = VIEWS + 1 WHERE QS_ID = ?`;
+  // ✅ 조회수 컬럼: VIEWS 사용
+  const increaseSql = 'UPDATE USER_QUESTION SET VIEWS = COALESCE(VIEWS, 0) + 1 WHERE QS_ID = ?';
   conn.query(increaseSql, [qs_id], (err) => {
     if (err) {
       console.error('조회수 증가 오류:', err);
       // -> 에러 무시하고 글 정보만 보여줌
     }
 
-    // (2). 글 정보 가져오기
-    const sql = `SELECT * FROM USER_QUESTION WHERE QS_ID = ?`;
+    const sql = 'SELECT * FROM USER_QUESTION WHERE QS_ID = ?';
     conn.query(sql, [qs_id], (err2, rows) => {
       if (err2) {
         console.error('DB 오류:', err2);
@@ -151,7 +171,7 @@ router.post('/answer/:qs_id', (req, res) => {
   }
 
   const sql = 'UPDATE USER_QUESTION SET ANSWER = ?, AS_DATE = NOW() WHERE QS_ID = ?';
-  conn.query(sql, [ANSWER, qs_id], (err, result) => {
+  conn.query(sql, [ANSWER, qs_id], (err) => {
     if (err) {
       console.error('DB 오류(답변등록):', err);
       return res.status(500).json({ result: 'fail', msg: 'DB 오류(답변등록)' });
@@ -160,23 +180,4 @@ router.post('/answer/:qs_id', (req, res) => {
   });
 });
 
-// 7. FAQ(자주묻는질문) - 문의글 중 조회수 Top5 반환(mysql연동용)
-router.get('/faq/top', (req, res) => {
-  const sql = `
-    SELECT QS_ID, TITLE, CONTENT, ANSWER, QS_DATE, VIEWS
-    FROM USER_QUESTION
-    WHERE VIEWS > 0
-    ORDER BY VIEWS DESC
-    LIMIT 5
-  `;
-  conn.query(sql, (err, rows) => {
-    if (err) return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
-    res.json(rows);
-  });
-});
-
 module.exports = router;
-// 수정 
-// 2025-08-08 코드 수정 완료 
-// 수정 
-// 수정 

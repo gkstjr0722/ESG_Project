@@ -1,128 +1,137 @@
-/슬라이더 영역 전체 스타일
+/* ======== Slider (responsive & no bottom gap) ======== */
+
+/* 섹션을 화면 가로폭 100%로 풀어붙이고,
+   고정 비디오 섹션(--promo-h) 만큼의 높이는 항상 채우기 */
 .slider-section {
-  width: 100%;
-  max-width: 100%;
-  min-height: 32vw;
-  margin: 0 auto;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-bottom: 0;
   padding: 0;
   box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
+  position: relative; /* 버튼/도트 기준점 */
+
+  /* 화면 높이 - 고정 영상섹션 높이 만큼 확보 */
+  min-height: calc(100vh - var(--promo-h, 260px));
+  z-index: 1; /* 스택 기준만 잡아둠 */
 }
 
-@media (max-width: 800px) {
-  .slider-section {
-    min-height: 45vw;
-  }
-}
-
-@media (max-width: 500px) {
-  .slider-section {
-    min-height: 55vw;
-  }
-}
-
-/* Swiper 래퍼 */
-.swiper-wrapper-custom {
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-/* Swiper 본체 */
+/* Swiper 컨테이너: 섹션 높이를 100%로 전파.
+   도트는 별도로 위로 띄울 거라 내부 패딩은 0 */
 .mySwiper {
   width: 100%;
-  height: 400px;
+  height: 100%;              /* 섹션 min-height에 맞춰 늘어남 */
   position: relative;
+  background: transparent;
+  padding-bottom: 0;
+  overflow: visible !important; /* 버튼/도트가 잘리지 않도록 */
 }
 
-/* 커스텀 네비게이션 버튼 - 좌우 */
+/* 내부 요소들도 100% 높이 전파 */
+.mySwiper .swiper-wrapper,
+.mySwiper .swiper-slide {
+  height: 100%;
+}
+
+/* ===== 슬라이드 카드 ===== */
+.notice-slide {
+  background: #eef4ff;
+  border-radius: 16px;
+
+  /* 너무 작을 땐 360px 보장 */
+  min-height: max(360px, calc(100vh - var(--promo-h, 260px) - 40px));
+
+  padding: 100px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+
+  /* 한글 자간/줄바꿈 안정화 */
+  word-break: keep-all;
+  letter-spacing: normal;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+}
+
+/* 텍스트 블록 (제목+날짜) */
+.notice-slide__combined { max-width: 900px; line-height: 1.3; }
+.notice-slide__eyebrow { color: #5b7fff; font-weight: 700; margin-bottom: 8px; }
+.notice-slide__title,
+.notice-slide__combined strong {
+  display: block;
+  font-weight: 800;
+  color: #111;
+  margin: 8px 0 6px;
+  font-size: clamp(26px, 3.4vw, 44px);
+  letter-spacing: -0.2px;
+}
+.notice-slide__date { display: block; font-size: 16px; color: #8a8a8a; margin-top: 10px; }
+.notice-slide__cta { margin-top: 18px; font-weight: 600; color: #1f2937; cursor: pointer; }
+.notice-slide__cta:hover { text-decoration: underline; }
+
+/* ===== 좌/우 네비게이션 버튼 ===== */
 .custom-swiper-button-prev,
 .custom-swiper-button-next {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background-color: rgba(255,255,255,0.9);
-  color: #007aff;
-  font-size: 24px;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
-  z-index: 20;
+  width: 40px; height: 40px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  color: #4b5563;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3001; /* 비디오 섹션(1000)보다 확실히 위 */
   user-select: none;
 }
-
-.custom-swiper-button-prev {
-  left: 10px;
-}
-
-.custom-swiper-button-next {
-  right: 10px;
-}
-
+.custom-swiper-button-prev { left: 8px; }
+.custom-swiper-button-next { right: 8px; }
 .custom-swiper-button-prev:hover,
-.custom-swiper-button-next:hover {
-  background-color: #007aff;
-  color: white;
-}
+.custom-swiper-button-next:hover { background: #ffffff; color: #111827; }
 
-/* 진행바 배경 및 위치 (슬라이더 하단 고정) */
-.mySwiper .swiper-pagination-progressbar,
-.swiper-pagination-progressbar-custom,
-.custom-pagination-progressbar {
+/* ===== 기본 Swiper 도트: 카드 안 하단 "위"에 고정  =====
+   ※ 하단 고정 영상 섹션 높이만큼 위로 띄워서 겹침을 피함 */
+.mySwiper .swiper-pagination,
+.mySwiper .swiper-pagination-bullets {
   position: absolute !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  top: auto !important;
-  width: 100% !important;
-  height: 6px !important;
-  background-color: rgba(0, 0, 0, 0.08) !important;
-  border-radius: 3px !important;
-  z-index: 10 !important;
+
+  /* 비디오 섹션 높이만큼 위로 올림 */
+  bottom: 50px !important;
+
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  gap: 8px !important;
+  width: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: auto !important;
+  z-index: 3001 !important;   /* 비디오 섹션보다 위 */
+  margin: 0 !important;
 }
 
-/* 진행바 채워진 부분 색상 - 주황색 */
-.mySwiper .swiper-pagination-progressbar-fill,
-.swiper-pagination-progressbar-custom .swiper-pagination-progressbar-fill,
-.custom-pagination-progressbar .swiper-pagination-progressbar-fill {
-  background-color: orange !important;
-  border-radius: 3px !important;
-} */
-
-/* 현재/전체 페이지수 표시 - 오른쪽 아래 */
-.swiper-pagination-fraction-custom {
-  position: absolute;
-  right: 24px;
-  bottom: 14px;
-  z-index: 20;
-  color: #ff8800;
-  font-weight: bold;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 2px 10px;
-  border-radius: 12px;
-  font-size: 16px;
-  letter-spacing: 1px;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-  user-select: none;
+.mySwiper .swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: #d1d5db !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+}
+.mySwiper .swiper-pagination-bullet-active {
+  background: #3070d8 !important;
 }
 
-/* (필요시) 버튼에 포인터 커서 및 트랜지션 추가 */
-.banner-button {
-  cursor: pointer;
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+/* ===== 반응형 ===== */
+@media (max-width: 1024px) {
+  .notice-slide { min-height: 340px; padding: 44px 36px; }
 }
-
-.slider-img01 {
-  background-image: url('../assets/slider01.png');
-  background-size: cover;
-  background-position: center;
-  height: 572px;
-}  
+@media (max-width: 768px) {
+  .notice-slide { min-height: 300px; padding: 32px 24px; }
+  .custom-swiper-button-prev, .custom-swiper-button-next { display: none; }
+  .slider-section { padding: 0; }
+}
