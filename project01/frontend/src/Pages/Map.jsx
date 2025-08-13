@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react";
-
 import axios from "axios";
 import Header from '../component/Header';
-// Header나 CSS는 기존 것 그대로 사용하면 됩니다
-
+// Header나 CSS는 기존 것 그대로 사용하면 됩니다.
 
 const DEFAULT_CENTER = { lat: 35.1595454, lng: 126.8526012 }; // 초기: 광주
-
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
   const [stations, setStations] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('ev'); // 'ev' = 전기차, 'elec' = 전기공사
 
   // 1) 데이터 가져오기 (addr를 프론트에서 바꾸고 싶으면 params로 전달)
   useEffect(() => {
@@ -117,16 +115,29 @@ export default function MapEVCharger() {
   return (
     <div>
       <Header />
+      {/* 상단 탭바 */}
+<div className="support-banner-tabbar">
+  <button
+    type="button"
+    className={`support-banner-tab${selectedTab === 'ev' ? ' active' : ''}`}
+    onClick={() => setSelectedTab('ev')}
+  >
+    전기차
+  </button>
+  <button
+    type="button"
+    className={`support-banner-tab${selectedTab === 'elec' ? ' active' : ''}`}
+    onClick={() => setSelectedTab('elec')}
+  >
+    전기공사
+  </button>
+</div>
       <div className="evmap-mainwrap">
         <div className="evmap-content">
           {loading ? (
             <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
           ) : (
-            <div className="map-wrapper">
             <div id="ev-map" className="evmap-map"></div>
-            <button className="common-btn map-car-button">전기차</button>
-            <button className="common-btn map-work-button">전기공사</button>
-            </div>
           )}
         </div>
       </div>

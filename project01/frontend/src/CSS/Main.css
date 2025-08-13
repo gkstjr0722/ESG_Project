@@ -82,9 +82,7 @@
 .login-corp-box input:focus { border: 1.5px solid #3ba2f3; }
 .main-btn1 {
   width: 100%;
-  font-size: 16px;
   padding: 14px 0;
-  border-radius: 6px;
   font-weight: 700;
   margin-top: 10px;
   margin-bottom: 5px;
@@ -175,7 +173,7 @@
   width: 50%;
 }
 .join-btn:hover { background-color: #2d69c4; }
-.join-back {
+.join-back-btn {
   background: #9a9ea3;
   color: #fff;
   border: none;
@@ -187,23 +185,11 @@
   transition: background 0.2s;
   width: 50%;
 }
-.join-back:hover {
+.join-back-btn:hover {
   background-color: #767c83;
 }
 
-.join-backbtn { 
-  color: #888c93; 
-  font-size: 1rem; 
-  padding: 0;
-  border: none; 
-  cursor: pointer; 
-  font-weight: 700;
-  float: left;
-  
-}
-.join-backbtn:hover { 
-  color: #6f6f6f;
- }
+
 
 
 
@@ -418,18 +404,7 @@ body{
 .notice-detail-inner { padding-left: 24px; max-width: 980px; }
 @media (max-width: 768px) { .notice-detail-inner { padding-left: 16px; } }
 
-.faq-detail-backbtn{
-  background: transparent !important;
-  border: none !important;
-  box-shadow: none !important;
-  color: #000;
-  font-weight: 700;
-  font-size: 16px;
-  padding: 0;
-  cursor: pointer;
-  margin-bottom: 12px;
-}
-.faq-detail-backbtn:hover { text-decoration: underline; }
+
 
 .notice-detail-title { font-size: 2.25em; font-weight: 800; line-height: 1.25; }
 .notice-detail-content { white-space: pre-wrap; line-height: 1.6; margin-top: 12px; font-size: 16px; }

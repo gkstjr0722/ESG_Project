@@ -125,7 +125,7 @@ const InquiryDetail = () => {
       <Header />
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
-        <a className="faq-detail-backbtn" onClick={() => navigate('/inquiry')}>
+        <a className="common-btn back-btn" onClick={() => navigate('/inquiry')}>
           ← 돌아가기
         </a>
         <br /><br />
