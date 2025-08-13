@@ -274,9 +274,10 @@ const Notice = () => {
     return (
       <div className="faq-page-wrap">
         <div className="notice-detail-inner" style={wrapSx}>
-          <button className="faq-detail-backbtn" onClick={handleViewBack}>
+          <button className="common-btn back-btn" onClick={handleViewBack}>
             ← 돌아가기
           </button>
+          <br />
 
           <div className="faq-detail-title notice-detail-title" style={zeroLeft}>
             {selectedNotice.TITLE}

@@ -50,9 +50,10 @@ body {
 
 /* ===================== Map.css ===================== */
 .evmap-mainwrap {
-  min-height: 100vh;
-  background: #fff;
+  /* min-height: 100vh; */
+  background: #ffffff;
 }
+/* 얘 아예 안쓰는듯? */
 .evmap-topnav {
   background: #fff;
   padding: 32px 0 10px;
@@ -80,21 +81,25 @@ body {
   color: #222;
 }
 .evmap-content {
-  max-width: 1400px;
+  width: 100%;
+  max-width: 1900px;
   margin: 0 auto;
-  background: #fff;
+  background: #ffffff;
   box-shadow: 0 2px 16px #0002;
   border-radius: 20px;
   margin-top: 20px;
-  padding: 30px 40px 38px;
-  min-height: 500px;
+  padding: 30px 30px 30px;
+  /* min-height: 500px; */
+  box-sizing: border-box;
+  height: calc(100vh - 205px);
 }
 .evmap-map {
   width: 100%;
-  min-height: 600px;
-  height: 62vh;
+  /* min-height: 600px; */
+  height: 64vh;
   border-radius: 18px;
   box-shadow: 0 1px 6px #0001;
+  height: calc(100vh - 265px);
 }
 .evmap-loading {
   color: #286877;
@@ -257,18 +262,7 @@ body {
   line-height: 1.7; 
   margin-bottom: 38px; 
 }
-.faq-detail-backbtn { 
-  color: #888c93; 
-  font-size: 1rem; 
-  padding: 0;
-  border: none; 
-  border-radius: 5px; 
-  cursor: pointer; 
-  
-}
-.faq-detail-backbtn:hover { 
-  color: #6f6f6f;
- }
+
 .faq-detail-notfound { 
   text-align: center; 
   color: #aaa; 
