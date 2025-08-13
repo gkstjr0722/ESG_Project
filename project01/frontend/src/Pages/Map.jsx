@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
+
 import axios from "axios";
 import Header from '../component/Header';
-// Header나 CSS는 기존 것 그대로 사용하면 됩니다.
+// Header나 CSS는 기존 것 그대로 사용하면 됩니다
+
 
 const DEFAULT_CENTER = { lat: 35.1595454, lng: 126.8526012 }; // 초기: 광주
+
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
@@ -119,7 +122,11 @@ export default function MapEVCharger() {
           {loading ? (
             <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
           ) : (
+            <div className="map-wrapper">
             <div id="ev-map" className="evmap-map"></div>
+            <button className="common-btn map-car-button">전기차</button>
+            <button className="common-btn map-work-button">전기공사</button>
+            </div>
           )}
         </div>
       </div>

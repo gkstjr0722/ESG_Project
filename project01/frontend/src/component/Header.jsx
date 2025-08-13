@@ -85,7 +85,7 @@ const Header = () => {
           ))}
         </div>
         <div className="nav-icons">
-          <Link to="/mypage" className="userpage">마이<span className="yellow">페이지</span></Link>
+          <Link to="/mypage" className="userpage">마이페이지</Link>
           {/* <Link to="/mypage" className="userpage">
             <img
               src={userIcon}

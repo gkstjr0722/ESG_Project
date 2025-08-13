@@ -64,9 +64,7 @@
   font-size: 18px;
   transform: translateX(-50px); /* 더 왼쪽 */
 }
-.yellow{
-  color: #ffdb00;
-}
+
 
 /* 로그인 */
 .login-text {
