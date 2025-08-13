@@ -178,6 +178,10 @@ const Join = () => {
               path="/"
               element={
                 <>
+                  <a className="join-backbtn" onClick={() => navigate('/login')}>
+                    ← 돌아가기
+                  </a>
+                  <br />
                   <h2>회원가입</h2>
                   <div>
                     <Link to="business" className="common-btn main-btn-01">기업</Link>

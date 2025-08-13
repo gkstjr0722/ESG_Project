@@ -240,6 +240,7 @@ body {
   max-width: 520px;
   box-sizing: border-box;
   text-align: center;
+  transform: translateY(-30px);
 }
 .join-corp-box h2 {
   text-align: center;
@@ -313,6 +314,20 @@ body {
 .join-back:hover {
   background-color: #767c83;
 }
+
+.join-backbtn { 
+  color: #888c93; 
+  font-size: 1rem; 
+  padding: 0;
+  border: none; 
+  cursor: pointer; 
+  font-weight: 700;
+  float: left;
+  
+}
+.join-backbtn:hover { 
+  color: #6f6f6f;
+ }
 
 
 
