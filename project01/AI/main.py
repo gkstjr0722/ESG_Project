@@ -5,6 +5,7 @@ from typing import Dict, List
 from inference import predict_next_with_input
 
 app = FastAPI(title="Power Forecast API")
+# app = FastAPI(servers=[{"url": "http://127.0.0.1:8000"}])
 
 app.add_middleware(
     CORSMiddleware,
@@ -35,9 +36,21 @@ def predict(req: PredictRequest):
     except Exception as e:
         raise HTTPException(500, f"Model error: {e}")
 
-    def to_map(arr): return {f"{h:02d}": f"{float(arr[h]):.2f}" for h in range(24)}
-    def to_text(arr): return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
+    # def to_map(arr): return {f"{h:02d}": f"{float(arr[h]):.2f}" for h in range(24)}
+    # def to_text(arr): return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
 
+    # return PredictResponse(
+    #     next_month_kwh=float(next_total),
+    #     hourly_this_month=to_map(h_this),
+    #     hourly_next_month=to_map(h_next),
+    #     hourly_this_month_text=to_text(h_this),
+    #     hourly_next_month_text=to_text(h_next),
+    # )
+    def to_map(arr):
+        return {str(h): round(float(arr[h]), 2) for h in range(24)}
+    def to_text(arr):
+        return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
+    
     return PredictResponse(
         next_month_kwh=float(next_total),
         hourly_this_month=to_map(h_this),
@@ -45,3 +58,4 @@ def predict(req: PredictRequest):
         hourly_this_month_text=to_text(h_this),
         hourly_next_month_text=to_text(h_next),
     )
+
