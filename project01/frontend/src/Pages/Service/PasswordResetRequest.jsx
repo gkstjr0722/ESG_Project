@@ -53,6 +53,10 @@ export default function PasswordResetRequest() {
       <Header />
       <div className="common-bg">
         <div className="common-box login-corp-box" style={{ maxWidth: 520 }}>
+            <a className="common-btn back-btn" onClick={() => navigate('/login')}>
+                    ← 돌아가기
+                  </a> 
+                  <br />
           <h2 style={{ marginTop: 6 }}>비밀번호 재설정</h2>
 
           <div className="login-switch-btn-area" style={{ marginTop: 12 }}>
@@ -115,11 +119,6 @@ export default function PasswordResetRequest() {
 
             {msg && <div className="login-error" style={{ marginTop: 12 }}>{msg}</div>}
 
-            <div className="login-link-area" style={{ marginTop: 14 }}>
-              <button className="linklike" type="button" onClick={() => navigate('/login')}>
-                로그인으로 돌아가기
-              </button>
-            </div>
           </div>
         </div>
       </div>
