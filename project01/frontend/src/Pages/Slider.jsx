@@ -54,12 +54,6 @@ export default function Slider({ limit = 6 }) {
     ? slides
     : [{ NOTICE_ID: 'empty', TITLE: err ? '공지 불러오기 실패' : '등록된 공지가 없습니다', NOTICE_DT: '' }];
 
-  const fmtDate = (v) => {
-    if (!v) return '';
-    const s = v.toString();
-    return s.length >= 10 ? s.slice(0, 10) : s;
-  };
-
   // [수정됨] 가장 큰 문제였던 불필요한 <section>을 제거하고 React.Fragment(<></>)로 감쌌습니다.
   return (
     <>
@@ -85,11 +79,10 @@ export default function Slider({ limit = 6 }) {
               onClick={() => n.NOTICE_ID !== 'empty' && goDetail(n.NOTICE_ID)}
             >
               <div className="notice-slide__combined" title={n?.TITLE || ''}>
-                <strong>[공지] {n?.TITLE || '제목 없음'}</strong>
-                <span className="notice-slide__date">{fmtDate(n?.NOTICE_DT)}</span>
+                <strong>{n?.TITLE || '제목 없음'}</strong>
               </div>
               {n.NOTICE_ID !== 'empty' && (
-                <div className="notice-slide__cta">공지사항 바로가기 →</div>
+                <div className="notice-slide__cta">바로가기 →</div>
               )}
             </div>
           </SwiperSlide>

@@ -317,60 +317,77 @@ body{
 
 /* (슬라이더 관련 기본값/도트/오버라이드 등은 Slider.css로 이관함) */
 
-/* === 아래 영상 베너 느낌? === */
-.video-list-section {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: var(--promo-h);             /* 고정 높이 */
-  background: linear-gradient(180deg, #376ec2 0%);
+/* === 홍보 영상 박스 ============================================== */
+:root{
+  --header-h: 85px;   /* .navbar 높이와 동일 */
+  --promo-h: 260px;   /* 하단 홍보영상 높이 */
+}
+
+/* 앱 래퍼: 고정 하단만큼 바닥 여백 확보(겹침 방지) */
+.app-container{
+  height: 100vh;
+  overflow: hidden;
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+}
+
+/* 공지(슬라이더) 섹션: 전역 section 규칙보다 구체적으로 지정 */
+.app-container > .notice-section{
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;  /* 전역 flex:1 1 auto 같은 규칙을 이김(선택자 구체성+순서) */
+  min-height: calc(100vh - var(--header-h) - var(--promo-h));
+  padding-bottom: 0;
+}
+
+/* 슬라이더 컨테이너가 섹션 높이를 꽉 채우도록 */
+.app-container > .notice-section .mySwiper{
+  height: 100%;
+}
+
+/* 하단 홍보영상(고정) — 중복 선언 제거하고 한 군데로 정리 */
+.video-list-section{
+  position: relative;
+  bottom: auto; left: auto;
+  width: 100%;
+  flex: 0 0 var(--promo-h);
+  height: var(--promo-h);
+  background: linear-gradient(180deg, #376ec2 0%);
+  display: flex; flex-wrap: wrap;
+  gap: 16px; justify-content: center; align-items: flex-start;
   box-sizing: border-box;
   padding: 12px 24px;
-  z-index: 1000; /* 다른 요소 위에 오도록 */
+  z-index: auto;
 }
-@media (min-width: 1600px) {
-  .video-list-section { margin-top: 0; padding-top: 12px; }
-}
-@media (max-width: 1280px) and (min-width: 900px) {
-  .video-list-section { margin-top: 0; padding-top: 10px; }
-  .video-card { width: 200px; }
-  .video-thumbnail { height: 114px; }
-}
+
+/* 필요시 반응형만 아래에 유지 */
 @media (max-width: 700px) {
+  :root{ --promo-h: 420px; } /* 모바일에서 하단 높이 키우려면 */
   .video-list-section {
-    margin-top: 0;
-    padding-top: 30px;
-    padding-right: 20px;
-    padding-left: 20px;
-    padding-bottom: 0;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
+    padding-top: 30px; padding-right: 20px; padding-left: 20px; padding-bottom: 0;
+    flex-direction: column; align-items: center; gap: 30px;
   }
-  .video-list-section-text {
-    white-space: normal;
-    text-align: center;
-    padding-left: 0;
-    padding-right: 0;
-  }
+  .video-list-section-text { white-space: normal; text-align: center; padding-left: 0; padding-right: 0; }
   .video-grid { justify-content: center; }
 }
 @media (min-width: 1280px) {
   .video-grid { gap: 20px; }
   .video-card { width: 210px; }
   .video-thumbnail { height: 120px; }
-  .video-list-section-text {
-    padding-left: 32px;
-    line-height: 1.05;
-    font-size: clamp(18px, 1.8vw, 28px);
-  }
+  .video-list-section-text { padding-left: 32px; line-height: 1.05; font-size: clamp(10px, 1.8vw, 15px); }
 }
+@media (max-width: 1280px) and (min-width: 900px) {
+  .video-list-section { padding-top: 10px; }
+  .video-card { width: 200px; }
+  .video-thumbnail { height: 114px; }
+}
+@media (min-width: 1600px) {
+  .video-list-section { padding-top: 12px; }
+}
+
 
 .video-grid{
   display: flex;
@@ -390,6 +407,12 @@ body{
 .video-info { padding: 10px 10px 8px 10px; }
 .video-title { font-weight: bold; font-size: 15px; }
 .video-channel { font-size: 11px; color: #6d6d6d; }
+
+/* =========================================================================================== */
+
+
+
+
 
 /* ===== 공지 상세 ===== */
 .notice-detail-inner { padding-left: 24px; max-width: 980px; }
@@ -419,36 +442,6 @@ body{
   text-decoration: underline; font-weight: 600;
 }
 
-/* 안전 오버라이드(슬라이더 관련 규칙은 제거) */
-
-/* === large screen fix: 공지 섹션이 남는 세로공간을 전부 채우기 === */
-/* 큰 모니터(데스크탑)에서만 적용해서 노트북 레이아웃은 그대로 유지 */
-@media (min-width: 1280px) {
-  .notice-section {
-    /* 1 0 auto → 0 0 auto (불필요한 세로 확장 방지) */
-    flex: 0 0 auto !important;
-  }
-}
-
-/* === Desktop(큰 모니터)에서 공지 슬라이드가 남는 세로공간을 채우도록 === */
-@media (min-width: 1280px) {
-  .notice-section {
-    display: flex !important;
-    align-items: stretch !important;
-    flex: 0 0 auto !important;   /* 흰 공백 방지 */
-    padding-bottom: 0 !important;
-    margin-bottom: 0 !important;
-  }
-  /* (슬라이더 컨테이너/카드 관련 규칙은 Slider.css에서 관리) */
-}
-
 /* 혹시 가로 스크롤 생기면 방지 */
 html, body { overflow-x: hidden; }
 
-/* (도트/마이Swiper 관련 규칙은 모두 Slider.css로 이동) */
-
-/* 영상 섹션은 슬라이더에 딱 붙게(백업) */
-.video-list-section{
-  margin-top:0 !important;
-  padding-top:12px !important;
-}

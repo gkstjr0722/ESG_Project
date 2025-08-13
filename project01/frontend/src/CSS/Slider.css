@@ -36,7 +36,6 @@
 /* ===== 슬라이드 카드 ===== */
 .notice-slide {
   background: #eef4ff;
-  border-radius: 16px;
 
   /* 너무 작을 땐 360px 보장 */
   min-height: max(360px, calc(100vh - var(--promo-h, 260px) - 40px));
@@ -66,7 +65,6 @@
   font-size: clamp(26px, 3.4vw, 44px);
   letter-spacing: -0.2px;
 }
-.notice-slide__date { display: block; font-size: 16px; color: #8a8a8a; margin-top: 10px; }
 .notice-slide__cta { margin-top: 18px; font-weight: 600; color: #1f2937; cursor: pointer; }
 .notice-slide__cta:hover { text-decoration: underline; }
 
