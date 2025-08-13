@@ -1,3 +1,4 @@
+// 비밀번호 재설정 요청 관련 jsx
 // frontend/src/Pages/Service/PasswordResetRequest.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';

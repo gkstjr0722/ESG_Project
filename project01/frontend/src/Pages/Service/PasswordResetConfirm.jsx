@@ -1,3 +1,4 @@
+// 이메일 링크 클릭 시 비밀번호 재설정 페이지 관련 jsx
 // PasswordResetConfirm.jsx  (새 파일)
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
