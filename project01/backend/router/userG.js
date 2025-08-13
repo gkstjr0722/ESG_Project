@@ -1,4 +1,4 @@
-// backend/router/userG.js
+// 관공업 회원가입 관련 js 
 const express = require('express');
 const router = express.Router();
 const db = require('../config/db');

@@ -72,7 +72,7 @@ function BusinessJoinForm({ goBack }) {
         <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
       </div>
       <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="button" onClick={goBack} className="join-back">돌아가기</button>
+        <button type="button" onClick={goBack} className="join-back-btn">돌아가기</button>
         <button type="submit" className="join-btn">회원가입 완료</button>
       </div>
     </form>
@@ -178,6 +178,10 @@ const Join = () => {
               path="/"
               element={
                 <>
+                  <a className="common-btn back-btn" onClick={() => navigate('/login')}>
+                    ← 돌아가기
+                  </a>
+                  <br />
                   <h2>회원가입</h2>
                   <div>
                     <Link to="business" className="common-btn main-btn-01">기업</Link>

@@ -1,4 +1,4 @@
-// backend/router/password.js
+// 비밀번호 재설정 관련 js 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const bcrypt = require('bcrypt');
@@ -10,7 +10,7 @@ require('dotenv').config();
 
 const router = express.Router();
 
-// ====== 공통 설정 ======
+// 공통 설정 
 const JWT_SECRET = process.env.RESET_JWT_SECRET || 'change-me';
 const RESET_TTL_SEC = 10 * 60; // 기존 JWT 방식 토큰 유효기간 (10분)
 const BCRYPT_ROUNDS = Number(process.env.BCRYPT_ROUNDS || 12); // 해시 강도 (env 우선)
@@ -33,7 +33,7 @@ const TABLES = {
   },
 };
 
-// ====== nodemailer 트랜스포터 (포트에 따른 secure 분기 + 타임아웃) ======
+// nodemailer 트랜스포터 (포트에 따른 secure 분기 + 타임아웃)
 const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -46,7 +46,7 @@ const transporter = nodemailer.createTransport({
   // tls: { rejectUnauthorized: false }, // 사설 인증서 환경에서만 임시로 사용
 });
 
-// ====== 헬퍼 ======
+// 헬퍼 
 function genTokenRawHex(bytes = 32) {
   return crypto.randomBytes(bytes).toString('hex');
 }
@@ -54,7 +54,7 @@ function sha256hex(str) {
   return crypto.createHash('sha256').update(str).digest('hex');
 }
 
-// ====== 비밀번호 변경 요청 남용 방지 ======
+// 비밀번호 변경 요청 남용 방지 
 const requestLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   max: 10,
