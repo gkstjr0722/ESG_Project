@@ -1,3 +1,21 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* ======================= main.css ======================= */
 /*  메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
 
@@ -283,12 +301,12 @@
 .notice-hero__dots .dot.active { background: #548bdf; transform: scale(1.4); opacity: 1; }
 
 /* 레이아웃 기본 */
-body{
+/* body{
   box-sizing: border-box; margin: 0; padding: 0;
   font-family: 'Malgun Gothic','맑은 고딕','돋움',Arial,sans-serif;
   background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column;
   -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-}
+} */
 .notice-section { flex: 0 0 auto; display: flex; }
 
 /* 🔧 공지 배너가 화면 가로를 항상 꽉 채우도록 강제 */

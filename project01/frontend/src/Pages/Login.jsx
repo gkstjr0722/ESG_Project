@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../CSS/Main.css';
+import '../CSS/Sub.css';
 import Header from '../component/Header';
 
 // API Base (환경변수 없으면 로컬)
@@ -69,16 +69,13 @@ const Login = () => {
   };
 
   return (
-    <div>
+    <>
       <Header />
-      <div className="common-bg">
-        <div className="common-box login-corp-box">
-          <h2 style={{ marginTop: '22px' }}>
-            {mode === 'business' ? '기업·공공기관 로그인' : '관공업 로그인'}
-          </h2>
-          <div className="login-switch-btn-area">
+      <div className="cBox">
+        <h2>{mode === 'business' ? '기업·공공기관 로그인' : '관공업 로그인'}</h2>
+        <div className="cChoice">
             <button
-              className={mode === 'business' ? 'login-switch-btn active' : 'login-switch-btn'}
+              className={mode === 'business' ? 'active' : ''}
               onClick={() => {
                 setMode('business');
                 setId('');
@@ -90,7 +87,7 @@ const Login = () => {
               기업 로그인
             </button>
             <button
-              className={mode === 'government' ? 'login-switch-btn active' : 'login-switch-btn'}
+              className={mode === 'government' ? 'active' : ''}
               onClick={() => {
                 setMode('government');
                 setId('');
@@ -101,60 +98,48 @@ const Login = () => {
             >
               관공업 로그인
             </button>
+        </div>
+
+
+        <form onSubmit={handleLogin} className="cContent sLogin-Content">
+          <input
+            type="text"
+            placeholder={mode === 'business' ? '기업/기관 아이디' : '관공업 아이디'}
+            value={id}
+            onChange={(e) => setId(e.target.value)}
+            autoFocus
+            required
+          />
+          <input
+            type="password"
+            placeholder="비밀번호"
+            value={pw}
+            onChange={(e) => setPw(e.target.value)}
+            required
+          />
+
+          <div className="cCheck">
+            <input
+              type="checkbox"
+              id="saveId"
+              checked={saveId}
+              onChange={() => setSaveId(!saveId)}
+            />
+            <label htmlFor="saveId">아이디 저장</label>
           </div>
 
+          {error && <div className="cError">{error}</div>}
 
-          <form onSubmit={handleLogin}>
-            <input
-              type="text"
-              placeholder={mode === 'business' ? '기업/기관 아이디' : '관공업 아이디'}
-              value={id}
-              onChange={(e) => setId(e.target.value)}
-              autoFocus
-              required
-            />
-            <input
-              type="password"
-              placeholder="비밀번호"
-              value={pw}
-              onChange={(e) => setPw(e.target.value)}
-              required
-            />
+          <button className="cBlueBtn sLogin-Btn" type="submit">로그인</button>
+        </form>
 
-            <div style={{ margin: '12px 0 0 0', textAlign: 'left' }}>
-              <input
-                type="checkbox"
-                id="saveId"
-                checked={saveId}
-                onChange={() => setSaveId(!saveId)}
-              />
-              <label htmlFor="saveId" style={{ marginLeft: '6px', fontSize: '14px' }}>
-                아이디 저장
-              </label>
-            </div>
-
-            {error && <div className="login-error">{error}</div>}
-
-            <button className="common-btn main-btn1" type="submit">
-              로그인
-            </button>
-          </form>
-
-          <div className="login-link-area">
-            <a
-              className="pw-find-link"
-              href="/password/reset"
-              >
-                비밀번호 찾기
-            </a>
-            <span className="divider">|</span>
-            <a href="/join" className="join-link">
-              회원가입
-            </a>
-          </div>
+        <div className="sLogin-Link">
+          <a href="/password/reset">비밀번호 찾기</a>
+          |
+          <a href="/join">회원가입</a>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
