@@ -1,4 +1,4 @@
-// PowerBill.jsx — 전기요금 계산기 (완성본)
+// 전기요금 계산기
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -34,6 +34,35 @@ const POWER_RATE_EUL = [
   { key:"c_select3",     label:"고압C 선택 III",base: 8090, rates:{ summer:[120.0,172.9,253.8], springFall:[120.0,142.9,173.3], winter:[126.9,172.5,229.1] } },
 ];
 
+
+// 일반용(갑) I — 단일단가
+const J_POWER_RATE_GAP_I = [
+  { key:"j_low",       label:"저압전력",     base: 6160, rate:{ summer:132.4, springFall:91.9,  winter:119.0 } },
+  { key:"j_a_sel1",    label:"고압A 선택I",  base: 7170, rate:{ summer:142.6, springFall:98.6,  winter:130.3 } },
+  { key:"j_a_sel2",    label:"고압A 선택II", base: 8230, rate:{ summer:138.6, springFall:94.3,  winter:125.0 } },
+  { key:"j_b_sel1",    label:"고압B 선택I",  base: 7170, rate:{ summer:140.5, springFall:97.5,  winter:127.3 } },
+  { key:"j_b_sel2",    label:"고압B 선택II", base: 8230, rate:{ summer:135.2, springFall:92.2,  winter:122.0 } },
+];
+// 일반용(갑) II — 경/중/최
+const J_POWER_RATE_GAP_II = [
+  { key:"j_a_sel1", label:"고압A 선택I", base:7170, rates:{ summer:[89.4,140.6,163.1], springFall:[89.4,96.8,108.1], winter:[98.1,128.5,143.3] } },
+  { key:"j_a_sel2", label:"고압A 선택II", base:8230, rates:{ summer:[84.1,135.3,157.8], springFall:[84.1,91.5,102.8], winter:[92.8,123.2,138.0] } },
+  { key:"j_b_sel1", label:"고압B 선택I", base:7170, rates:{ summer:[88.8,137.4,153.8], springFall:[88.8,94.7,100.1], winter:[97.8,125.1,139.3] } },
+  { key:"j_b_sel2", label:"고압B 선택II", base:8230, rates:{ summer:[83.5,132.1,148.5], springFall:[83.5,89.4,94.8], winter:[92.5,119.8,134.0] } },
+];
+// 일반용(을) — 경/중/최
+const J_POWER_RATE_EUL = [
+  { key:"j_a_sel1_e", label:"고압A 선택 I",  base:7220, rates:{ summer:[92.8,145.7,227.8], springFall:[92.8,115.3,146.0], winter:[99.8,145.9,203.4] } },
+  { key:"j_a_sel2_e", label:"고압A 선택 II", base:8320, rates:{ summer:[87.3,140.2,222.3], springFall:[87.3,109.8,140.5], winter:[94.3,140.4,197.9] } },
+  { key:"j_a_sel3_e", label:"고압A 선택 III",base:9810, rates:{ summer:[86.4,139.6,209.9], springFall:[86.4,108.5,132.2], winter:[93.7,139.8,186.7] } },
+  { key:"j_b_sel1_e", label:"고압B 선택 I",  base:6630, rates:{ summer:[95.9,148.2,229.4], springFall:[95.9,118.2,148.5], winter:[102.9,148.2,204.4] } },
+  { key:"j_b_sel2_e", label:"고압B 선택 II", base:7380, rates:{ summer:[92.1,144.4,225.6], springFall:[92.1,114.4,144.7], winter:[99.1,144.4,200.6] } },
+  { key:"j_b_sel3_e", label:"고압B 선택 III",base:8190, rates:{ summer:[90.4,142.7,224.0], springFall:[90.4,112.8,143.1], winter:[97.5,142.7,198.9] } },
+];
+// --------------------------------------------------------------------------
+
+
+
 /* -------------------- 공용 유틸 -------------------- */
 const MONTH_LABELS = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
 
@@ -58,7 +87,6 @@ const unwrap = raw => (raw && raw.data && typeof raw.data === 'object' ? raw.dat
 const sum = (obj, keys) =>
   (obj ? keys.reduce((a,k)=>a + Number(obj[k] ?? obj[String(k)] ?? 0), 0) : 0);
 
-// "['00 : 929.40', ...]" → { "00": 929.40, ... }
 function parseHourTextArray(arr) {
   if (!Array.isArray(arr)) return null;
   const map = {};
@@ -77,33 +105,27 @@ function normalizeToCalculatorShape(raw0) {
   const raw = unwrap(raw0);
   if (raw?.thisMonth || raw?.nextMonth) return raw;
 
-  // 1) 이번달 시계열 (object → text 순)
   let ht = raw?.hourly_this_month ?? raw?.detail?.hourly_this_month ?? null;
   if (!ht) {
     const htText = raw?.hourly_this_month_text ?? raw?.detail?.hourly_this_month_text ?? null;
     ht = parseHourTextArray(htText);
   }
 
-  // 2) 다음달 시계열 (object → text 순)
   let hn = raw?.hourly_next_month ?? raw?.detail?.hourly_next_month ?? null;
   if (!hn) {
     const hnText = raw?.hourly_next_month_text ?? raw?.detail?.hourly_next_month_text ?? null;
     hn = parseHourTextArray(hnText);
   }
 
-  // 3) 이번달 합계/구간
   const off_t = sum(ht, OFF), mid_t = sum(ht, MID), on_t = sum(ht, ON);
   const thisSum = off_t + mid_t + on_t;
   const thisMonth = thisSum > 0
     ? { totalKwh: thisSum, times: [off_t, mid_t, on_t] }
     : { totalKwh: 0 };
 
-   // 4) 다음달 합계/구간
   const off_n = sum(hn, OFF), mid_n = sum(hn, MID), on_n = sum(hn, ON);
   const nextSum = off_n + mid_n + on_n;
 
-  // 💡 규칙: 시간대별(nextSum)이 있으면 그걸 **무조건 1순위**로 사용
-  //         없을 때만 predicted_kwh / next_month_kwh / y를 사용
   let predicted =
     Number.isFinite(nextSum) && nextSum > 0
       ? nextSum
@@ -116,10 +138,6 @@ function normalizeToCalculatorShape(raw0) {
     ...(nextSum > 0 ? { times: [off_n, mid_n, on_n] } : {}),
   };
 
-  // 디버깅 로그(일단 남겨두면 원인 파악 쉬움)
-  console.log('[normalize] thisSum=', thisSum, ' nextSum=', nextSum,
-              ' chosen next total=', nextMonth.totalKwh);
-
   return { thisMonth, nextMonth };
 }
 
@@ -130,10 +148,7 @@ async function fetchPredictedUsage(apiUrl, payload) {
     body = { current_month_kwh: n };
   }
   const { data } = await axios.post(apiUrl, body);
-  const normalized = normalizeToCalculatorShape(data);
-  console.log('[API raw]', data);
-  console.log('[API normalized]', normalized);
-  return normalized;
+  return normalizeToCalculatorShape(data);
 }
 /* ---- /정규화 & 도우미 ---- */
 
@@ -142,11 +157,14 @@ export default function PowerBill({
   onCalculationComplete,
   predictApiUrl = '/fast/predict',
 }) {
-  // 상태들
+  
   const [mainType, setMainType] = useState('gap');  // 'gap' | 'eul'
-  const [subType,  setSubType]  = useState('I');    // 'I' | 'II' (갑일 때)
-  const [option,   setOption]   = useState('low');  // 단가 옵션 키
+  const [subType,  setSubType]  = useState('I');    // 'I' | 'II'
+  const [option,   setOption]   = useState('low');
   const [season]   = useState(getSeason());
+
+  // 산업/일반 토글만 담당
+  const [useGeneral, setUseGeneral] = useState(false); // false=산업용, true=일반용
 
   const now = new Date();
   const currentMonthIdx = now.getMonth();
@@ -158,41 +176,35 @@ export default function PowerBill({
   const [lastMonthKwh,  setLastMonthKwh]  = useState('');
 
   const [result,  setResult]  = useState(null);
-  const [view,    setView]    = useState('initial');  // 'initial' | 'calculator' | 'result'
+  const [view,    setView]    = useState('initial');
   const [error,   setError]   = useState('');
   const [loading, setLoading] = useState(false);
 
-  // UI 제약
   useEffect(() => {
     setResult(null);
     setError('');
-    if (mainType === 'gap') { setSubType('I'); setOption('low'); }
-    else { setSubType('II'); setOption('b_select1'); }
-  }, [mainType]);
+    if (mainType === 'gap') { setSubType('I'); setOption(useGeneral ? 'j_low' : 'low'); }
+    else { setSubType('II'); setOption(useGeneral ? 'j_a_sel1_e' : 'a_select1_eul'); }
+  }, [mainType, useGeneral]);
 
   useEffect(() => {
-    if (mainType === 'gap') setOption(subType === 'I' ? 'low' : 'a_select1');
-  }, [subType, mainType]);
+    if (mainType === 'gap') setOption(subType === 'I' ? (useGeneral?'j_low':'low') : (useGeneral?'j_a_sel1':'a_select1'));
+  }, [subType, mainType, useGeneral]);
 
   const getRateOptions = () => {
-    if (mainType === 'gap') return subType === 'I' ? POWER_RATE_GAP_I : POWER_RATE_GAP_II;
-    return POWER_RATE_EUL;
+    if (mainType === 'gap') return subType === 'I'
+      ? (useGeneral ? J_POWER_RATE_GAP_I : POWER_RATE_GAP_I)
+      : (useGeneral ? J_POWER_RATE_GAP_II: POWER_RATE_GAP_II);
+    return useGeneral ? J_POWER_RATE_EUL : POWER_RATE_EUL;
   };
 
-  // 핵심: 계산 + 예측 호출
   const handleCalc = async (e) => {
     e.preventDefault();
     setError('');
     setResult(null);
 
-    if (!contractPower || Number(contractPower) <= 0) {
-      alert('계약전력을 입력하세요.');
-      return;
-    }
-    if (!lastMonthKwh || Number(lastMonthKwh) <= 0) {
-      alert(`${prevMonthLabel} 전력사용량(kWh)을 입력하세요.`);
-      return;
-    }
+    if (!contractPower || Number(contractPower) <= 0) { alert('계약전력을 입력하세요.'); return; }
+    if (!lastMonthKwh || Number(lastMonthKwh) <= 0) { alert(`${prevMonthLabel} 전력사용량(kWh)을 입력하세요.`); return; }
 
     try {
       setLoading(true);
@@ -203,50 +215,39 @@ export default function PowerBill({
         lastMonthKwh : Number(lastMonthKwh),
       };
 
-    // 1) 예측 호출 (정규화: { thisMonth, nextMonth })
-    const apiRes = await fetchPredictedUsage(predictApiUrl, payload);
-    const tm = apiRes?.thisMonth || {};
-    const nm = apiRes?.nextMonth || {}; 
+      const apiRes = await fetchPredictedUsage(predictApiUrl, payload);
+      const nm = apiRes?.nextMonth || {};
+      const times = Array.isArray(nm.times) ? nm.times : null;
+      const predictedTotal = Number(nm.totalKwh || 0);
+      const predictionAvailable = Number.isFinite(predictedTotal) && predictedTotal > 0;
 
-    // 2) 다음달 예측 총량과 구간치
-    const times = Array.isArray(nm.times) ? nm.times : null;   // ✅ 누락 보완
-    const predictedTotal = Number(nm.totalKwh || 0);
-    const predictionAvailable = Number.isFinite(predictedTotal) && predictedTotal > 0;
-
-    // 3) 요금 계산 (예측값 기준) — (아래 로직은 그대로 OK)
-    let baseCharge = 0;
-    let energyCharge = 0;
-    let selectedOption;
-
+      let baseCharge = 0;
+      let energyCharge = 0;
 
       if (mainType === 'gap') {
         if (subType === 'I') {
-          selectedOption = POWER_RATE_GAP_I.find(v => v.key === option);
-          baseCharge  = floorWon(Number(contractPower) * selectedOption.base);
-          energyCharge = floorWon(predictedTotal * selectedOption.rate[season]);
+          const table = useGeneral ? J_POWER_RATE_GAP_I : POWER_RATE_GAP_I;
+          const selected = table.find(v => v.key === option);
+          baseCharge  = floorWon(Number(contractPower) * selected.base);
+          energyCharge = floorWon(predictedTotal * selected.rate[season]);
         } else {
-          selectedOption = POWER_RATE_GAP_II.find(v => v.key === option);
-          baseCharge  = floorWon(Number(contractPower) * selectedOption.base);
+          const table = useGeneral ? J_POWER_RATE_GAP_II : POWER_RATE_GAP_II;
+          const selected = table.find(v => v.key === option);
+          baseCharge  = floorWon(Number(contractPower) * selected.base);
           if (times && times.length === 3) {
-            for (let i = 0; i < 3; i++) {
-              energyCharge += floorWon((Number(times[i]) || 0) * selectedOption.rates[season][i]);
-            }
+            for (let i = 0; i < 3; i++) energyCharge += floorWon((Number(times[i]) || 0) * selected.rates[season][i]);
           } else {
-            // 구간치가 없으면 중간부하 단가로 근사
-            const mid = selectedOption.rates[season][1];
-            energyCharge = floorWon(predictedTotal * mid);
+            energyCharge = floorWon(predictedTotal * selected.rates[season][1]);
           }
         }
       } else {
-        selectedOption = POWER_RATE_EUL.find(v => v.key === option);
-        baseCharge = floorWon(Number(contractPower) * selectedOption.base);
+        const table = useGeneral ? J_POWER_RATE_EUL : POWER_RATE_EUL;
+        const selected = table.find(v => v.key === option);
+        baseCharge = floorWon(Number(contractPower) * selected.base);
         if (times && times.length === 3) {
-          for (let i = 0; i < 3; i++) {
-            energyCharge += floorWon((Number(times[i]) || 0) * selectedOption.rates[season][i]);
-          }
+          for (let i = 0; i < 3; i++) energyCharge += floorWon((Number(times[i]) || 0) * selected.rates[season][i]);
         } else {
-          const mid = selectedOption.rates[season][1];
-          energyCharge = floorWon(predictedTotal * mid);
+          energyCharge = floorWon(predictedTotal * selected.rates[season][1]);
         }
       }
 
@@ -255,31 +256,20 @@ export default function PowerBill({
       const fund = floorTenWon(electricityTotal * 0.027);
       const finalAmount = floorTenWon(electricityTotal + vat + fund);
 
-      // 4) 결과 반영
       setResult(predictionAvailable ? finalAmount : null);
       setView('result');
 
-      console.log('[PowerBill] input(lastMonthKwh)=', Number(lastMonthKwh),
-                  ' predicted(nm.totalKwh)=', predictedTotal,
-                  ' fromApi=', predictionAvailable);
-
-onCalculationComplete?.({
-  lastMonth: Number(lastMonthKwh),       // 왼쪽 = 입력값
-  thisMonth: Number(nm.totalKwh || 0),   // 오른쪽 = 예측값
-  fromApi: predictionAvailable,
-});
+      onCalculationComplete?.({
+        lastMonth: Number(lastMonthKwh),
+        thisMonth: Number(nm.totalKwh || 0),
+        fromApi: predictionAvailable,
+      });
 
     } catch (err) {
       setError(err?.response?.data?.message || err.message || '예측 중 오류가 발생했습니다.');
       setResult(null);
       setView('result');
-
-      // 실패 시: 왼쪽만 입력값으로 반영
-      onCalculationComplete?.({
-        lastMonth: Number.isFinite(Number(lastMonthKwh)) ? Number(lastMonthKwh) : 0,
-        thisMonth: null,
-        fromApi: false,
-      });
+      onCalculationComplete?.({ lastMonth: Number(lastMonthKwh) || 0, thisMonth: null, fromApi: false });
     } finally {
       setLoading(false);
     }
@@ -302,16 +292,22 @@ onCalculationComplete?.({
             <h2>전기요금 계산기</h2>
             <form onSubmit={handleCalc}>
               <div className="row">
+                <label>용도:&nbsp;</label>
+                <label><input type="radio" checked={!useGeneral} onChange={()=>setUseGeneral(false)} /> 산업용</label>
+                <label><input type="radio" checked={useGeneral} onChange={()=>setUseGeneral(true)} /> 일반용</label>
+              </div>
+
+              <div className="row">
                 <label>요금종별:&nbsp;</label>
-                <label><input type="radio" checked={mainType==='gap'} onChange={()=>setMainType('gap')} /> 산업용(갑)</label>
-                <label style={{marginLeft:12}}><input type="radio" checked={mainType==='eul'} onChange={()=>setMainType('eul')} /> 산업용(을)</label>
+                <label><input type="radio" checked={mainType==='gap'} onChange={()=>setMainType('gap')} /> 갑</label>
+                <label><input type="radio" checked={mainType==='eul'} onChange={()=>setMainType('eul')} /> 을</label>
               </div>
 
               {mainType === 'gap' && (
                 <div className="row">
                   <label>선택:&nbsp;</label>
                   <label><input type="radio" checked={subType==='I'} onChange={()=>setSubType('I')} /> 선택(I)</label>
-                  <label style={{marginLeft:12}}><input type="radio" checked={subType==='II'} onChange={()=>setSubType('II')} /> 선택(II)</label>
+                  <label><input type="radio" checked={subType==='II'} onChange={()=>setSubType('II')} /> 선택(II)</label>
                 </div>
               )}
 

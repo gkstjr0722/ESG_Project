@@ -29,17 +29,17 @@ const Support = () => {
       <Header />
 
       {/* 상단 탭바 */}
-      <div className="support-banner-tabbar">
+      <div className="cTab">
         <button
           type="button"
-          className={`support-banner-tab${isNoticeActive ? ' active' : ''}`}
+          className={isNoticeActive ? 'active' : ''}
           onClick={() => navigate('/notice')}
         >
           공지사항
         </button>
         <button
           type="button"
-          className={`support-banner-tab${!isNoticeActive ? ' active' : ''}`}
+          className={!isNoticeActive ? 'active' : ''}
           onClick={() => navigate('/support', { state: { fromTab: true } })}
         >
           고객문의
@@ -50,25 +50,19 @@ const Support = () => {
       {isNoticeActive ? (
         <Notice />
       ) : (
-        <div className="bg-common">
-          <div className="support-main-wrapper">
-            <div className="support-center-card">
-              <button
-                type="button"
-                className="support-card-btn"
-                onClick={() => navigate('/faq')}
-              >
-                자주 묻는 질문
-              </button>
-              <button
-                type="button"
-                className="support-card-btn"
-                onClick={() => navigate('/inquiry')}
-              >
-                고객 문의
-              </button>
-            </div>
-          </div>
+        <div className="sSupport-Btn">
+          <button
+            type="button"
+            onClick={() => navigate('/faq')}
+          >
+            자주 묻는 질문
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/inquiry')}
+          >
+            고객 문의
+          </button>
         </div>
       )}
     </>

@@ -44,6 +44,7 @@ import Model from './Pages/Model.jsx';
 // ⬇️ 파일명을 소문자로 변경했다는 요청에 맞춰 경로 수정
 import PasswordResetRequest from './Pages/Service/PasswordResetRequest.jsx';
 import PasswordResetConfirm from './Pages/Service/PasswordResetConfirm.jsx';
+import Test from './Pages/Test.jsx';
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
@@ -92,6 +93,10 @@ createRoot(document.getElementById('root')).render(
       <Route path="/reset-password" element={<PasswordResetConfirm />} />
       {/* 기존 경로도 임시 유지 (원하면 삭제 가능) */}
       <Route path="/passwordreset" element={<PasswordResetRequest />} />
+
+
+      {/* 테스트용으로 쓰는 중 */}
+      <Route path='/test' element={<Test/>}></Route>
     </Routes>
   </BrowserRouter>
 );
