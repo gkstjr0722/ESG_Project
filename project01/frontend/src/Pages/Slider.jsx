@@ -2,13 +2,16 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper';
+import SwiperCore, { Autoplay, Pagination, Navigation } from 'swiper';
 import { useNavigate } from 'react-router-dom';
+  // V8에서는 swipercore.use 방식 사용
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../CSS/Slider.css';
+
+SwiperCore.use([Autoplay, Pagination, Navigation]);
 
 const USE_ABSOLUTE = false;
 
@@ -67,6 +70,12 @@ export default function Slider({ limit = 6 }) {
         slidesPerView={1}
         spaceBetween={30}
         loop={renderSlides.length > 1}
+        // 스와이퍼 자동넘김 기능
+         autoplay={{
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: false,
+        }}
         pagination={{ clickable: true }}
         navigation={{ prevEl: '.custom-swiper-button-prev', nextEl: '.custom-swiper-button-next' }}
         watchOverflow={false}

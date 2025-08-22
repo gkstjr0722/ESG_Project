@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 // import '../../CSS/Faq.css';
 import '../../CSS/Sub.css';
 import axios from 'axios';
@@ -48,14 +48,30 @@ const Inquiry = () => {
     navigate('/inquiry/write');
   };
 
+  const location = useLocation();
+  const pathname = location?.pathname || '/';
+  const isNoticeActive  = pathname.startsWith('/notice');
+  const isInquiryActive = pathname.startsWith('/inquiry');
+  const isFAQActive     = pathname.startsWith('/faq');
+
+
+
   return (
-    <div>
+    <>
       <Header/>
+
+      <div className="cTab">
+        <button type="button" className={isNoticeActive ? 'active' : ''}  onClick={() => navigate('/notice')}>공지사항</button>
+        <button type="button" className={isInquiryActive ? 'active' : ''} onClick={() => navigate('/inquiry')}>고객문의</button>
+        <button type="button" className={isFAQActive ? 'active' : ''}     onClick={() => navigate('/faq')}>자주 묻는 질문</button>
+      </div>
+
       <br /><br />
-      <div className="faq-page-wrap">
-        <h1 className="faq-title">고객 문의</h1>
-        <div className="faq-search-row">
-          <span className="faq-search-icon">Q</span>
+      <div className="cWriteContent">
+        <h1>고객 문의</h1>
+
+        <div className="cSearch">
+          <span>Q</span>
           <input
             className="faq-search-input"
             type="text"
@@ -64,23 +80,24 @@ const Inquiry = () => {
             onChange={e => setSearch(e.target.value)}
           />
         </div>
-        <div className="faq-question-list">
+
+        <div className="cList">
           {loading ? (
-            <div className="faq-question-empty">로딩 중...</div>
+            <div>로딩 중...</div>
           ) : error ? (
-            <div className="faq-question-empty">{error}</div>
+            <div>{error}</div>
           ) : filteredQuestions.length === 0 ? (
-            <div className="faq-question-empty">등록된 질문이 없습니다.</div>
+            <div>등록된 질문이 없습니다.</div>
           ) : (
             filteredQuestions.map(q => (
               <div
                 key={q.QS_ID}
-                className="faq-question-item"
+                className="cWrite"
                 onClick={() => navigate(`/inquiry/${q.QS_ID}`)}
               >
-                <span className="faq-q-icon">Q</span>
+                <span>Q</span>
                 {q.TITLE}
-                <span className={`inquiry-status-badge ${getStatus(q) === '답변완료' ? 'done' : 'doing'}`}>
+                <span className={`sInquiry-State ${getStatus(q) === '답변완료' ? 'done' : 'doing'}`}>
                   {getStatus(q)}
                 </span>
               </div>
@@ -88,12 +105,12 @@ const Inquiry = () => {
           )}
         </div>
         {isLoggedIn && !isAdmin && (
-          <button className="common-btn floating-write-btn" onClick={handleWriteClick}>
+          <button className="sInquiry-Btn" onClick={handleWriteClick}>
             +
           </button>
         )}
       </div>
-    </div>
+    </>
   );
 };
 
