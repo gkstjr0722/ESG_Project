@@ -466,17 +466,8 @@ body {
   color: #b2b7be;
   margin-left: 8px;
 }
-.faq-search-input {
-  flex: 1;
-  font-size: 1.17rem;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: #222;
-  padding: 10px 10px 10px 2px;
-  font-family: inherit;
-  font-weight: 400;
-}
+
+
 .faq-search-input::placeholder { 
   color: #c7cdd4; 
   font-size: 1.17rem; 
@@ -826,9 +817,40 @@ body {
   box-shadow: 0 4px 12px rgba(17, 24, 39, .06);
 }
 
+/* 표 상단 글자- 옆으로 나란히 + 화면 크기 조정시 세로로 바뀌는거 막아 놓은거+ 폰트 */
+.sDis-Flex{
+  display: flex;
+  white-space: nowrap;
+  font-size: 16.8px;
+  background-color: #e6f1fe ;
+  /* background-color: #d7e2f3 ; */
+  /* color: white; */
+  height: 45px;
+  align-items: center;
+}
+/* 표 상단 제목 */
+.sNoti-title{
+  margin-left: 400px;
 
+}
+/* 표 상단 작성일 */
+.sWriteDate{
+ margin-left: 500px;
+}
 
+/* 글 옆 작성일 */
+.sWrite-Date{
+  margin-left: auto;
+}
 
+/* 제목이랑 글 분리 hr 바*/
+.sBlue{
+  border: none;
+  height: 1.5px;  
+  background-color: #397ffa ;
+  /* background-color: #1951a6 ; */
+  margin: 0;
+}
 
 /* ===== 마이페이지 ========================================================== */
 :root{

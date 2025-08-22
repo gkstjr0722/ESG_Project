@@ -436,6 +436,12 @@ const Notice = () => {
           )}
         </div>
 
+          <hr className='sBlue'></hr>
+          <div className='sDis-Flex'>
+            <span className='sNoti-title'>제목</span>
+            <span className='sWriteDate'>작성일</span>
+         </div>
+
         <div className="cList">
           {loading ? (
             <div>불러오는 중...</div>
@@ -452,7 +458,7 @@ const Notice = () => {
               >
                 <span>N</span>
                 {n.TITLE}
-                <span>{n.NOTICE_DT?.slice(0, 10)}</span>
+                <span className='sWrite-Date'>{n.NOTICE_DT?.slice(0, 10)}</span>
               </div>
             ))
           )}
