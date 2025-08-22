@@ -9,7 +9,8 @@ const DEFAULT_LEVEL = 12; // 전국 스케일
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
-  const [stations, setStations] = useState([]);
+  const [stations, setStations] = useState([]); 
+  const [selectedTab, setSelectedTab] = useState('ev'); // 'ev' | 'elec'
 
   // kakao 객체, map, clusterer, infowindow를 ref로 보관
   const kakaoRef = useRef(null);
