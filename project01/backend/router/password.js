@@ -57,7 +57,7 @@ function sha256hex(str) {
 // 비밀번호 변경 요청 남용 방지 
 const requestLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  max: 10,
+  max: 50,
   standardHeaders: true,
   legacyHeaders: false,
 });
