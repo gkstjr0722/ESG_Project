@@ -5,7 +5,7 @@ import '../../CSS/Main.css';
 import Header from '../../component/Header';
 import axios from 'axios';
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://192.168.111.194:3001';
 
 export default function PasswordResetRequest() {
   const [tab, setTab] = useState('corp'); // 'corp' | 'gov'

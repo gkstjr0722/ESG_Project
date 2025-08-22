@@ -25,7 +25,7 @@ export default function Slider({ limit = 6 }) {
     (async () => {
       try {
         const url = USE_ABSOLUTE
-          ? `http://localhost:3001/api/notice/banner?limit=${Math.min(limit, 10)}`
+          ? `http://192.168.111.194:3001/api/notice/banner?limit=${Math.min(limit, 10)}`
           : `/api/notice/banner?limit=${Math.min(limit, 10)}`;
         const { data } = await axios.get(url);
         if (!alive) return;
