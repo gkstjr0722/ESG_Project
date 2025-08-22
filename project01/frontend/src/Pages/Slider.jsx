@@ -103,3 +103,5 @@ export default function Slider({ limit = 6 }) {
     </>
   );
 }
+
+// 2025-08-22 스와이퍼 자동넘김 기능 추가 ! 
