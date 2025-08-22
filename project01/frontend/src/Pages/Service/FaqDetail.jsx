@@ -18,7 +18,7 @@ const FaqDetail = () => {
       setError('');
       try {
         // /api/inquiry/:id와 똑같이 호출 (조회수 증가)
-        const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
+        const res = await axios.get(`http://192.168.111.194:3001/api/inquiry/${id}`);
         if (res.data && res.data.question) {
           setQuestion(res.data.question);
         } else {
