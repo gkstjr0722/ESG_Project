@@ -8,7 +8,6 @@ import { useNavigate } from 'react-router-dom';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import '../CSS/Slider.css';
 
 const USE_ABSOLUTE = false;
 
@@ -47,7 +46,7 @@ export default function Slider({ limit = 6 }) {
 
   if (loading) {
     // 로딩 중에도 최소 높이를 유지하여 레이아웃 깨짐 방지
-    return <div className="mySwiper" style={{ minHeight: '450px' }} />;
+    return <div className="mySwiper"/>;
   }
 
   const renderSlides = slides.length
@@ -73,18 +72,22 @@ export default function Slider({ limit = 6 }) {
       >
         {renderSlides.map((n) => (
           <SwiperSlide key={n.NOTICE_ID}>
-            <div
-              className="notice-slide"
-              role="button"
-              onClick={() => n.NOTICE_ID !== 'empty' && goDetail(n.NOTICE_ID)}
-            >
+            <div className="notice-slide">
               <div className="notice-slide__combined" title={n?.TITLE || ''}>
                 <strong>{n?.TITLE || '제목 없음'}</strong>
               </div>
+
               {n.NOTICE_ID !== 'empty' && (
-                <div className="notice-slide__cta">바로가기 →</div>
+                <div
+                  className="notice-slide__cta"
+                  role="button"
+                  onClick={() => goDetail(n.NOTICE_ID)}
+                >
+                  바로가기 →
+                </div>
               )}
             </div>
+            
           </SwiperSlide>
         ))}
       </Swiper>
