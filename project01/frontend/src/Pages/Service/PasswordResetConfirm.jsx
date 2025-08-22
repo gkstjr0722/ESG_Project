@@ -2,6 +2,7 @@
 // PasswordResetConfirm.jsx  (새 파일)
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import '../../CSS/Sub.css';
 import Header from '../../component/Header';
 import axios from 'axios';
 
@@ -53,44 +54,41 @@ export default function PasswordResetConfirm() {
 
   if (!valid) {
     return (
-      <div>
+      <>
         <Header />
-        <div className="common-bg">
-          <div className="common-box login-corp-box" style={{ maxWidth: 520, padding: 24 }}>
-            <h2>비밀번호 재설정</h2>
-            <p style={{ marginTop: 12 }}>{msg}</p>
-            <button className="linklike" type="button" onClick={() => navigate('/password-reset')}>
-              메일 다시 받기
-            </button>
-          </div>
+        <div className="cBox">
+          <h2>비밀번호 재설정</h2>
+          <p className="cError">{msg}</p>
+          <button className="cBlueBtn sPw-Btn" type="button" onClick={() => navigate('/password-reset')}>
+            메일 다시 받기
+          </button>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div>
+    <>
       <Header />
-      <div className="common-bg">
-        <div className="common-box login-corp-box" style={{ maxWidth: 520 }}>
-          <h2 style={{ marginTop: 6 }}>새 비밀번호 설정</h2>
+      <div className="cBox">
+        <h2>새 비밀번호 설정</h2>
+        <div className="cContent">
           <input
             type="password"
             placeholder="새 비밀번호(8자 이상)"
             value={newPw}
             onChange={e => setNewPw(e.target.value)}
-            style={{ width:'100%', padding:'12px 14px', height:44, border:'1px solid #dcdcdc', borderRadius:6, marginTop:16 }}
           />
-          <button
-            style={{ width:'100%', padding:'14px', border:'none', borderRadius:6, background:'#3759e3ff', color:'#fff', fontWeight:600, cursor:'pointer', marginTop:12 }}
-            disabled={loading || !newPw}
-            onClick={submit}
-          >
-            비밀번호 변경하기
-          </button>
-          {msg && <div className="login-error" style={{ marginTop: 12 }}>{msg}</div>}
         </div>
+        {msg && <div className="cError">{msg}</div>}
+        <button
+          className="cBlueBtn sPw-Btn"
+          disabled={loading || !newPw}
+          onClick={submit}
+        >
+          비밀번호 변경하기
+        </button>
       </div>
-    </div>
+    </>
   );
 }
