@@ -176,6 +176,7 @@ router.post('/reset/confirm', async (req, res) => {
  * 존재하면 password_reset_tokens에 해시 저장 후 메일 발송(또는 DEV 모드로 콘솔 출력).
  * 존재하지 않아도 같은 응답으로 사용자 정보 노출 방지.
  * =======================================================*/
+// ✅ 존재하지 않으면 404 반환하도록 수정한 버전
 router.post('/email/request', requestLimiter, async (req, res) => {
   try {
     const { userType, id, bizRegNum, email } = req.body || {};
@@ -211,47 +212,50 @@ router.post('/email/request', requestLimiter, async (req, res) => {
       if (rows.length) { ut = 'gov'; uid = rows[0].id; }
     }
 
-    // 계정이 있으면 토큰 발급 + 메일 발송(or DEV 출력)
-    if (ut && uid) {
-      const raw = genTokenRawHex(32);
-      const tokenHash = sha256hex(raw);
-      await db.promise().query(
-        `INSERT INTO password_reset_tokens
-           (user_type, login_id, email_snapshot, token_hash, expires_at)
-         VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))`,
-        [ut, uid, email, tokenHash, EMAIL_TTL_MIN]
-      );
+    // ✅ 존재하지 않으면 바로 404
+    if (!ut || !uid) {
+      return res.status(404).json({ ok:false, msg:'회원 정보를 찾을 수 없습니다.' });
+    }
 
-      const resetUrl = `${process.env.APP_URL}/reset-password?uid=${encodeURIComponent(uid)}&ut=${ut}&token=${raw}`;
+    // 존재하면 토큰 발급 + 메일 발송(or DEV 출력)
+    const raw = genTokenRawHex(32);
+    const tokenHash = sha256hex(raw);
+    await db.promise().query(
+      `INSERT INTO password_reset_tokens
+         (user_type, login_id, email_snapshot, token_hash, expires_at)
+       VALUES (?, ?, ?, ?, DATE_ADD(NOW(), INTERVAL ? MINUTE))`,
+      [ut, uid, email, tokenHash, EMAIL_TTL_MIN]
+    );
 
-      if (DEV_DISABLE_SMTP) {
-        console.log('[DEV] reset link:', resetUrl);
-      } else {
-        try {
-          await transporter.sendMail({
-            from: `"HANS-ES" <${process.env.SMTP_USER}>`,
-            to: email,
-            subject: 'HANS-ES 비밀번호 재설정 안내',
-            html: `
-              <p>아래 버튼을 눌러 비밀번호를 재설정하세요. 링크는 ${EMAIL_TTL_MIN}분간 유효합니다.</p>
-              <p><a href="${resetUrl}" target="_blank" rel="noopener">비밀번호 재설정하기</a></p>
-              <p>본인이 요청하지 않았다면 이 메일을 무시하세요.</p>
-            `,
-          });
-        } catch (mailErr) {
-          console.error('[email/request] send error:', mailErr);
-          // 사용자에게는 동일한 응답(존재여부 숨김)
-        }
+    const resetUrl = `${process.env.APP_URL}/reset-password?uid=${encodeURIComponent(uid)}&ut=${ut}&token=${raw}`;
+
+    if (DEV_DISABLE_SMTP) {
+      console.log('[DEV] reset link:', resetUrl);
+    } else {
+      try {
+        await transporter.sendMail({
+          from: `"HANS-ES" <${process.env.SMTP_USER}>`,
+          to: email,
+          subject: 'HANS-ES 비밀번호 재설정 안내',
+          html: `
+            <p>아래 버튼을 눌러 비밀번호를 재설정하세요. 링크는 ${EMAIL_TTL_MIN}분간 유효합니다.</p>
+            <p><a href="${resetUrl}" target="_blank" rel="noopener">비밀번호 재설정하기</a></p>
+            <p>본인이 요청하지 않았다면 이 메일을 무시하세요.</p>
+          `,
+        });
+      } catch (mailErr) {
+        console.error('[email/request] send error:', mailErr);
+        return res.status(500).json({ ok:false, msg:'메일 전송 실패' });
       }
     }
 
-    // 존재 여부와 상관없이 동일 응답
-    return res.json({ ok:true, message:'메일이 발송되었습니다(존재 시).' });
+    return res.json({ ok:true, message:'비밀번호 재설정 메일을 전송했습니다.' });
   } catch (e) {
     console.error('[email/request] error:', e);
     return res.status(500).json({ ok:false, msg:'서버 오류' });
   }
 });
+
 
 /* =========================================================
  * 신규: 이메일 방식 ② — 토큰 유효성 검사

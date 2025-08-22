@@ -1,3 +1,4 @@
+// 이메일 링크 클릭 시 비밀번호 재설정 페이지 관련 jsx
 // PasswordResetConfirm.jsx  (새 파일)
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -5,7 +6,7 @@ import '../../CSS/Sub.css';
 import Header from '../../component/Header';
 import axios from 'axios';
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://192.168.111.194:3001';
 
 export default function PasswordResetConfirm() {
   const navigate = useNavigate();

@@ -2,13 +2,15 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import axios from 'axios';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper';
+import SwiperCore, { Autoplay, Pagination, Navigation } from 'swiper';
 import { useNavigate } from 'react-router-dom';
+  // V8에서는 swipercore.use 방식 사용
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
-import '../CSS/Slider.css';
+
+SwiperCore.use([Autoplay, Pagination, Navigation]);
 
 const USE_ABSOLUTE = false;
 
@@ -25,7 +27,7 @@ export default function Slider({ limit = 6 }) {
     (async () => {
       try {
         const url = USE_ABSOLUTE
-          ? `http://localhost:3001/api/notice/banner?limit=${Math.min(limit, 10)}`
+          ? `http://192.168.111.194:3001/api/notice/banner?limit=${Math.min(limit, 10)}`
           : `/api/notice/banner?limit=${Math.min(limit, 10)}`;
         const { data } = await axios.get(url);
         if (!alive) return;
@@ -47,7 +49,7 @@ export default function Slider({ limit = 6 }) {
 
   if (loading) {
     // 로딩 중에도 최소 높이를 유지하여 레이아웃 깨짐 방지
-    return <div className="mySwiper" style={{ minHeight: '450px' }} />;
+    return <div className="mySwiper"/>;
   }
 
   const renderSlides = slides.length
@@ -67,27 +69,39 @@ export default function Slider({ limit = 6 }) {
         slidesPerView={1}
         spaceBetween={30}
         loop={renderSlides.length > 1}
+        // 스와이퍼 자동넘김 기능
+         autoplay={{
+          delay: 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: false,
+        }}
         pagination={{ clickable: true }}
         navigation={{ prevEl: '.custom-swiper-button-prev', nextEl: '.custom-swiper-button-next' }}
         watchOverflow={false}
       >
         {renderSlides.map((n) => (
           <SwiperSlide key={n.NOTICE_ID}>
-            <div
-              className="notice-slide"
-              role="button"
-              onClick={() => n.NOTICE_ID !== 'empty' && goDetail(n.NOTICE_ID)}
-            >
+            <div className="notice-slide">
               <div className="notice-slide__combined" title={n?.TITLE || ''}>
                 <strong>{n?.TITLE || '제목 없음'}</strong>
               </div>
+
               {n.NOTICE_ID !== 'empty' && (
-                <div className="notice-slide__cta">바로가기 →</div>
+                <div
+                  className="notice-slide__cta"
+                  role="button"
+                  onClick={() => goDetail(n.NOTICE_ID)}
+                >
+                  바로가기 →
+                </div>
               )}
             </div>
+            
           </SwiperSlide>
         ))}
       </Swiper>
     </>
   );
 }
+
+// 2025-08-22 스와이퍼 자동넘김 기능 추가 ! 
