@@ -151,3 +151,5 @@ export default function PasswordResetRequest() {
     </>
   );
 }
+
+// 비번 재설정 방식 수정 
