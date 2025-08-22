@@ -73,7 +73,6 @@ const Inquiry = () => {
         <div className="cSearch">
           <span>Q</span>
           <input
-            className="faq-search-input"
             type="text"
             placeholder="무엇이든 찾아보세요"
             value={search}
@@ -100,6 +99,7 @@ const Inquiry = () => {
                 <span className={`sInquiry-State ${getStatus(q) === '답변완료' ? 'done' : 'doing'}`}>
                   {getStatus(q)}
                 </span>
+                  <span></span> {/*답변 완료에 cWrite span: last-child 적용 방지*/}
               </div>
             ))
           )}

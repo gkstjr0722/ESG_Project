@@ -123,7 +123,7 @@ export default function MapEVCharger() {
           className={selectedTab === 'ev' ? 'active' : ''}
           onClick={() => setSelectedTab('ev')}
         >
-          전기차
+          전기차 충전소
         </button>
         <button
           type="button"
