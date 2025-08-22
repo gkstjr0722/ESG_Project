@@ -1,5 +1,174 @@
+/* ==== 슬라이더 부분  ========================================== */
+/* ======== Slider (responsive & no bottom gap) ======== */
+body:has(.mSlider) {
+  background: #eef4ff;
+}
+
+.mSlider {
+  display: flex;                 /* 가로 배치 */
+  align-items: center;           /* 세로 가운데 정렬 */
+  justify-content: space-between;/* 좌우 공간 분배 */
+  box-sizing: border-box;
+}
+
+.mSlider img {
+  max-width: 20%;   /* 오른쪽 이미지가 차지하는 크기 */
+  height: auto;
+  object-fit: contain; /* 비율 유지하면서 영역 맞춤 */
+}
 
 
+/* 섹션을 화면 가로폭 100%로 풀어붙이고,
+   고정 비디오 섹션(--promo-h) 만큼의 높이는 항상 채우기 */
+.slider-section {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-bottom: 0;
+  padding: 0;
+  box-sizing: border-box;
+  position: relative; /* 버튼/도트 기준점 */
+
+  /* 화면 높이 - 고정 영상섹션 높이 만큼 확보 */
+  min-height: calc(90vh - var(--promo-h, 260px));
+  z-index: 1; /* 스택 기준만 잡아둠 */
+}
+
+/* Swiper 컨테이너: 섹션 높이를 100%로 전파.
+   도트는 별도로 위로 띄울 거라 내부 패딩은 0 */
+.mySwiper {
+  width: 100%;
+  height: 100%;              /* 섹션 min-height에 맞춰 늘어남 */
+  position: relative;
+  background: transparent;
+  padding-bottom: 0;
+  overflow: visible !important; /* 버튼/도트가 잘리지 않도록 */
+}
+
+/* 내부 요소들도 100% 높이 전파 */
+.mySwiper .swiper-wrapper,
+.mySwiper .swiper-slide {
+  height: 100%;
+}
+
+/* ===== 슬라이드 카드 ===== */
+.notice-slide {
+  /* background: #eef4ff; */
+
+  /* 너무 작을 땐 360px 보장 */
+  min-height: max(360px, calc(95vh - var(--promo-h, 260px) - 40px));
+
+  padding: 100px 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  box-sizing: border-box;
+
+  /* 한글 자간/줄바꿈 안정화 */
+  word-break: keep-all;
+  letter-spacing: normal;
+  font-kerning: normal;
+  text-rendering: optimizeLegibility;
+
+
+}
+
+
+/* 그라데이션???????????? */
+.notice-slide{
+  background-image: linear-gradient(
+    135deg,
+    rgba(48,112,216,0.00) 35%,
+    rgba(48,112,216,0.12) 60%,
+    rgba(48,112,216,0.22) 100%
+  );
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-position: right center;
+}
+
+/* 텍스트 블록 (제목+날짜) */
+.notice-slide__combined { max-width: 900px; line-height: 1.3; }
+.notice-slide__eyebrow { color: #5b7fff; font-weight: 700; margin-bottom: 8px; }
+.notice-slide__title,
+.notice-slide__combined strong {
+  display: block;
+  font-weight: 800;
+  color: #111;
+  margin: 8px 0 6px;
+  font-size: clamp(26px, 3.4vw, 44px);
+  letter-spacing: -0.2px;
+  font-size: 50px;
+}
+.notice-slide__cta { margin-top: 18px; font-weight: 600; color: #1f2937; cursor: pointer; font-size: 20px; }
+.notice-slide__cta:hover { text-decoration: none; }
+
+/* ===== 좌/우 네비게이션 버튼 ===== */
+.custom-swiper-button-prev,
+.custom-swiper-button-next {
+  position: absolute;
+  top: 45%;
+  transform: translateY(-50%);
+  width: 40px; height: 40px;
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 999px;
+  background: rgba(255,255,255,0.95);
+  color: #4b5563;
+  font-size: 20px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 3001; /* 비디오 섹션(1000)보다 확실히 위 */
+  user-select: none;
+}
+.custom-swiper-button-prev { left: 30px; }
+.custom-swiper-button-next { right: 30px; }
+.custom-swiper-button-prev:hover,
+.custom-swiper-button-next:hover { background: #ffffff; color: #111827; }
+
+/* ===== 기본 Swiper 도트: 카드 안 하단 "위"에 고정  =====
+   ※ 하단 고정 영상 섹션 높이만큼 위로 띄워서 겹침을 피함 */
+.mySwiper .swiper-pagination,
+.mySwiper .swiper-pagination-bullets {
+  position: absolute !important;
+
+  /* 비디오 섹션 높이만큼 위로 올림 */
+  bottom: 40px !important;
+
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  display: flex !important;
+  gap: 8px !important;
+  width: auto !important;
+  align-items: center !important;
+  justify-content: center !important;
+  pointer-events: auto !important;
+  z-index: 3001 !important;   /* 비디오 섹션보다 위 */
+  margin: 0 !important;
+}
+
+.mySwiper .swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  border-radius: 999px !important;
+  background: #d1d5db !important;
+  opacity: 1 !important;
+  margin: 0 !important;
+}
+.mySwiper .swiper-pagination-bullet-active {
+  background: #3070d8 !important;
+}
+
+/* ===== 반응형 ===== */
+@media (max-width: 1024px) {
+  .notice-slide { min-height: 340px; padding: 44px 36px; }
+}
+@media (max-width: 768px) {
+  .notice-slide { min-height: 300px; padding: 32px 24px; }
+  .custom-swiper-button-prev, .custom-swiper-button-next { display: none; }
+  .slider-section { padding: 0; }
+}
+/* =========================================================================================== */
 
 
 
@@ -357,15 +526,17 @@
   position: relative;
   bottom: auto; left: auto;
   width: 100%;
+  height: 262px;
   flex: 0 0 var(--promo-h);
-  height: var(--promo-h);
   background: linear-gradient(180deg, #376ec2 0%);
   display: flex; flex-wrap: wrap;
-  gap: 16px; justify-content: center; align-items: flex-start;
   box-sizing: border-box;
-  padding: 12px 24px;
+  padding: 12px 200px;
   z-index: auto;
+  justify-content: center;
+  align-items: center;
 }
+
 
 /* 필요시 반응형만 아래에 유지 */
 @media (max-width: 700px) {
@@ -381,7 +552,7 @@
   .video-grid { gap: 20px; }
   .video-card { width: 210px; }
   .video-thumbnail { height: 120px; }
-  .video-list-section-text { padding-left: 32px; line-height: 1.05; font-size: clamp(10px, 1.8vw, 15px); }
+  .video-list-section-text { line-height: 1.05; font-size: clamp(20px, 1.8vw, 15px); }
 }
 @media (max-width: 1280px) and (min-width: 900px) {
   .video-list-section { padding-top: 10px; }
@@ -393,9 +564,9 @@
 }
 
 
+
 .video-grid{
   display: flex;
-  gap: 25px;
   justify-content: flex-end;
   align-items: flex-start;
   flex-wrap: wrap;
@@ -438,3 +609,109 @@
 /* 혹시 가로 스크롤 생기면 방지 */
 html, body { overflow-x: hidden; }
 
+
+
+
+
+
+
+
+/* ====================== Responsive overrides (safe) ====================== */
+/* 컨테이너 좌우 패딩: 폭이 줄수록 자동 축소 (기존 200px을 덮어씀) */
+@media (max-width: 1600px) {
+  .video-list-section {
+    padding-left: 72px !important;
+    padding-right: 72px !important;
+  }
+}
+@media (max-width: 1366px) {
+  .video-list-section {
+    padding-left: 32px !important;
+    padding-right: 32px !important;
+  }
+}
+@media (max-width: 1024px) {
+  .video-list-section {
+    padding-left: 20px !important;
+    padding-right: 20px !important;
+  }
+}
+
+/* 카드 그리드를 화면폭에 맞춰 n등분 (고정 230px 무력화) */
+.video-grid {
+  gap: 16px;                 /* 열 사이 간격은 고정 */
+  justify-content: center;   /* 남는 공간이 있어도 가운데 정렬 */
+}
+.video-grid .video-card {
+  width: auto !important;    /* 기존 width:230px 덮어쓰기 */
+  box-sizing: border-box;
+  flex: 0 0 auto;            /* 아래 media에서 flex-basis 지정 */
+  max-width: none;           /* 최대폭 제한 해제 */
+}
+
+/* 1600px+ : 기존 레이아웃 유지(230px) — 별도 지정 불필요 */
+
+/* 1200px ~ 1599px : 5열 */
+@media (max-width: 1599px) and (min-width: 1200px) {
+  .video-grid .video-card {
+    flex-basis: calc((100% - 16px * 4) / 5) !important;  /* 5칸 + 4개 간격 */
+    max-width: calc((100% - 16px * 4) / 5) !important;
+  }
+}
+
+/* 1024px ~ 1199px : 4열 */
+@media (max-width: 1199px) and (min-width: 1024px) {
+  .video-grid .video-card {
+    flex-basis: calc((100% - 16px * 3) / 4) !important;
+    max-width:  calc((100% - 16px * 3) / 4) !important;
+  }
+}
+
+/* 768px ~ 1023px : 3열 */
+@media (max-width: 1023px) and (min-width: 768px) {
+  .video-grid .video-card {
+    flex-basis: calc((100% - 16px * 2) / 3) !important;
+    max-width:  calc((100% - 16px * 2) / 3) !important;
+  }
+}
+
+/* 480px ~ 767px : 2열 */
+@media (max-width: 767px) and (min-width: 480px) {
+  .video-grid .video-card {
+    flex-basis: calc((100% - 16px) / 2) !important;
+    max-width:  calc((100% - 16px) / 2) !important;
+  }
+}
+
+/* < 480px : 1열 */
+@media (max-width: 479px) {
+  .video-grid .video-card {
+    flex-basis: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* 썸네일 높이도 소형 화면에서 살짝 줄여 가독성 확보 (선택) */
+@media (max-width: 1023px) {
+  .video-thumbnail { height: 130px; }
+}
+@media (max-width: 767px) {
+  .video-thumbnail { height: 120px; }
+}
+@media (max-width: 479px) {
+  .video-thumbnail { height: 110px; }
+}
+
+/* ≥1600px 큰 화면에서는 카드 폭을 다시 고정값으로 맞춰 통일 */
+@media (min-width: 1600px) {
+  .video-grid {
+    gap: 20px;              /* 보기 좋은 간격 */
+    justify-content: center;/* 가운데 정렬(원하면 지워도 됨) */
+  }
+  .video-grid .video-card {
+    width: 230px !important;
+    flex: 0 0 230px !important;   /* flex-basis도 동일하게 고정 */
+    max-width: 230px !important;
+    box-sizing: border-box;
+  }
+}

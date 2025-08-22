@@ -37,14 +37,15 @@ function App() {
       <Header />
 
       {/* 공지 슬라이드 */}
-      <section className="notice-section">
+      <section className="mSlider">
         <Slider />
       </section>
 
       {/* 홍보영상 섹션 */}
       <section className="video-list-section">
-        <div className="video-list-section-text">
-        </div>
+        {/* <div className="video-list-section-text">
+          홍보영상
+        </div> */}
         <div className="video-grid">
           {videoData.map((video, idx) => (
             <a
