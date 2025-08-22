@@ -19,7 +19,7 @@ const InquiryEdit = () => {
   useEffect(() => {
     const fetchQuestion = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/inquiry/${qs_id}`);
+        const res = await axios.get(`http://192.168.111.194:3001/api/inquiry/${qs_id}`);
         if (res.data && res.data.question) {
           setForm({
             TITLE: res.data.question.TITLE,
@@ -60,7 +60,7 @@ const handleSubmit = async (e) => {
 
     // editor_id, editor_name 안 보냄!
     await axios.put(
-      `http://localhost:3001/api/inquiry/edit/${qs_id}`,
+      `http://192.168.111.194:3001/api/inquiry/edit/${qs_id}`,
       { ...form, UPDATE_DT }
     );
 

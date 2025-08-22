@@ -1,0 +1,24 @@
+# --- project01/docker-compose.yml ---
+services:
+  backend:
+    # ... 네가 쓰던 설정 유지 ...
+    environment:
+      - PORT=3001
+      - AI_BASE_URL=http://ai:8000   # <- 백엔드가 AI 서비스 부를 때 엘리어스로 접근
+    depends_on:
+      - ai
+
+  frontend:
+    # ... 네가 쓰던 설정 유지 ...
+
+  ai:
+    build:
+      context: ./AI
+      dockerfile: Dockerfile
+    container_name: ai
+    ports:
+      - "8000:8000"       # 외부에서 직접 테스트하고 싶다면 열어둠(내부 호출만 쓰면 지워도 됨)
+    volumes:
+      - ./AI/artifacts:/app/artifacts   # 모델 파일/캐시 보존
+      # - ./AI:/app:ro                 # 개발 중 코드 핫스왑 원하면 ro 빼고 사용
+    restart: unless-stopped
