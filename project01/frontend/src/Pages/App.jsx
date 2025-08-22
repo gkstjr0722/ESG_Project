@@ -33,20 +33,19 @@ const videoData = [
 
 function App() {
   return (
-    <div className="app-container">
+    <>
       <Header />
 
       {/* 공지 슬라이드 */}
-      <section className="notice-section">
+      <section className="mSlider">
         <Slider />
       </section>
 
       {/* 홍보영상 섹션 */}
       <section className="video-list-section">
-        <div className="video-list-section-text">
-          <h1>홍보영상</h1>
-          <h1>보러가기</h1>
-        </div>
+        {/* <div className="video-list-section-text">
+          홍보영상
+        </div> */}
         <div className="video-grid">
           {videoData.map((video, idx) => (
             <a
@@ -65,7 +64,7 @@ function App() {
           ))}
         </div>
       </section>
-    </div>
+    </>
   );
 }
 
