@@ -239,7 +239,7 @@ body:has(.cBox) {
   align-items: center; 
   font-size: 1.14rem; 
   padding: 17px 0 15px;
-  border-bottom: 1.2px solid #aaa; 
+  border-bottom: 1.2px solid #dbd9d9; 
   color: #222 !important;
   cursor: pointer; 
   transition: background .13s;
