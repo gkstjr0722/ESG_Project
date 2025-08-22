@@ -405,15 +405,14 @@ const Notice = () => {
 
   /* ───────── 목록 ───────── */
   return (
-    <div >
+    <>
       <br /><br />
-      <div className="faq-page-wrap">
-        <h1 className="faq-title">공지사항</h1>
+      <div className="cWriteContent">
+        <h1>공지사항</h1>
 
-        <div className="faq-search-row" style={{ alignItems: 'center', gap: 12 }}>
-          <span className="faq-search-icon">N</span>
+        <div className="cSearch">
+          <span>N</span>
           <input
-            className="faq-search-input"
             type="text"
             placeholder="공지사항을 검색해보세요"
             value={search}
@@ -421,8 +420,8 @@ const Notice = () => {
           />
           {isAdmin && (
             <button
-              className="notice-add-btn"
               type="button"
+              className="cBlueBtn"
               onClick={() => {
                 setMode('write');
                 setForm({ TITLE: '', CONTENT: '' });
@@ -437,32 +436,29 @@ const Notice = () => {
           )}
         </div>
 
-        <div className="faq-question-list">
+        <div className="cList">
           {loading ? (
-            <div className="faq-question-empty">불러오는 중...</div>
+            <div>불러오는 중...</div>
           ) : error ? (
-            <div className="faq-question-empty">{error}</div>
+            <div>{error}</div>
           ) : filteredNotices.length === 0 ? (
-            <div className="faq-question-empty">등록된 공지사항이 없습니다.</div>
+            <div>등록된 공지사항이 없습니다.</div>
           ) : (
             filteredNotices.map(n => (
               <div
                 key={n.NOTICE_ID}
-                className="faq-question-item"
+                className="cWrite"
                 onClick={() => handleNoticeClick(n)}
-                style={{ cursor: 'pointer' }}
               >
-                <span className="faq-q-icon">N</span>
+                <span>N</span>
                 {n.TITLE}
-                <span style={{ marginLeft: 10, color: '#aaa', fontSize: '0.96em' }}>
-                  {n.NOTICE_DT?.slice(0, 10)}
-                </span>
+                <span>{n.NOTICE_DT?.slice(0, 10)}</span>
               </div>
             ))
           )}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

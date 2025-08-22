@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import Header from "../component/Header";
+import '../CSS/Sub.css';
+import Header from '../component/Header';
+// Header나 CSS는 기존 것 그대로 사용하면 됩니다.
 
 const DEFAULT_CENTER = { lat: 35.1595, lng: 126.8526 }; // 광주광역시 중심 좌표
 const DEFAULT_LEVEL = 12; // 전국 스케일
@@ -153,6 +155,24 @@ export default function MapEVCharger() {
   return (
     <div>
       <Header />
+      {/* 상단 탭바 */}
+      <div className="cTab">
+        <button
+          type="button"
+          className={selectedTab === 'ev' ? 'active' : ''}
+          onClick={() => setSelectedTab('ev')}
+        >
+          전기차
+        </button>
+        <button
+          type="button"
+          className={selectedTab === 'elec' ? 'active' : ''}
+          onClick={() => setSelectedTab('elec')}
+        >
+          전기공사
+        </button>
+      </div>
+
       <div className="evmap-mainwrap">
         <div className="evmap-content">
           {loading ? (

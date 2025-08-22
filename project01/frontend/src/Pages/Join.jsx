@@ -1,6 +1,6 @@
-// frontend/src/Pages/Join.jsx
-import '../CSS/Main.css';
-// import '../CSS/Join.css';
+// 회원가입
+
+import '../CSS/Sub.css';
 import React, { useState } from 'react';
 import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';
@@ -50,7 +50,7 @@ function BusinessJoinForm({ goBack }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} encType="multipart/form-data">
+    <form onSubmit={handleSubmit} className="cContent" encType="multipart/form-data">
       <input type="text" name="corpName" placeholder="회사/기관명" value={formData.corpName} onChange={handleChange} required />
       <input type="text" name="corpRegNum" placeholder="사업자등록번호 (10자리)" maxLength={10} value={formData.corpRegNum} onChange={handleChange} required />
       <input type="text" name="ceo" placeholder="대표자명" value={formData.ceo} onChange={handleChange} required />
@@ -63,17 +63,23 @@ function BusinessJoinForm({ goBack }) {
       <input type="text" name="id" placeholder="아이디 (영문+숫자)" value={formData.id} onChange={handleChange} required />
       <input type="password" name="pw" placeholder="비밀번호" value={formData.pw} onChange={handleChange} required />
       <input type="password" name="pw2" placeholder="비밀번호 확인" value={formData.pw2} onChange={handleChange} required />
-      <div className="upload-section">
+      <div className="sJoin-section">
         <label>사업자등록증 첨부 (선택)</label>
         <input type="file" accept="image/*,.pdf" onChange={e => setBizCert(e.target.files[0])} />
       </div>
-      <div className="terms" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <label><input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} required />약관 동의</label>
-        <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
+      <div className="cCheck sJoin-Check">
+        <label>
+          <input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} required />
+          약관 동의
+        </label>
+        <label>
+          <input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />
+          개인정보처리방침 동의
+        </label>
       </div>
-      <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="button" onClick={goBack} className="join-back-btn">돌아가기</button>
-        <button type="submit" className="join-btn">회원가입 완료</button>
+      <div className="sJoin-Option">
+        <button type="button" onClick={goBack} className="cBlueBtn sJoin-Back">돌아가기</button>
+        <button type="submit" className="cBlueBtn sJoin-Ok">회원가입 완료</button>
       </div>
     </form>
   );
@@ -135,7 +141,7 @@ function GovernmentJoinForm({ goBack }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="cContent">
       <input type="text" name="corpName" placeholder="회사/기관명" value={formData.corpName} onChange={handleChange} required />
       <input type="text" name="ceo" placeholder="대표자명" value={formData.ceo} onChange={handleChange} required />
       <input type="text" name="dept" placeholder="부서/팀명 (선택)" value={formData.dept} onChange={handleChange} />
@@ -148,18 +154,20 @@ function GovernmentJoinForm({ goBack }) {
       <input type="password" name="pw" placeholder="비밀번호" value={formData.pw} onChange={handleChange} required />
       <input type="password" name="pw2" placeholder="비밀번호 확인" value={formData.pw2} onChange={handleChange} required />
 
-      <div className="terms" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-        <label><input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} required />약관 동의</label>
-        <label><input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />개인정보처리방침 동의</label>
+      <div className="cCheck sJoin-Check">
+        <label>
+          <input type="checkbox" checked={agreeTerms} onChange={e => setAgreeTerms(e.target.checked)} required />
+          약관 동의
+        </label>
+        <label>
+          <input type="checkbox" checked={agreePrivacy} onChange={e => setAgreePrivacy(e.target.checked)} required />
+          개인정보처리방침 동의
+        </label>
       </div>
 
-      <div style={{ display: 'flex', gap: '12px', marginTop: '20px' }}>
-        <button type="button" onClick={goBack} className="join-back">
-          돌아가기
-        </button>
-        <button type="submit" className="join-btn" disabled={loading}>
-          {loading ? '가입 중...' : '회원가입 완료'}
-        </button>
+      <div className="sJoin-Option">
+        <button type="button" onClick={goBack} className="cBlueBtn sJoin-Back">돌아가기</button>
+        <button type="submit" className="cBlueBtn sJoin-Ok" disabled={loading}>회원가입</button>
       </div>
     </form>
   );
@@ -169,33 +177,43 @@ const Join = () => {
   const navigate = useNavigate();
 
   return (
-    <div>
+    <>
       <Header />
-      <div className="common-bg">
-        <div className="common-box join-corp-box" style={{ maxWidth: '600px', margin: 'auto' }}>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <>
-                  <a className="common-btn back-btn" onClick={() => navigate('/login')}>
-                    ← 돌아가기
-                  </a>
-                  <br />
-                  <h2>회원가입</h2>
-                  <div>
-                    <Link to="business" className="common-btn main-btn-01">기업</Link>
-                    <Link to="government" className="common-btn main-btn-01">관공업</Link>
-                  </div>
-                </>
-              }
-            />
-            <Route path="business" element={<><h2>공공기관·기업 회원가입</h2><BusinessJoinForm goBack={() => navigate('/join')} /></>} />
-            <Route path="government" element={<><h2>관공업 회원가입</h2><GovernmentJoinForm goBack={() => navigate('/join')} /></>} />
-          </Routes>
-        </div>
+      <div className="cBox">
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <>
+                <a className="cBack" onClick={() => navigate('/login')}>
+                  ← 돌아가기
+                </a>
+                <br />
+                <h2>회원가입</h2>
+                <div className="sJoin-Box">
+                  <button
+                    type="button"
+                    className="cBlueBtn sJoin-Btn"
+                    onClick={() => navigate("business")}
+                  >
+                    기업
+                  </button>
+                  <button
+                    type="button"
+                    className="cBlueBtn sJoin-Btn"
+                    onClick={() => navigate("government")}
+                  >
+                    관공업
+                  </button>
+                </div>
+              </>
+            }
+          />
+          <Route path="business" element={<><h2>공공기관·기업 회원가입</h2><BusinessJoinForm goBack={() => navigate('/join')} /></>} />
+          <Route path="government" element={<><h2>관공업 회원가입</h2><GovernmentJoinForm goBack={() => navigate('/join')} /></>} />
+        </Routes>
       </div>
-    </div>
+    </>
   );
 };
 
