@@ -644,6 +644,9 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+.btn-FEnd{
+  justify-content: flex-end;
+}
 
 .edit-input-box{
   height: 4.625rem;

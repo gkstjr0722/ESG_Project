@@ -436,7 +436,7 @@ const Mypage = () => {
           </div>
         </div>
 
-        <div className="mypage-btn-wrap">
+        <div className="mypage-btn-wrap btn-FEnd">
           <button className="mypage-btn-primary" onClick={() => setEditMode(true)}>정보 수정</button>
         </div>
       </div>
