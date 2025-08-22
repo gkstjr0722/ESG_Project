@@ -39,29 +39,18 @@ const FAQ = () => {
 
   const location = useLocation();
   const pathname = location?.pathname || '/';
-  const isNoticePath = pathname === '/notice' || pathname.startsWith('/notice/');
-  const aboutToRedirect = pathname === '/support' && !location.state?.fromTab;
-  const isNoticeActive = isNoticePath || aboutToRedirect;
+  const isNoticeActive  = pathname.startsWith('/notice');
+  const isInquiryActive = pathname.startsWith('/inquiry');
+  const isFAQActive     = pathname.startsWith('/faq');
 
   return (
     <>
       <Header />
 
       <div className="cTab">
-        <button
-          type="button"
-          className={isNoticeActive ? 'active' : ''}
-          onClick={() => navigate('/notice')}
-        >
-          공지사항
-        </button>
-        <button
-          type="button"
-          className={!isNoticeActive ? 'active' : ''}
-          onClick={() => navigate('/support', { state: { fromTab: true } })}
-        >
-          고객문의
-        </button>
+        <button type="button" className={isNoticeActive ? 'active' : ''}  onClick={() => navigate('/notice')}>공지사항</button>
+        <button type="button" className={isInquiryActive ? 'active' : ''} onClick={() => navigate('/inquiry')}>고객문의</button>
+        <button type="button" className={isFAQActive ? 'active' : ''}     onClick={() => navigate('/faq')}>자주 묻는 질문</button>
       </div>
 
       <br /><br />
