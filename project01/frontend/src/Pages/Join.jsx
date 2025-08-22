@@ -6,7 +6,7 @@ import { useNavigate, Routes, Route, Link } from 'react-router-dom';
 import axios from 'axios';
 import Header from '../component/Header';
 
-const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://192.168.111.194:3001';
 
 // 기업용 회원가입 페이지
 function BusinessJoinForm({ goBack }) {

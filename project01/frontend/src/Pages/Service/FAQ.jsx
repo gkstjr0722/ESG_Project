@@ -17,7 +17,7 @@ const FAQ = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await axios.get('http://localhost:3001/api/inquiry/faq/top');
+        const res = await axios.get('http://192.168.111.194:3001/api/inquiry/faq/top');
         setQuestions(Array.isArray(res.data) ? res.data : []);
       } catch (err) {
         setError('FAQ 목록을 불러오지 못했습니다.');

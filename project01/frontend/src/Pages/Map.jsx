@@ -1,31 +1,34 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import Header from '../component/Header';
-// Header나 CSS는 기존 것 그대로 사용하면 됩니다.
+import Header from "../component/Header";
 
-const DEFAULT_CENTER = { lat: 35.1595454, lng: 126.8526012 }; // 초기: 광주
+const DEFAULT_CENTER = { lat: 35.1595, lng: 126.8526 }; // 광주광역시 중심 좌표
+const DEFAULT_LEVEL = 12; // 전국 스케일
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
   const [stations, setStations] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('ev'); // 'ev' = 전기차, 'elec' = 전기공사
 
-  // 1) 데이터 가져오기 (addr를 프론트에서 바꾸고 싶으면 params로 전달)
+  // kakao 객체, map, clusterer, infowindow를 ref로 보관
+  const kakaoRef = useRef(null);
+  const mapRef = useRef(null);
+  const clustererRef = useRef(null);
+  const infoRef = useRef(null);
+
+  // 1) 데이터 로드 (전국)
   useEffect(() => {
     let alive = true;
 
     async function fetchData() {
       setLoading(true);
       try {
+        // 전국 단위 예시: addr를 비우고 limit를 크게 요청 (백엔드 수정 필요, 아래 3) 참고)
         const { data } = await axios.get(
-          "http://localhost:3001/api/proxy/manage",
-          {
-            // params: { addr: "광주광역시 북구" }, // 필요시 주석 해제해서 지역 바꿔도 됨
-          }
+          "http://192.168.111.194:3001/api/proxy/manage",
+          { params: { limit: 5000 } } // 추정 파라미터
         );
         if (!alive) return;
 
-        // lat/longi 문자열 → 숫자 변환 & 유효한 좌표만
         const parsed = (Array.isArray(data) ? data : [])
           .map(d => ({
             ...d,
@@ -42,14 +45,14 @@ export default function MapEVCharger() {
       }
     }
 
-    // 카카오 SDK 준비 대기 후 호출
+    // kakao SDK 준비 후 실행
     const waitKakao = () => {
       if (window.kakao?.maps?.load) {
         window.kakao.maps.load(fetchData);
       } else if (window.kakao?.maps) {
         fetchData();
       } else {
-        setTimeout(waitKakao, 120);
+        setTimeout(waitKakao, 100);
       }
     };
     waitKakao();
@@ -57,34 +60,69 @@ export default function MapEVCharger() {
     return () => { alive = false; };
   }, []);
 
-  // 2) 지도 + 마커 렌더
+  // 2) 지도/클러스터러 초기화 (최초 1회)
   useEffect(() => {
     if (loading) return;
+
     const container = document.getElementById("ev-map");
     if (!container) return;
 
-    // 지도 초기화는 항상 load 안에서!
-    const draw = () => {
-      container.innerHTML = "";
-      const maps = window.kakao.maps;
+    const init = () => {
+      const { maps } = window.kakao;
+      kakaoRef.current = window.kakao;
 
-      const center = stations.length
-        ? { lat: stations[0].lat, lng: stations[0].lng }
-        : DEFAULT_CENTER;
-
-      const map = new maps.Map(container, {
-        center: new maps.LatLng(center.lat, center.lng),
-        level: 6,
+      // 지도 생성(전국 뷰)
+      mapRef.current = new maps.Map(container, {
+        center: new maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
+        level: DEFAULT_LEVEL,
       });
 
-      stations.forEach(st => {
-        const marker = new maps.Marker({
-          map,
-          position: new maps.LatLng(st.lat, st.lng),
-          title: st.cpNm || st.csNm || "충전소",
-        });
+      // 클러스터러 생성
+      clustererRef.current = new maps.MarkerClusterer({
+        map: mapRef.current,
+        averageCenter: true,
+        minLevel: 7,        // 레벨이 7 이하로 축소될 때만 클러스터링 해제
+        gridSize: 80,       // 클러스터 간격 픽셀(원하는 밀도로 조정)
+        disableClickZoom: false,
+      });
 
-        const infoHtml = `
+      // 공용 InfoWindow
+      infoRef.current = new maps.InfoWindow({ removable: true });
+    };
+
+    if (!mapRef.current) {
+      if (window.kakao?.maps?.load) {
+        window.kakao.maps.load(init);
+      } else if (window.kakao?.maps) {
+        init();
+      }
+    }
+  }, [loading]);
+
+  // 3) 마커 생성/클러스터러에 추가 (stations 변경 시)
+  useEffect(() => {
+    if (!stations.length) return;
+    const kakao = kakaoRef.current;
+    const map = mapRef.current;
+    const clusterer = clustererRef.current;
+    const info = infoRef.current;
+    if (!kakao || !map || !clusterer || !info) return;
+
+    const { maps } = kakao;
+
+    // 기존 마커/클러스터 초기화
+    clusterer.clear(); // addMarkers로 추가했던 마커 전체 제거
+
+    // 새 마커 생성
+    const markers = stations.map(st => {
+      const marker = new maps.Marker({
+        position: new maps.LatLng(st.lat, st.lng),
+        title: st.cpNm || st.csNm || "충전소",
+      });
+
+      // 클릭 시 공용 InfoWindow 오픈
+      maps.event.addListener(marker, "click", () => {
+        const html = `
           <div class="evmap-popup">
             <b>${st.cpNm || st.csNm || "충전소"}</b><br/>
             <span>${st.addr || ""}</span><br/>
@@ -92,55 +130,38 @@ export default function MapEVCharger() {
             <span>상태:${st.cpStat ?? "-"}</span>
           </div>
         `;
-        const infowindow = new maps.InfoWindow({ content: infoHtml, removable: true });
-        maps.event.addListener(marker, "click", () => infowindow.open(map, marker));
+        info.setContent(html);
+        info.open(map, marker);
       });
-    };
 
-    if (window.kakao?.maps?.load) {
-      window.kakao.maps.load(draw);
-    } else if (window.kakao?.maps) {
-      draw();
-    } else {
-      // 매우 드문 경우 대비
-      const t = setTimeout(() => window.kakao?.maps && draw(), 150);
-      return () => clearTimeout(t);
+      return marker;
+    });
+
+    // 클러스터러에 마커 추가
+    clusterer.addMarkers(markers);
+
+    // 화면에 모든 마커가 보이도록 bounds 맞춤
+    const bounds = new maps.LatLngBounds();
+    for (const st of stations) {
+      bounds.extend(new maps.LatLng(st.lat, st.lng));
     }
-  }, [loading, stations]);
+    map.setBounds(bounds);
 
-  
+    // cleanup은 필요 시(다음 렌더 직전) clusterer.clear로 충분
+  }, [stations]);
 
-
-  //==================css 수정=================================================================
   return (
     <div>
       <Header />
-      {/* 상단 탭바 */}
-<div className="support-banner-tabbar">
-  <button
-    type="button"
-    className={`support-banner-tab${selectedTab === 'ev' ? ' active' : ''}`}
-    onClick={() => setSelectedTab('ev')}
-  >
-    전기차
-  </button>
-  <button
-    type="button"
-    className={`support-banner-tab${selectedTab === 'elec' ? ' active' : ''}`}
-    onClick={() => setSelectedTab('elec')}
-  >
-    전기공사
-  </button>
-</div>
       <div className="evmap-mainwrap">
         <div className="evmap-content">
           {loading ? (
-            <div className="evmap-loading">맵 및 데이터 불러오는 중...</div>
+            <div className="evmap-loading">전국 충전소 불러오는 중...</div>
           ) : (
-            <div id="ev-map" className="evmap-map"></div>
+            <div id="ev-map" className="evmap-map" style={{ width: "100%", height: "80vh" }} />
           )}
         </div>
       </div>
-    </div>  
+    </div>
   );
-};
+}

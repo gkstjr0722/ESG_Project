@@ -28,7 +28,7 @@ const Notice = () => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await axios.get('http://localhost:3001/api/notice/list');
+      const { data } = await axios.get('http://192.168.111.194:3001/api/notice/list');
       setNotices(data.notices || []);
     } catch (e) {
       setError('공지사항 목록을 불러오지 못했습니다.');
@@ -41,7 +41,7 @@ const Notice = () => {
     setLoading(true);
     setError('');
     try {
-      const { data } = await axios.get(`http://localhost:3001/api/notice/${noticeId}`);
+      const { data } = await axios.get(`http://192.168.111.194:3001/api/notice/${noticeId}`);
       if (data?.notice) {
         setSelectedNotice(data.notice);
         setForm({ TITLE: data.notice.TITLE, CONTENT: data.notice.CONTENT });
@@ -106,7 +106,7 @@ const Notice = () => {
     if (file) data.append('file', file);
 
     try {
-      await axios.post('http://localhost:3001/api/notice/add', data, {
+      await axios.post('http://192.168.111.194:3001/api/notice/add', data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('공지사항이 등록되었습니다!');
@@ -138,7 +138,7 @@ const Notice = () => {
     if (file) data.append('file', file);
 
     try {
-      await axios.put(`http://localhost:3001/api/notice/${selectedNotice.NOTICE_ID}`, data, {
+      await axios.put(`http://192.168.111.194:3001/api/notice/${selectedNotice.NOTICE_ID}`, data, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('수정되었습니다.');
@@ -157,7 +157,7 @@ const Notice = () => {
     if (!window.confirm('정말 삭제하시겠습니까? 삭제 후 복구할 수 없습니다.')) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/notice/${selectedNotice.NOTICE_ID}`, {
+      await axios.delete(`http://192.168.111.194:3001/api/notice/${selectedNotice.NOTICE_ID}`, {
         data: {
           EDITOR_ID: userId || govId,              // 서버에서 'admin' 체크
           EDITOR_NAME: userName || '관리자'
@@ -259,7 +259,7 @@ const Notice = () => {
     if (selectedNotice.FILE_PATH) {
       fileUrl = selectedNotice.FILE_PATH.startsWith('http')
         ? selectedNotice.FILE_PATH
-        : `http://localhost:3001${selectedNotice.FILE_PATH}`;
+        : `http://192.168.111.194:3001${selectedNotice.FILE_PATH}`;
     }
     const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
 
