@@ -241,11 +241,11 @@ const Notice = () => {
             )}
           </div>
           <div className="common-btn-flexend common-btn-gap">
-            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
-              {loading ? '처리 중...' : '등록'}
-            </button>
             <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
+            </button>
+            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
+              {loading ? '처리 중...' : '등록'}
             </button>
           </div>
         </form>
