@@ -167,7 +167,7 @@ router.post('/reset/confirm', async (req, res) => {
 });
 
 /* =========================================================
- * 신규: 이메일 방식 ① — 메일 요청
+ * 비밀번호 변경 이메일 방식 ① — 메일 요청
  * POST /email/request  
  * body (프론트 규격과 일치):
  *   - corp: { userType:'corp', id, bizRegNum, email }
@@ -176,7 +176,7 @@ router.post('/reset/confirm', async (req, res) => {
  * 존재하면 password_reset_tokens에 해시 저장 후 메일 발송(또는 DEV 모드로 콘솔 출력).
  * 존재하지 않아도 같은 응답으로 사용자 정보 노출 방지.
  * =======================================================*/
-// ✅ 존재하지 않으면 404 반환하도록 수정한 버전
+// ✅ 아이디 존재하지 않으면 404 반환하도록 수정
 router.post('/email/request', requestLimiter, async (req, res) => {
   try {
     const { userType, id, bizRegNum, email } = req.body || {};
@@ -258,7 +258,7 @@ router.post('/email/request', requestLimiter, async (req, res) => {
 
 
 /* =========================================================
- * 신규: 이메일 방식 ② — 토큰 유효성 검사
+ * 비밀번호 변경 이메일 방식 ② — 토큰 유효성 검사
  * GET /email/verify?uid=&ut=&token=
  * =======================================================*/
 router.get('/email/verify', async (req, res) => {
@@ -281,7 +281,7 @@ router.get('/email/verify', async (req, res) => {
 });
 
 /* =========================================================
- * 신규: 이메일 방식 ③ — 비밀번호 변경 (트랜잭션 없이 견고하게)
+ * 비밀번호 변경 이메일 방식 ③ — 비밀번호 변경 
  * POST /email/confirm  body: { uid, ut, token, newPw }
  * 1) 유효 토큰을 조건부로 used=1로 소진 (동시성 안전)
  * 2) 성공 시 비밀번호 업데이트
