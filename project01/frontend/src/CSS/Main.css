@@ -1,717 +1,351 @@
-/* ==== 슬라이더 부분  ========================================== */
-/* ======== Slider (responsive & no bottom gap) ======== */
-body:has(.mSlider) {
-  background: #eef4ff;
-}
-
-.mSlider {
-  display: flex;                 /* 가로 배치 */
-  align-items: center;           /* 세로 가운데 정렬 */
-  justify-content: space-between;/* 좌우 공간 분배 */
-  box-sizing: border-box;
-}
-
-.mSlider img {
-  max-width: 20%;   /* 오른쪽 이미지가 차지하는 크기 */
-  height: auto;
-  object-fit: contain; /* 비율 유지하면서 영역 맞춤 */
-}
-
-
-/* 섹션을 화면 가로폭 100%로 풀어붙이고,
-   고정 비디오 섹션(--promo-h) 만큼의 높이는 항상 채우기 */
-.slider-section {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
-  margin-bottom: 0;
-  padding: 0;
-  box-sizing: border-box;
-  position: relative; /* 버튼/도트 기준점 */
-
-  /* 화면 높이 - 고정 영상섹션 높이 만큼 확보 */
-  min-height: calc(90vh - var(--promo-h, 260px));
-  z-index: 1; /* 스택 기준만 잡아둠 */
-}
-
-/* Swiper 컨테이너: 섹션 높이를 100%로 전파.
-   도트는 별도로 위로 띄울 거라 내부 패딩은 0 */
-.mySwiper {
-  width: 100%;
-  height: 100%;              /* 섹션 min-height에 맞춰 늘어남 */
-  position: relative;
-  background: transparent;
-  padding-bottom: 0;
-  overflow: visible !important; /* 버튼/도트가 잘리지 않도록 */
-}
-
-/* 내부 요소들도 100% 높이 전파 */
-.mySwiper .swiper-wrapper,
-.mySwiper .swiper-slide {
-  height: 100%;
-}
-
-/* ===== 슬라이드 카드 ===== */
-.notice-slide {
-  /* background: #eef4ff; */
-
-  /* 너무 작을 땐 360px 보장 */
-  min-height: max(360px, calc(95vh - var(--promo-h, 260px) - 40px));
-
-  padding: 100px 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  box-sizing: border-box;
-
-  /* 한글 자간/줄바꿈 안정화 */
-  word-break: keep-all;
-  letter-spacing: normal;
-  font-kerning: normal;
-  text-rendering: optimizeLegibility;
-
-
-}
-
-
-/* 그라데이션???????????? */
-.notice-slide{
-  background-image: linear-gradient(
-    135deg,
-    rgba(48,112,216,0.00) 35%,
-    rgba(48,112,216,0.12) 60%,
-    rgba(48,112,216,0.22) 100%
-  );
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-position: right center;
-}
-
-/* 텍스트 블록 (제목+날짜) */
-.notice-slide__combined { max-width: 900px; line-height: 1.3; }
-.notice-slide__eyebrow { color: #5b7fff; font-weight: 700; margin-bottom: 8px; }
-.notice-slide__title,
-.notice-slide__combined strong {
-  display: block;
-  font-weight: 800;
-  color: #111;
-  margin: 8px 0 6px;
-  font-size: clamp(26px, 3.4vw, 44px);
-  letter-spacing: -0.2px;
-  font-size: 50px;
-}
-.notice-slide__cta { margin-top: 18px; font-weight: 600; color: #1f2937; cursor: pointer; font-size: 20px; }
-.notice-slide__cta:hover { text-decoration: none; }
-
-/* ===== 좌/우 네비게이션 버튼 ===== */
-.custom-swiper-button-prev,
-.custom-swiper-button-next {
-  position: absolute;
-  top: 45%;
-  transform: translateY(-50%);
-  width: 40px; height: 40px;
-  border: 1px solid rgba(0,0,0,0.08);
-  border-radius: 999px;
-  background: rgba(255,255,255,0.95);
-  color: #4b5563;
-  font-size: 20px;
-  font-weight: 700;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-  display: flex; align-items: center; justify-content: center;
-  z-index: 3001; /* 비디오 섹션(1000)보다 확실히 위 */
-  user-select: none;
-}
-.custom-swiper-button-prev { left: 30px; }
-.custom-swiper-button-next { right: 30px; }
-.custom-swiper-button-prev:hover,
-.custom-swiper-button-next:hover { background: #ffffff; color: #111827; }
-
-/* ===== 기본 Swiper 도트: 카드 안 하단 "위"에 고정  =====
-   ※ 하단 고정 영상 섹션 높이만큼 위로 띄워서 겹침을 피함 */
-.mySwiper .swiper-pagination,
-.mySwiper .swiper-pagination-bullets {
-  position: absolute !important;
-
-  /* 비디오 섹션 높이만큼 위로 올림 */
-  bottom: 40px !important;
-
-  left: 50% !important;
-  transform: translateX(-50%) !important;
-  display: flex !important;
-  gap: 8px !important;
-  width: auto !important;
-  align-items: center !important;
-  justify-content: center !important;
-  pointer-events: auto !important;
-  z-index: 3001 !important;   /* 비디오 섹션보다 위 */
-  margin: 0 !important;
-}
-
-.mySwiper .swiper-pagination-bullet {
-  width: 8px !important;
-  height: 8px !important;
-  border-radius: 999px !important;
-  background: #d1d5db !important;
-  opacity: 1 !important;
-  margin: 0 !important;
-}
-.mySwiper .swiper-pagination-bullet-active {
-  background: #3070d8 !important;
-}
-
-/* ===== 반응형 ===== */
-@media (max-width: 1024px) {
-  .notice-slide { min-height: 340px; padding: 44px 36px; }
-}
-@media (max-width: 768px) {
-  .notice-slide { min-height: 300px; padding: 32px 24px; }
-  .custom-swiper-button-prev, .custom-swiper-button-next { display: none; }
-  .slider-section { padding: 0; }
-}
-/* =========================================================================================== */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ======================= main.css ======================= */
-/*  메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
-
-/* 메인페이지 (Main.css) */
-:root{
-  /* 홍보영상 고정영역 높이: 화면/디자인에 맞게 조절해도 됨 */
-  --promo-h: clamp(220px, 24vh, 300px);
-}
-
-.app-container {
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
-  /* 고정 비디오 섹션만큼 바닥 여유(가려짐 방지) */
-  padding-bottom: var(--promo-h);
-}
-
-/* (슬라이더 스타일은 Slider.css에서 관리) */
-
-.banner-button {
-  position: absolute;
-  top: 38%;
-  left: 11%;
-  padding: 16px 32px;
-  font-size: 20px;
-  border-radius: 15px;
-  background-color: white;
-  color: #1d5fc4;
-  border: 2px solid #1d5fc4;
-  box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-}
-.banner-button:hover {
-  background-color: #1d5fc4;
-  color: white;
-  border-color: #1d5fc4;
-}
-
-/* 마우스 오버 시 약간 커짐 */
-.video-card:hover { transform: translateY(-5px) scale(1.03); }
-.video-thumbnail {
-  width: 100%;
-  height: 140px;        /* 비율 맞추려면 고정 높이 */
-  object-fit: cover;    /* or contain */
-  background: #fff;     /* ★ 여기서도 하얀 배경 */
-}
-.video-info { padding: 10px 10px 8px 10px; }
-.video-title { font-weight: bold; font-size: 15px; }
-.video-channel { font-size: 11px; color: #6d6d6d; }
-
-/* 슬라이더 (Slider.css) 새로 만든 뒤 추가 예정*/
-
-/* ======================= main.css ======================= */
-/*  메인페이지, 슬라이더, 로그인, 회원가입 순 CSS */
-
-/* 메인페이지 (Main.css) */
-
-/* (슬라이더 스타일은 Slider.css에서 관리) */
-
-/* Login.css */
-.login-corp-box {
-  min-width: 200px;
-  max-width: 450px;
-  text-align: center;
-}
-.login-corp-box h2 {
-  color: #0c355c;
-  margin-bottom: 32px;
-  font-size: 1.6rem;
-}
-.login-corp-box input[type="text"],
-.login-corp-box input[type="password"] {
-  width: 90%;
-  padding: 13px 14px;
-  margin-bottom: 18px;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #dde1ea;
-  background: #f7f9fc;
-  outline: none;
-  transition: border 0.2s;
-}
-.login-corp-box input:focus { border: 1.5px solid #3ba2f3; }
-.main-btn1 {
-  width: 100%;
-  padding: 14px 0;
-  font-weight: 700;
-  margin-top: 10px;
-  margin-bottom: 5px;
-}
-.main-btn-01 {
-  font-size: 20px;
-  margin: 0 10px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 190px;
-  height: 200px;
-  box-sizing: border-box;
-}
-.login-error { color: #dc143c; margin-bottom: 12px; font-size: 0.98rem; }
-.login-link-area { margin-top: 14px; color: #555; font-size: 0.96rem; }
-.login-link-area .divider { margin: 0 10px; color: #bbb; }
-.login-link-area .join-link {
-  color: #0077cb;
-  text-decoration: underline;
-  font-weight: 600;
-  cursor: pointer;
-}
-.login-link-area .join-link:hover { color: #085cab; }
-.pw-find-link { color: gray; font-weight: 550; }
-.pw-find-link:hover { color: rgb(104, 104, 104); }
-.login-switch-btn-area { display: flex; justify-content: center; gap: 18px; margin-bottom: 8px; }
-.login-switch-btn {
-  padding: 7px 22px;
-  font-size: 16px;
-  border: 1px solid #ddd;
-  background: #f8f8f8;
-  transition: background 0.2s, color 0.2s, border 0.2s;
-  border-radius: 8px;
-  width: 150px;
-}
-.login-switch-btn.active,
-.login-switch-btn:hover {
-  background: #3c79d5;
-  color: #fff;
-  border: 1.5px solid #3c79d5;
-  border-radius: 8px;
-  width: 150px;
-}
-
-/* Join.css */
-.join-corp-box {
-  min-width: 320px;
-  max-width: 520px;
-  box-sizing: border-box;
-  text-align: center;
-  transform: translateY(-30px);
-}
-.join-corp-box h2 { text-align: center; color: #0c355c; margin-bottom: 24px; }
-.join-corp-box form { display: flex; flex-direction: column; gap: 13px; }
-.join-corp-box input[type="text"],
-.join-corp-box input[type="password"],
-.join-corp-box input[type="email"],
-.join-corp-box input[type="tel"] {
-  padding: 11px 14px;
-  font-size: 16px;
-  border: 1.5px solid #e1e4e8;
-  border-radius: 8px;
-  transition: border 0.2s;
-}
-.join-corp-box input:focus { border: 1.5px solid #0098d8; outline: none; }
-.upload-section { font-size: 14px; color: #888; margin-bottom: 8px; text-align: left; }
-.terms {
-  font-size: 15px;
-  margin: 10px 0 4px 0;
-  color: #666;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  text-align: left;
-}
-.join-btn {
-  background: #3c79d5;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 17px;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s;
-  height: 50px;
-  width: 50%;
-}
-.join-btn:hover { background-color: #2d69c4; }
-.join-back-btn {
-  background: #9a9ea3;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 17px;
-  text-align: center;
-  text-decoration: none;
-  transition: background 0.2s;
-  width: 50%;
-}
-.join-back-btn:hover {
-  background-color: #767c83;
-}
-
-
-
-
-
-
-
-
-
-
-/* 메인 공지 캐러셀 */
-.notice-hero {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  /* background: #f4f8ff; */
-  border-radius: 16px;
-  padding: 40px 60px;
-  min-height: 300px;
-  overflow: hidden;
-  /* margin-bottom: 8px; */
-  flex-wrap: wrap;
-}
-.slider-img01 {
-  background-image: url('../assets/slider01.png');
-  background-size: cover;
-  background-position: center;
-  height: 400px;
-}
-
-.notice-hero__content { 
-  max-width: 980px; 
-  text-align: left; 
-  cursor: pointer; 
-  flex-basis: 100%;
-  flex: 0 0 100%;
-}
-.text-group{
-
-  display: flex;
-  gap: 35px;
-  margin-left: 180px;
-  flex-direction: column;     /* ← 위아래로 정렬 고정 */
-
-}
-.notice-hero__title {
-  font-size: 50px; 
-  font-weight: 900; 
-  line-height: 1.1; 
-  flex: 0 0 100%;
-}
-.notice-hero__cta  {
-  margin-top: 0px;
-  font-size: 22px;
-  display: inline-flex;
-  /* gap: 6px; */
-  align-items: center;
-  
-}
-.notice-hero__nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  border: none;
-  background: rgba(0,0,0,.05);
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  font-size: 40px;
-  cursor: pointer;
-}
-.notice-hero__nav:hover { background: rgba(0,0,0,.12); }
-.notice-hero__nav.prev { left: 50px; }
-.notice-hero__nav.next { right: 50px; }
-
-/* 인디케이터 */
-.notice-hero__dots {
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-  right: 0;
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-}
-.notice-hero__dots .dot {
-  width: 5px; height: 10px; border-radius: 50%; border: none;
-  background: #cfd6e4; cursor: pointer;
-  transition: transform .18s ease, background-color .18s ease, opacity .18s ease;
-  opacity: .95;
-}
-.notice-hero__dots .dot.active { background: #548bdf; transform: scale(1.4); opacity: 1; }
-
-/* 레이아웃 기본 */
-/* body{
-  box-sizing: border-box; margin: 0; padding: 0;
-  font-family: 'Malgun Gothic','맑은 고딕','돋움',Arial,sans-serif;
-  background: #f4f4f4; min-height: 100vh; display: flex; flex-direction: column;
-  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
-} */
-.notice-section { flex: 0 0 auto; display: flex; }
-
-/* 🔧 공지 배너가 화면 가로를 항상 꽉 채우도록 강제 */
-.notice-section,
-.notice-hero {
-  width: 100% !important;
-  max-width: none !important;
-  margin: 0 !important;
-}
-
-.banner-button { display: none !important; }
-
-/* (슬라이더 관련 기본값/도트/오버라이드 등은 Slider.css로 이관함) */
-
-/* === 홍보 영상 박스 ============================================== */
-:root{
-  --header-h: 85px;   /* .navbar 높이와 동일 */
-  --promo-h: 260px;   /* 하단 홍보영상 높이 */
-}
-
-/* 앱 래퍼: 고정 하단만큼 바닥 여백 확보(겹침 방지) */
-.app-container{
+/* ==== 메인 컨테이너: 메인만 스크롤 차단 =============================== */
+.mMain {
   height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
-/* 공지(슬라이더) 섹션: 전역 section 규칙보다 구체적으로 지정 */
-.app-container > .notice-section{
-  width: 100%;
-  max-width: none;
-  margin: 0;
-  display: flex;
-  align-items: stretch;
-  flex: 0 0 auto;  /* 전역 flex:1 1 auto 같은 규칙을 이김(선택자 구체성+순서) */
-  min-height: calc(100vh - var(--header-h) - var(--promo-h));
-  padding-bottom: 0;
+:root {
+  --video-h: clamp(140px, 18vw, 200px);
+  --video-pad-top: 80px;
+  --video-pad-bot: 40px;
 }
 
-/* 슬라이더 컨테이너가 섹션 높이를 꽉 채우도록 */
-.app-container > .notice-section .mySwiper{
-  height: 100%;
-}
+/* 화면이 작아질수록: 영상 높이 ↑, 슬라이더 최소치는 약간 ↓ */
+@media (max-width: 1280px) { :root { --video-h: clamp(160px, 22vw, 280px); } }
+@media (max-width: 1024px) { :root { --video-h: 300px; } }
+@media (max-width: 768px)  { :root { --video-h: 34vh;  --slider-min: 280px; } }
+@media (max-width: 480px)  { :root { --video-h: 38vh;  --slider-min: 260px; } }
+@media (max-width: 360px)  { :root { --video-h: 42vh;  --slider-min: 240px; } }
+@media (max-width: 320px)  { :root { --video-h: 46vh;  --slider-min: 220px; } }
+/* ========================================================================= */
 
-/* 하단 홍보영상(고정) — 중복 선언 제거하고 한 군데로 정리 */
-.video-list-section{
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== 슬라이더 부분  ========================================== */
+/* --- 슬라이더 전체 래퍼 --- */
+.mSlider-1 {
   position: relative;
-  bottom: auto; left: auto;
   width: 100%;
-  height: 262px;
-  flex: 0 0 var(--promo-h);
-  background: linear-gradient(180deg, #376ec2 0%);
-  display: flex; flex-wrap: wrap;
-  box-sizing: border-box;
-  padding: 12px 200px;
-  z-index: auto;
-  justify-content: center;
-  align-items: center;
+  margin: 0;
+  flex: 1 1 auto;
+  min-height: max(var(--slider-min), calc(100vh - var(--header-h) - var(--video-h)));
 }
 
-
-/* 필요시 반응형만 아래에 유지 */
-@media (max-width: 700px) {
-  :root{ --promo-h: 420px; } /* 모바일에서 하단 높이 키우려면 */
-  .video-list-section {
-    padding-top: 30px; padding-right: 20px; padding-left: 20px; padding-bottom: 0;
-    flex-direction: column; align-items: center; gap: 30px;
-  }
-  .video-list-section-text { white-space: normal; text-align: center; padding-left: 0; padding-right: 0; }
-  .video-grid { justify-content: center; }
+/* Swiper 컨테이너는 가득 채우기 */
+.mySwiper-1 {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
-@media (min-width: 1280px) {
-  .video-grid { gap: 20px; }
-  .video-card { width: 210px; }
-  .video-thumbnail { height: 120px; }
-  .video-list-section-text { line-height: 1.05; font-size: clamp(20px, 1.8vw, 15px); }
-}
-@media (max-width: 1280px) and (min-width: 900px) {
-  .video-list-section { padding-top: 10px; }
-  .video-card { width: 200px; }
-  .video-thumbnail { height: 114px; }
-}
-@media (min-width: 1600px) {
-  .video-list-section { padding-top: 12px; }
+.mySwiper-1 .swiper-wrapper,
+.mySwiper-1 .swiper-slide,
+.mSlide {
+  height: 100% !important;
 }
 
+/* 각 슬라이드: 이미지 위에 오버레이가 얹히도록 기준점 잡기 */
+.mSlide {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+}
+.mSlide-Img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
 
-
-.video-grid{
+/* 제목+버튼 묶음: 왼쪽 가운데 정렬 */
+.mSlide-Info {
+  position: absolute;
+  left: clamp(24px, 10vw, 500px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
   align-items: flex-start;
-  flex-wrap: wrap;
-  margin: 0 auto;
+  gap: clamp(10px, 1.6vw, 18px);
 }
-.video-card{
-  width: 230px;
-  box-shadow: 2px 2px 100px rgba(0,0,0,.09);
-  background: #fff; text-decoration: none; color: #000; overflow: hidden; display: flex; flex-direction: column;
+.mSlide-Title {
+  color: #111827;
+  text-shadow: none;
+  line-height: 1.15;
+  max-width: min(40ch, 70vw);
+  font-size: clamp(22px, 5vw, 50px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  display: block;
 }
-.video-card:hover { transform: translateY(-5px) scale(1.03); }
-.video-thumbnail { width: 100%; height: 140px; object-fit: cover; background: #fff; }
-.video-info { padding: 10px 10px 8px 10px; }
-.video-title { font-weight: bold; font-size: 15px; }
-.video-channel { font-size: 11px; color: #6d6d6d; }
-
-/* =========================================================================================== */
-
-
-
-
-
-/* ===== 공지 상세 ===== */
-.notice-detail-inner { padding-left: 24px; max-width: 980px; }
-@media (max-width: 768px) { .notice-detail-inner { padding-left: 16px; } }
-
-
-
-.notice-detail-title { font-size: 2.25em; font-weight: 800; line-height: 1.25; }
-.notice-detail-content { white-space: pre-wrap; line-height: 1.6; margin-top: 12px; font-size: 16px; }
-.notice-detail-img{
-  max-width: 100%; height: auto; display: block; margin-top: 16px;
-  border-radius: 8px; max-height: 75vh; object-fit: contain;
-}
-.notice-detail-file{
-  display: inline-block; margin-top: 12px; color: #1d5fc4;
-  text-decoration: underline; font-weight: 600;
+.mSlide-Btn {
+  position: static;
+  margin-top: clamp(10px, 1.6vw, 18px);
+  align-self: flex-start;
+  font-size: clamp(12px, 1.8vw, 16px);
+  padding: clamp(8px, 1.1vw, 12px) clamp(12px, 1.8vw, 18px);
+  border-radius: clamp(8px, 1.6vw, 12px);
+  border: clamp(1px, 0.25vw, 2px) solid #3c79d5;
+  background: #fff;
+  color: #3c79d5;
+  font-weight: 700;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
-/* 혹시 가로 스크롤 생기면 방지 */
-html, body { overflow-x: hidden; }
+.mSlide-Btn:hover {
+  border: clamp(1px, 0.25vw, 2px) solid #1854ad;
+  color: #1854ad;
+}
 
+/* 커스텀 이전/다음 버튼 */
+.mSlider-PBtn,
+.mSlider-NBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 50px;
+  height: 50px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.35);
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 44px;
+  text-align: center;
+  cursor: pointer;
+  backdrop-filter: blur(2px);
+}
+.mSlider-PBtn { left: 50px; }
+.mSlider-NBtn { right: 50px; }
+.mSlider-PBtn:hover,
+.mSlider-NBtn:hover { background: rgba(0,0,0,0.5); }
 
+/* === Swiper 페이지네이션: 살짝 위로 + 활성 점 확대 ================== */
+/* (둘 다 대응: 기본 .swiper-pagination 과 네가 쓰는 .swiper-1-pagination) */
 
+/* 위치: 살짝 위로 */
+.mySwiper-1 .swiper-pagination,
+.mySwiper-1 .swiper-1-pagination {
+  bottom: 20px !important;   /* 기존 12px → 살짝 위로 */
+}
 
+/* 점 크기 기본값(필요시 조절 가능) */
+.mySwiper-1 .swiper-pagination-bullet,
+.mySwiper-1 .swiper-1-pagination-bullet {
+  width: 8px;
+  height: 8px;
+  margin: 0 4px !important;
+  border-radius: 50%;
+  transition: transform .18s ease;    /* 확대 애니메이션 */
+}
 
+/* 활성 점만 확대 */
+.mySwiper-1 .swiper-pagination-bullet-active,
+.mySwiper-1 .swiper-1-pagination-bullet-active {
+  transform: scale(1.5);               /* 살짝 크게(1.4~1.6 선에서 취향 조절) */
+}
 
-
-
-/* ====================== Responsive overrides (safe) ====================== */
-/* 컨테이너 좌우 패딩: 폭이 줄수록 자동 축소 (기존 200px을 덮어씀) */
-@media (max-width: 1600px) {
-  .video-list-section {
-    padding-left: 72px !important;
-    padding-right: 72px !important;
+/* 작은 화면에서 위치 조금 더 올리고, 점 간격도 살짝 축소 */
+@media (max-width: 640px) {
+  .mySwiper-1 .swiper-pagination,
+  .mySwiper-1 .swiper-1-pagination {
+    bottom: 24px !important;           /* 모바일에선 한 번 더 위로 */
+  }
+  .mySwiper-1 .swiper-pagination-bullet,
+  .mySwiper-1 .swiper-1-pagination-bullet {
+    margin: 0 3px !important;
   }
 }
-@media (max-width: 1366px) {
-  .video-list-section {
-    padding-left: 32px !important;
-    padding-right: 32px !important;
-  }
-}
-@media (max-width: 1024px) {
-  .video-list-section {
-    padding-left: 20px !important;
-    padding-right: 20px !important;
-  }
+
+/* =================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== 영상있는 맨 아래 디자인 ==================================================== */
+.mVideo {
+  width: 100%;
+  height: var(--video-h);   /* 고정 높이 */
+  flex: 0 0 var(--video-h);
+  margin-top: 0;
+  display: flex;
+  align-items: center;
+  background-color: rgb(55, 110, 194);
+  padding: 80px 0px 40px 0px;
+  box-sizing: border-box;   /* height에 padding 포함 */
 }
 
-/* 카드 그리드를 화면폭에 맞춰 n등분 (고정 230px 무력화) */
-.video-grid {
-  gap: 16px;                 /* 열 사이 간격은 고정 */
-  justify-content: center;   /* 남는 공간이 있어도 가운데 정렬 */
-}
-.video-grid .video-card {
-  width: auto !important;    /* 기존 width:230px 덮어쓰기 */
+.mVideo-Content {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 32px;
+  padding-left: clamp(24px, 10vw, 500px);
+  padding-right: clamp(24px, 10vw, 500px);
   box-sizing: border-box;
-  flex: 0 0 auto;            /* 아래 media에서 flex-basis 지정 */
-  max-width: none;           /* 최대폭 제한 해제 */
 }
 
-/* 1600px+ : 기존 레이아웃 유지(230px) — 별도 지정 불필요 */
-
-/* 1200px ~ 1599px : 5열 */
-@media (max-width: 1599px) and (min-width: 1200px) {
-  .video-grid .video-card {
-    flex-basis: calc((100% - 16px * 4) / 5) !important;  /* 5칸 + 4개 간격 */
-    max-width: calc((100% - 16px * 4) / 5) !important;
-  }
+.mVideo-Card {
+  display: block;
+  text-decoration: none;
+  background: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+  transition: box-shadow .18s ease;
+  height: calc(var(--video-h) - 20px);
 }
+.mVideo-Card:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.10); }
 
-/* 1024px ~ 1199px : 4열 */
-@media (max-width: 1199px) and (min-width: 1024px) {
-  .video-grid .video-card {
-    flex-basis: calc((100% - 16px * 3) / 4) !important;
-    max-width:  calc((100% - 16px * 3) / 4) !important;
-  }
+/* 타이틀 영역 축소 (흰 부분 줄이기) */
+.mVideo-Img {
+  display: block;
+  width: 100%;
+  height: calc(100% - 50px);   /* 제목 영역 약 50px 확보 */
+  object-fit: cover;
+  transition: transform .4s ease;
 }
+.mVideo-Card:hover .mVideo-Img { transform: scale(1.03); }
 
-/* 768px ~ 1023px : 3열 */
-@media (max-width: 1023px) and (min-width: 768px) {
-  .video-grid .video-card {
-    flex-basis: calc((100% - 16px * 2) / 3) !important;
-    max-width:  calc((100% - 16px * 2) / 3) !important;
-  }
-}
-
-/* 480px ~ 767px : 2열 */
-@media (max-width: 767px) and (min-width: 480px) {
-  .video-grid .video-card {
-    flex-basis: calc((100% - 16px) / 2) !important;
-    max-width:  calc((100% - 16px) / 2) !important;
-  }
+.mVideo-info { 
+  padding: 12px 14px 14px; 
 }
 
-/* < 480px : 1열 */
-@media (max-width: 479px) {
-  .video-grid .video-card {
-    flex-basis: 100% !important;
-    max-width: 100% !important;
-  }
+.mVideo-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* 썸네일 높이도 소형 화면에서 살짝 줄여 가독성 확보 (선택) */
-@media (max-width: 1023px) {
-  .video-thumbnail { height: 130px; }
-}
-@media (max-width: 767px) {
-  .video-thumbnail { height: 120px; }
-}
-@media (max-width: 479px) {
-  .video-thumbnail { height: 110px; }
+/* ───────────────────────────────────────────────────────────── */
+/* 반응형: 화면이 작아질수록 mVideo 자체를 계속 줄여서 한 줄만 보이게 유지 */
+/* ───────────────────────────────────────────────────────────── */
+
+/* 극소형폰 - 최소 가독성 보정 */
+@media (max-width: 320px) {
+  .mVideo       { height: 140px; padding: 28px 0 18px; }
+  .mVideo-Content { gap: 10px; }
+  .mVideo-Card  { height: calc(140px - 12px); }
+  .mVideo-Img   { height: calc(100% - 44px); }
+  .mVideo-title { font-size: 13px; line-height: 1.35; }
 }
 
-/* ≥1600px 큰 화면에서는 카드 폭을 다시 고정값으로 맞춰 통일 */
-@media (min-width: 1600px) {
-  .video-grid {
-    gap: 20px;              /* 보기 좋은 간격 */
-    justify-content: center;/* 가운데 정렬(원하면 지워도 됨) */
-  }
-  .video-grid .video-card {
-    width: 230px !important;
-    flex: 0 0 230px !important;   /* flex-basis도 동일하게 고정 */
-    max-width: 230px !important;
-    box-sizing: border-box;
-  }
+/* 일반폰+ - 여유 레이아웃 시작 */
+@media (max-width: 480px) {
+  .mVideo       { height: 180px; padding: 36px 0 22px; }
+  .mVideo-Content { gap: 14px; }
+  .mVideo-Card  { height: calc(180px - 16px); }
+  .mVideo-Img   { height: calc(100% - 48px); }
 }
+
+/* 소형폰 - 안드로이드 기본 */
+@media (max-width: 360px) {
+  .mVideo       { height: 160px; padding: 32px 0 20px; }
+  .mVideo-Content { gap: 12px; }
+  .mVideo-Card  { height: calc(160px - 16px); }
+  .mVideo-Img   { height: calc(100% - 46px); }
+  .mVideo-title { font-size: 13.5px; line-height: 1.4; }
+}
+
+/* 태블릿 (iPad 세로) */
+@media (max-width: 768px) {
+  .mVideo       { height: 200px; padding: 40px 0 24px; }
+  .mVideo-Card  { height: calc(200px - 18px); }
+  .mVideo-Img   { height: calc(100% - 50px); }
+}
+
+/* 태블릿 가로 / 작은 노트북 */
+@media (max-width: 1024px) {
+  .mVideo       { height: 220px; padding: 48px 0 28px; }
+  .mVideo-Card  { height: calc(220px - 18px); }
+}
+
+/* 기본 데스크탑 */
+@media (min-width: 1280px) {
+  .mVideo       { height: 230px; padding: 64px 0 32px; }
+}
+
+/* 큰 노트북, 맥북 프로 */
+@media (min-width: 1440px) {
+  .mVideo       { height: 250px; }
+}
+
+/* Full HD 데스크탑 */
+@media (min-width: 1920px) {
+  .mVideo       { height: 280px; }
+}
+/* ======================================================================== */
