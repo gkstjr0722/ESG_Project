@@ -44,9 +44,17 @@
 
 
 
+
+
+
+
+
+
+
+
 /* ==== 슬라이더 부분  ========================================== */
 /* --- 슬라이더 전체 래퍼 --- */
-.mSlider-1 {
+.mSlider {
   position: relative;
   width: 100%;
   margin: 0;
@@ -55,33 +63,40 @@
 }
 
 /* Swiper 컨테이너는 가득 채우기 */
-.mySwiper-1 {
+.mySwiper {
   width: 100%;
   height: 100%;
   overflow: hidden;
 }
-.mySwiper-1 .swiper-wrapper,
-.mySwiper-1 .swiper-slide,
+.mySwiper .swiper-wrapper,
+.mySwiper .swiper-slide,
 .mSlide {
   height: 100% !important;
 }
 
-/* 각 슬라이드: 이미지 위에 오버레이가 얹히도록 기준점 잡기 */
+/* 각 슬라이드 */
 .mSlide {
   position: relative;
   width: 100%;
   overflow: hidden;
-}
-.mSlide-Img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
+  isolation: isolate;
 }
 
-/* 제목+버튼 묶음: 왼쪽 가운데 정렬 */
+.mSlide-Img {
+  position: absolute;
+  top: 50%;
+  left: 70%;
+  transform: translate(-60%, -50%);
+  width: auto;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
+  z-index: 1;
+}
+
+/* 텍스트 묶음 */
 .mSlide-Info {
   position: absolute;
   left: clamp(24px, 10vw, 500px);
@@ -93,23 +108,27 @@
   align-items: flex-start;
   gap: clamp(10px, 1.6vw, 18px);
 }
+
+/* 제목 */
 .mSlide-Title {
   color: #111827;
   text-shadow: none;
   line-height: 1.15;
   max-width: min(40ch, 70vw);
-  font-size: clamp(22px, 5vw, 50px);
+  font-size: clamp(24px, 5.6vw, 54px);
   font-weight: 800;
   letter-spacing: -0.02em;
   display: block;
 }
+
+/* 버튼 */
 .mSlide-Btn {
   position: static;
   margin-top: clamp(10px, 1.6vw, 18px);
   align-self: flex-start;
-  font-size: clamp(12px, 1.8vw, 16px);
-  padding: clamp(8px, 1.1vw, 12px) clamp(12px, 1.8vw, 18px);
-  border-radius: clamp(8px, 1.6vw, 12px);
+  font-size: clamp(14px, 2.2vw, 18px);
+  padding: clamp(10px, 1.6vw, 14px) clamp(16px, 2.2vw, 22px);
+  border-radius: clamp(10px, 1.8vw, 14px);
   border: clamp(1px, 0.25vw, 2px) solid #3c79d5;
   background: #fff;
   color: #3c79d5;
@@ -118,13 +137,12 @@
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
-
 .mSlide-Btn:hover {
   border: clamp(1px, 0.25vw, 2px) solid #1854ad;
   color: #1854ad;
 }
 
-/* 커스텀 이전/다음 버튼 */
+/* 커스텀 이전/다음 버튼 (기본) */
 .mSlider-PBtn,
 .mSlider-NBtn {
   position: absolute;
@@ -144,46 +162,61 @@
   cursor: pointer;
   backdrop-filter: blur(2px);
 }
-.mSlider-PBtn { left: 50px; }
-.mSlider-NBtn { right: 50px; }
+.mSlider-PBtn { left: 60px; }
+.mSlider-NBtn { right: 60px; }
 .mSlider-PBtn:hover,
 .mSlider-NBtn:hover { background: rgba(0,0,0,0.5); }
 
-/* === Swiper 페이지네이션: 살짝 위로 + 활성 점 확대 ================== */
-/* (둘 다 대응: 기본 .swiper-pagination 과 네가 쓰는 .swiper-1-pagination) */
-
-/* 위치: 살짝 위로 */
-.mySwiper-1 .swiper-pagination,
-.mySwiper-1 .swiper-1-pagination {
-  bottom: 20px !important;   /* 기존 12px → 살짝 위로 */
+/* ▼ 슬라이더 버튼: 화면이 줄어들수록 점진적으로 축소 */
+@media (max-width: 1280px) and (min-width: 1025px) {
+  .mSlider-PBtn, .mSlider-NBtn { width: 46px; height: 46px; font-size: 18px; line-height: 42px; }
+  .mSlider-PBtn { left: 52px; } .mSlider-NBtn { right: 52px; }
+}
+@media (max-width: 1024px) and (min-width: 901px) {
+  .mSlider-PBtn, .mSlider-NBtn { width: 44px; height: 44px; font-size: 18px; line-height: 40px; }
+  .mSlider-PBtn { left: 44px; } .mSlider-NBtn { right: 44px; }
+}
+@media (max-width: 900px) and (min-width: 769px) {
+  .mSlider-PBtn, .mSlider-NBtn { width: 40px; height: 40px; font-size: 16px; line-height: 36px; }
+  .mSlider-PBtn { left: 28px; } .mSlider-NBtn { right: 28px; }
 }
 
-/* 점 크기 기본값(필요시 조절 가능) */
-.mySwiper-1 .swiper-pagination-bullet,
-.mySwiper-1 .swiper-1-pagination-bullet {
-  width: 8px;
-  height: 8px;
-  margin: 0 4px !important;
-  border-radius: 50%;
-  transition: transform .18s ease;    /* 확대 애니메이션 */
+/* Swiper 페이지네이션 */
+.mySwiper .swiper-pagination { bottom: 20px !important; }
+.mySwiper .swiper-pagination-bullet {
+  width: 8px; height: 8px; margin: 0 4px !important;
+  border-radius: 50%; transition: transform .18s ease;
+  background: #cccccc; opacity: 1;
+}
+.mySwiper .swiper-pagination-bullet-active {
+  transform: scale(1.5, 1.2);
+  background: rgb(55, 110, 194);
 }
 
-/* 활성 점만 확대 */
-.mySwiper-1 .swiper-pagination-bullet-active,
-.mySwiper-1 .swiper-1-pagination-bullet-active {
-  transform: scale(1.5);               /* 살짝 크게(1.4~1.6 선에서 취향 조절) */
+/* ---- 슬라이더 레이아웃 보정 --------------------------------- */
+/* ≤1024px: 메인 스크롤 활성 + 슬라이더가 뷰포트만 꽉 채우지 않도록 높이 재정의 */
+@media (max-width: 1024px) {
+  .mMain { overflow-y: auto; }
+  .mSlider { min-height: clamp(360px, 62vh, 560px); }
+  .mySwiper { height: auto; min-height: inherit; }
+  .mySwiper .swiper-wrapper,
+  .mySwiper .swiper-slide,
+  .mSlide { height: auto !important; min-height: inherit; }
 }
 
-/* 작은 화면에서 위치 조금 더 올리고, 점 간격도 살짝 축소 */
+/* 900~750px 구간 전용 미세 튜닝 */
+@media (min-width: 751px) and (max-width: 900px) {
+  .mSlider { min-height: clamp(420px, 68vh, 620px); }
+  .mSlide-Img { left: 66%; transform: translate(-58%, -50%); }
+}
+
+/* 모바일에서는 버튼 완전 숨김 */
+@media (max-width: 768px) {
+  .mSlider-PBtn, .mSlider-NBtn { display: none !important; }
+}
 @media (max-width: 640px) {
-  .mySwiper-1 .swiper-pagination,
-  .mySwiper-1 .swiper-1-pagination {
-    bottom: 24px !important;           /* 모바일에선 한 번 더 위로 */
-  }
-  .mySwiper-1 .swiper-pagination-bullet,
-  .mySwiper-1 .swiper-1-pagination-bullet {
-    margin: 0 3px !important;
-  }
+  .mySwiper .swiper-pagination { bottom: 24px !important; }
+  .mySwiper .swiper-pagination-bullet { margin: 0 3px !important; }
 }
 
 /* =================================================================== */
@@ -219,40 +252,34 @@
 
 
 
-
-
-
-
-
-
-
-
-
 /* ==== 영상있는 맨 아래 디자인 ==================================================== */
+/* 섹션 래퍼 */
 .mVideo {
   width: 100%;
-  height: var(--video-h);   /* 고정 높이 */
+  height: var(--video-h);
   flex: 0 0 var(--video-h);
   margin-top: 0;
   display: flex;
   align-items: center;
   background-color: rgb(55, 110, 194);
-  padding: 80px 0px 40px 0px;
-  box-sizing: border-box;   /* height에 padding 포함 */
+  padding: var(--video-pad-top) 0 var(--video-pad-bot);
+  box-sizing: border-box;
 }
 
+/* 내부 그리드 */
 .mVideo-Content {
   width: 100%;
   height: 100%;
   overflow: hidden;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 32px;
   padding-left: clamp(24px, 10vw, 500px);
   padding-right: clamp(24px, 10vw, 500px);
   box-sizing: border-box;
 }
 
+/* 카드 */
 .mVideo-Card {
   display: block;
   text-decoration: none;
@@ -261,24 +288,21 @@
   overflow: hidden;
   box-shadow: 0 6px 20px rgba(0,0,0,0.06);
   transition: box-shadow .18s ease;
-  height: calc(var(--video-h) - 20px);
+  height: calc(var(--video-h) - var(--video-pad-top) - var(--video-pad-bot));
 }
 .mVideo-Card:hover { box-shadow: 0 10px 28px rgba(0,0,0,0.10); }
 
-/* 타이틀 영역 축소 (흰 부분 줄이기) */
+/* 이미지/타이틀 */
 .mVideo-Img {
   display: block;
   width: 100%;
-  height: calc(100% - 50px);   /* 제목 영역 약 50px 확보 */
+  height: calc(100% - 50px);
   object-fit: cover;
   transition: transform .4s ease;
 }
 .mVideo-Card:hover .mVideo-Img { transform: scale(1.03); }
 
-.mVideo-info { 
-  padding: 12px 14px 14px; 
-}
-
+.mVideo-info { padding: 12px 14px 14px; }
 .mVideo-title {
   font-size: 15px;
   font-weight: 700;
@@ -291,61 +315,284 @@
   overflow: hidden;
 }
 
-/* ───────────────────────────────────────────────────────────── */
-/* 반응형: 화면이 작아질수록 mVideo 자체를 계속 줄여서 한 줄만 보이게 유지 */
-/* ───────────────────────────────────────────────────────────── */
+/* ───────── 반응형: 네가 준 브레이크포인트만 사용 ───────── */
 
 /* 극소형폰 - 최소 가독성 보정 */
 @media (max-width: 320px) {
-  .mVideo       { height: 140px; padding: 28px 0 18px; }
-  .mVideo-Content { gap: 10px; }
-  .mVideo-Card  { height: calc(140px - 12px); }
-  .mVideo-Img   { height: calc(100% - 44px); }
+  :root { --video-h: 140px; --video-pad-top: 28px; --video-pad-bot: 18px; }
+  .mVideo-Content { gap: 10px; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
   .mVideo-title { font-size: 13px; line-height: 1.35; }
-}
-
-/* 일반폰+ - 여유 레이아웃 시작 */
-@media (max-width: 480px) {
-  .mVideo       { height: 180px; padding: 36px 0 22px; }
-  .mVideo-Content { gap: 14px; }
-  .mVideo-Card  { height: calc(180px - 16px); }
-  .mVideo-Img   { height: calc(100% - 48px); }
 }
 
 /* 소형폰 - 안드로이드 기본 */
 @media (max-width: 360px) {
-  .mVideo       { height: 160px; padding: 32px 0 20px; }
-  .mVideo-Content { gap: 12px; }
-  .mVideo-Card  { height: calc(160px - 16px); }
-  .mVideo-Img   { height: calc(100% - 46px); }
+  :root { --video-h: 160px; --video-pad-top: 32px; --video-pad-bot: 20px; }
+  .mVideo-Content { gap: 12px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
   .mVideo-title { font-size: 13.5px; line-height: 1.4; }
+}
+
+/* 일반폰+ - 여유 레이아웃 시작 */
+@media (max-width: 480px) {
+  :root { --video-h: 180px; --video-pad-top: 36px; --video-pad-bot: 22px; }
+  .mVideo-Content { gap: 14px; }
 }
 
 /* 태블릿 (iPad 세로) */
 @media (max-width: 768px) {
-  .mVideo       { height: 200px; padding: 40px 0 24px; }
-  .mVideo-Card  { height: calc(200px - 18px); }
-  .mVideo-Img   { height: calc(100% - 50px); }
+  :root { --video-h: 200px; --video-pad-top: 40px; --video-pad-bot: 24px; }
 }
 
 /* 태블릿 가로 / 작은 노트북 */
 @media (max-width: 1024px) {
-  .mVideo       { height: 220px; padding: 48px 0 28px; }
-  .mVideo-Card  { height: calc(220px - 18px); }
+  :root { --video-h: 220px; --video-pad-top: 48px; --video-pad-bot: 28px; }
+
+  /* ▼ 2열(혹은 1열) 상황에서도 아래로 스크롤되며 더 보이게 */
+  .mMain { overflow-y: auto; }
+  .mVideo { height: auto; flex: 0 0 auto; }
+  .mVideo-Content { height: auto; overflow: visible; }
+}
+
+/* ====== “4+1이면 2줄 숨김, 3열이면 2줄 허용” 규칙 ====== */
+/* 4열 가능성이 큰 구간(대략 1200~1439px)에서는 5번째 이후 카드 숨김 → 2줄째 안 보이게 */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .mVideo-Card:nth-child(n+5) { display: none; }
 }
 
 /* 기본 데스크탑 */
 @media (min-width: 1280px) {
-  .mVideo       { height: 230px; padding: 64px 0 32px; }
+  :root { --video-h: 230px; --video-pad-top: 64px; --video-pad-bot: 32px; }
 }
 
 /* 큰 노트북, 맥북 프로 */
 @media (min-width: 1440px) {
-  .mVideo       { height: 250px; }
+  :root { --video-h: 250px; }
+  .mVideo-Content { grid-template-columns: repeat(5, minmax(220px, 1fr)); gap: 28px; }
+  .mVideo-Card { display: block; }
 }
 
 /* Full HD 데스크탑 */
 @media (min-width: 1920px) {
-  .mVideo       { height: 280px; }
+  :root { --video-h: 280px; }
+  .mVideo-Content { grid-template-columns: repeat(5, minmax(240px, 1fr)); gap: 32px; }
 }
+
 /* ======================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ============= Header (cHeader-*) ============= */
+:root { --header-h: 76px; } /* 기존 68px → 76px */
+
+.cHeader { width: 100%; background:#fff; }
+.cHeader-Nav {
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+  padding: 0 clamp(24px, 6vw, 60px);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+/* 로고 */
+.cHeader-Logo { display: inline-flex; align-items: center; gap: 10px; }
+.cHeader-LogoLink { display:inline-flex; align-items:center; text-decoration:none; }
+/* 로고 살짝 확대 (반응형) */
+.cHeader-LogoImg { height: clamp(28px, 2.4vw, 36px); display:block; }
+
+/* 기업/관공 배지 → 텍스트만, #3798FE 고정 + 글씨 더 큼 */
+.cHeader-Badge{
+  font-size: clamp(14px, 1.1vw, 18px); /* ↑ 12px → 반응형으로 확대 */
+  font-weight: 700;
+  color:#3798FE;
+  text-decoration:none;
+  background:transparent;
+  padding:0;
+  border-radius:0;
+}
+.cHeader-Badge:hover,
+.cHeader-Badge:active,
+.cHeader-Badge:focus,
+.cHeader-Badge:visited{
+  color:#3798FE;
+  background:transparent;
+  text-decoration:none;
+}
+
+/* 메인 메뉴(데스크탑) */
+.cHeader-Menu { display:flex; align-items:center; gap: 34px; } /* 30px → 34px */
+.cHeader-MenuItem {
+  text-decoration:none; color:#111; font-weight:600;
+  font-size: clamp(15px, 1.05vw, 18px);
+  padding: 8px 6px; border-radius: 8px;
+}
+/* hover 색/배경 제거 */
+.cHeader-MenuItem:hover { background: transparent; color: inherit; }
+
+/* 우측 유틸(데스크탑) */
+.cHeader-Util { display:flex; align-items:center; gap: 16px; }
+.cHeader-UtilLink, .cHeader-LoginBtn {
+  text-decoration:none;
+  color:#3c79d5; /* 파란색 유지 */
+  font-weight:600; cursor:pointer;
+  font-size: clamp(14.5px, 1.05vw, 18px);
+  padding: 6px 8px; border-radius: 8px;
+}
+/* hover/active/focus/visited 모두 동일한 파란색 유지 + 배경 변화 제거 */
+.cHeader .cHeader-UtilLink:hover,
+.cHeader .cHeader-UtilLink:active,
+.cHeader .cHeader-UtilLink:focus,
+.cHeader .cHeader-UtilLink:visited,
+.cHeader .cHeader-LoginBtn:hover,
+.cHeader .cHeader-LoginBtn:active,
+.cHeader .cHeader-LoginBtn:focus,
+.cHeader .cHeader-LoginBtn:visited {
+  color:#3c79d5;
+  background: transparent;
+  text-decoration: none;
+}
+
+/* 모바일 우측 아이콘(햄버거만) */
+.cHeader-UtilMobile { display:none; align-items:center; gap:8px; }
+.cHeader-IconBtn { background:transparent; border:0; padding:6px; cursor:pointer; color:#111; }
+.cHeader-IconBtn:active { transform: scale(0.98); }
+
+/* ===== Drawer (모바일) ===== */
+.cHeader-DrawerBackdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.25);
+  opacity: 0; pointer-events: none; transition: opacity .2s ease;
+  z-index: 60;
+}
+.cHeader-DrawerBackdrop.is-open { opacity: 1; pointer-events: auto; }
+
+.cHeader-Drawer {
+  position: fixed; top: 0; right: 0; height: 100vh;
+  width: min(82vw, 360px);
+  background: #fff; box-shadow: -12px 0 30px rgba(0,0,0,.08);
+  transform: translateX(100%); transition: transform .22s ease;
+  z-index: 61; display:flex; flex-direction:column;
+}
+.cHeader-Drawer.is-open { transform: translateX(0); }
+
+.cHeader-DrawerHead {
+  height: 56px; display:flex; align-items:center; justify-content: space-between;
+  padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
+  font-weight: 700; font-size: 17px; /* 살짝 키움 */
+}
+
+.cHeader-DrawerSection { padding: 10px 8px; display:flex; flex-direction:column; gap: 2px; }
+
+/* 드로어 기본 링크(메인 메뉴 섹션) */
+.cHeader-DrawerLink {
+  padding: 14px 12px; text-decoration:none; color:#111; font-weight:600;
+  font-size: 16.5px;
+  border-radius: 10px; display:block; text-align:left; background:transparent; border:0;
+}
+/* hover 색/배경 제거 (기본 섹션) */
+.cHeader-DrawerLink:hover { background: transparent; color: inherit; }
+
+/* 드로어 마지막 섹션(마이페이지/로그인/로그아웃)은 파란색 고정 */
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink {
+  color:#3c79d5;
+}
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:hover,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:active,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:focus,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:visited {
+  color:#3c79d5;
+  background: transparent;
+  text-decoration: none;
+}
+
+.cHeader-BtnLike { cursor:pointer; }
+
+/* ===== 반응형 ===== */
+@media (max-width: 768px) {
+  .cHeader-Menu,
+  .cHeader-Util { display: none; }
+  .cHeader-UtilMobile { display: flex; }
+  .cHeader-Nav { padding: 0 16px; }
+}
+
+@media (min-width: 1024px) {
+  .cHeader-Nav { padding: 0 clamp(24px, 5vw, 72px); }
+}
+
+@media (min-width: 1280px) {
+  .cHeader-Nav { padding: 0 clamp(32px, 6vw, 96px); }
+}
+
+@media (min-width: 1440px) {
+  .cHeader-Menu { gap: 36px; } /* 큰 노트북에서 조금 더 넓게 */
+}
+
+@media (min-width: 1920px) {
+  .cHeader-Nav { padding: 0 clamp(48px, 8vw, 140px); }
+  .cHeader-Menu { gap: 40px; } /* FHD 이상에서 한 끗 더 넓게 */
+}

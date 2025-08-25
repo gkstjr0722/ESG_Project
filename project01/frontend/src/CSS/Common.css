@@ -4,16 +4,27 @@ body:has(.cBox) {
   /* 배경 약간 푸르게 만듬 */
   background-color: #f8f9fd;
 }
+#root:has(.cBox) {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: var(--header-h) 1fr;
+}
+#root:has(.cBox) .cHeader { grid-row: 1; }
+#root:has(.cBox) .cBox {
+  grid-row: 2;
+  place-self: center;
+  margin: 0;
+}
 .cBox {
+  box-sizing: border-box;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: clamp(340px, 92vw, 420px);
+  width: min(500px, 92vw);
   padding: 30px 60px;
-  margin: 80px auto;
 }
 .cBox > h2 {
   color: #0c355c;
@@ -23,17 +34,18 @@ body:has(.cBox) {
 }
 /* ---- 반응형 ------------- */
 @media (max-width: 600px) {
-  .cBox {
-    width: clamp(340px, 94vw, 420px);
+  #root:has(.cBox) {
+    grid-template-rows: var(--header-h) 1fr;
+  }
+  #root:has(.cBox) .cBox {
+    width: min(420px, 94vw);
     padding: 24px 28px;
-    margin: 40px auto;
   }
 }
 @media (max-width: 360px) {
-  .cBox {
-    width: clamp(340px, 100vw, 420px);
+  #root:has(.cBox) .cBox {
+    width: min(420px, 96vw);
     padding: 16px 14px;
-    margin: 20px auto;
   }
 }
 /* ==================================================== */
@@ -139,14 +151,17 @@ body:has(.cBox) {
 
 /* ==== 2개의 버튼 중 하나 택(로그인/비밀번호찾기 페이지) ========== */
 /* 기업로그인 및 관공업 로그인 버튼 */
+/* 공통 */
 .cChoice {
   display: flex;
   gap: 14px;
   margin-bottom: 20px;
   justify-content: center;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap;         /* 줄바꿈 금지 */
+  box-sizing: border-box;
 }
 .cChoice > button {
+  box-sizing: border-box;    /* 패딩/보더 포함 폭 계산 */
   padding: 7px 10px;
   font-size: 16px;
   font-weight: 500;
@@ -156,7 +171,7 @@ body:has(.cBox) {
   background: #f8f8f8;
   border-radius: 8px;
   cursor: pointer;
-  width: 140px;
+  width: 160px;              /* 데스크탑 기본 */
   white-space: nowrap;
   display: inline-flex;
   justify-content: center;
@@ -168,6 +183,39 @@ body:has(.cBox) {
   color: #fff;
   border: 1px solid #3c79d5;
 }
+
+/* <= 1024px: 버튼을 컨테이너 폭의 절반(갭 고려)로 */
+@media (max-width: 1024px) {
+  .cChoice > button { width: calc((100% - 14px) / 2); }
+}
+
+/* <= 480px: 살짝 축소 */
+@media (max-width: 480px) {
+  .cChoice > button {
+    width: calc((100% - 14px) / 2);
+    font-size: 15px;
+    padding: 8px 10px;
+  }
+}
+
+/* <= 360px: 더 작게 */
+@media (max-width: 360px) {
+  .cChoice > button {
+    width: calc((100% - 14px) / 2);
+    font-size: 14px;
+    padding: 7px 10px;
+  }
+}
+
+/* <= 320px: 초소형 안전 장치 (너무 작아지지 않게 clamp) */
+@media (max-width: 320px) {
+  .cChoice > button {
+    width: clamp(100px, calc((100% - 14px) / 2), 140px);
+    font-size: 13.5px;
+    padding: 6px 8px;
+  }
+}
+
 /* ================================================================= */
 
 
@@ -297,6 +345,9 @@ body:has(.cBox) {
   box-shadow: 0 6px 16px rgba(17,24,39,.06), inset 0 0 0 2px #5b7fff;
 }
 /* ================================================================================================ */
+
+
+
 
 
 
