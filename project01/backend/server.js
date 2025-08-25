@@ -1,8 +1,8 @@
 // server.js
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
 const app = express();
 
 // CORS & Body Parser
@@ -25,8 +25,9 @@ const proxyEvRouter  = require('./router/proxyEv');
 const inquiryRouter  = require('./router/inquiry');
 const noticeRouter   = require('./router/notice');
 const passwordRouter = require('./router/password');
-const proxyIndustry = require('./router/proxyIndustry')
-
+const proxyIndustry = require('./router/proxyIndustry');
+const forecast = require('./router/forecast');
+const proxyEcRouter = require('./router/proxyEc');
 const fastRouter = require('./router/fast');
 
 /* ----------------------- 라우터 마운트 ------------------------ */
@@ -53,6 +54,8 @@ app.use('/api/password', passwordRouter);   // 기존 경로 유지
 app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
 app.use('/kepco', proxyIndustry);
 app.use('/fast', fastRouter);
+app.use('/api/forecast', forecast);
+app.use('/api/ec', proxyEcRouter);
 
 // server.js (또는 app.js)
 app.post('/api/predict-usage', (req, res) => {
@@ -70,6 +73,10 @@ app.post('/api/predict-usage', (req, res) => {
 // 3. 파일 업로드 설정 (정적 제공)
 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// data 폴더 정적 경로로 열어주는 코드 !
+app.use('/data', express.static(path.join(__dirname, 'data')));
+
 
 // 헬스 체크
 app.get('/health', (req, res) => res.status(200).send('OK'));
