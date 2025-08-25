@@ -493,9 +493,23 @@
 /* 로고 살짝 확대 (반응형) */
 .cHeader-LogoImg { height: clamp(28px, 2.4vw, 36px); display:block; }
 
-.cHeader-Badge {
-  font-size:12px; padding:3px 8px; border-radius:999px;
-  background:#eef3ff; color:#1854ad; text-decoration:none; font-weight:700;
+/* 기업/관공 배지 → 텍스트만, #3798FE 고정 + 글씨 더 큼 */
+.cHeader-Badge{
+  font-size: clamp(14px, 1.1vw, 18px); /* ↑ 12px → 반응형으로 확대 */
+  font-weight: 700;
+  color:#3798FE;
+  text-decoration:none;
+  background:transparent;
+  padding:0;
+  border-radius:0;
+}
+.cHeader-Badge:hover,
+.cHeader-Badge:active,
+.cHeader-Badge:focus,
+.cHeader-Badge:visited{
+  color:#3798FE;
+  background:transparent;
+  text-decoration:none;
 }
 
 /* 메인 메뉴(데스크탑) */
@@ -570,7 +584,7 @@
 /* hover 색/배경 제거 (기본 섹션) */
 .cHeader-DrawerLink:hover { background: transparent; color: inherit; }
 
-/* ✅ 드로어의 마지막 섹션(마이페이지 / 로그인 or 로그아웃)을 파란색으로 고정 */
+/* 드로어 마지막 섹션(마이페이지/로그인/로그아웃)은 파란색 고정 */
 .cHeader-DrawerSection:last-of-type .cHeader-DrawerLink {
   color:#3c79d5;
 }

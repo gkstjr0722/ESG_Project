@@ -49,6 +49,9 @@ const Header = () => {
           <Link to="/" className="cHeader-LogoLink" aria-label="Han's">
             <img src={logoImg} alt="Han's" className="cHeader-LogoImg" />
           </Link>
+          <Link className="cHeader-Badge" to="/">
+              {userType === 'business' ? '기업용' : '관공용'}
+            </Link>
           {isLoggedIn && (userType === 'business' || userType === 'government') && (
             <Link className="cHeader-Badge" to="/">
               {userType === 'business' ? '기업용' : '관공용'}
