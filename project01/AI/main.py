@@ -43,7 +43,7 @@ def predict(req: PredictRequest):
         return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
     
     return PredictResponse(
-        next_month_kwh=float(next_total),
+        next_month_kwh=round(float(next_total),2),
         hourly_this_month=to_map(h_this),
         hourly_next_month=to_map(h_next),
         hourly_this_month_text=to_text(h_this),
