@@ -256,7 +256,7 @@
 .sInquiry-Btn {
   position: fixed; 
   bottom: 100px; 
-  right: 300px; 
+  right: 100px;
   width: 60px; 
   height: 60px; 
   border-radius: 50%;
@@ -448,6 +448,7 @@ body {
   margin-bottom: 38px;
   color: #222;
   letter-spacing: -1.2px;
+
 }
 .faq-tit-loca{
   text-align: center;
@@ -503,13 +504,19 @@ body {
   padding: 40px 0; 
   text-align: center; 
 }
+
+@media (max-width: 1044px) {
+    .faq-title { 
+    white-space: nowrap;
+  }
+}
 @media (max-width: 700px) {
   .faq-page-wrap { 
     padding: 0 7vw; 
   }
   .faq-title { 
-    font-size: 1.38rem; 
-    margin-bottom: 20px; 
+    font-size: 2rem; 
+    margin-bottom: 20px;
   }
   .faq-question-item { 
     font-size: .98rem; 
@@ -668,6 +675,25 @@ body {
   background:#9b2525; 
 }
 
+/* 자주묻는 질문 */
+
+.faqDetail {
+  padding: 10px 15px;
+  background-color: #f9f9f9;
+  border-left: 3px solid #3c79d5;
+  color: black;
+  margin-top: 5px;
+  text-align: left;
+}
+
+.faqContent, .faqAnswer {
+  margin-bottom: 8px;
+}
+
+.faqContent strong, .faqAnswer strong {
+  color: #3c79d5;
+}
+
 /* ===== 공지 상세 (Notice detail) ===== */
 .faq-detail-title.notice-detail-title { 
   font-size: 2rem !important; 
@@ -820,6 +846,58 @@ body {
   box-shadow: 0 4px 12px rgba(17, 24, 39, .06);
 }
 
+.sNoticeBtn {
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 16px;
+}
+
+@media(min-width: 465px){
+ .sNoticeBtn{
+  display: inline-block;
+  white-space: nowrap;
+
+ }
+ .mobileOnly {
+  display: none;
+}
+}
+
+/* 모바일에서만 새 버튼 보이기 */
+@media (max-width: 464px) {
+  .sNoticeBtn {
+    display: none;
+  }
+  .mobileOnly {
+    display: flex;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background: #3c79d5;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    cursor: pointer;
+    align-items: center;
+    line-height: 1;
+    text-align: center;
+  padding:7px 18px;
+  font-size: 20px;
+
+}
+  }
+
+  .mobileOnly:hover {
+    background: #1854ad;
+  }
+
+
+
 /* 표 상단 글자- 옆으로 나란히 + 화면 크기 조정시 세로로 바뀌는거 막아 놓은거+ 폰트 */
 .sDis-Flex{
   display: flex;
@@ -839,6 +917,7 @@ body {
 /* 표 상단 작성일 */
 .sWriteDate{
  margin-left: 500px;
+ padding: 20px;
 }
 
 /* 글 옆 작성일 */
@@ -854,6 +933,16 @@ body {
   /* background-color: #1951a6 ; */
   margin: 0;
 }
+
+@media (min-width: 240px){
+  .sNoti-title{
+  margin-left: auto;
+}
+  .sWriteDate{
+    margin-left: auto;
+  }
+}
+
 
 /* ===== 마이페이지 ========================================================== */
 :root{

@@ -11,6 +11,7 @@ const FAQ = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
     const fetchFaq = async () => {
@@ -42,6 +43,9 @@ const FAQ = () => {
   const isNoticeActive  = pathname.startsWith('/notice');
   const isInquiryActive = pathname.startsWith('/inquiry');
   const isFAQActive     = pathname.startsWith('/faq');
+  const toggleAnswer = (index) => {
+    setOpenIndex(prev => prev === index ? null : index);
+  };
 
   return (
     <>
@@ -74,19 +78,33 @@ const FAQ = () => {
           ) : filteredQuestions.length === 0 ? (
             <div>등록된 질문이 없습니다.</div>
           ) : (
-            filteredQuestions.map(q => (
-              <div
-                key={q.QS_ID}
-                className="cWrite"
-                onClick={() => navigate(`/faq/${q.QS_ID}`)}
-              >
+            filteredQuestions.map((q, index) => (
+              <div key={q.QS_ID} className="faqItem">
+                <div
+                  className="cWrite"
+                  onClick={() => toggleAnswer(index)} // ✅ 클릭 시 해당 항목 열기/닫기
+                >
                 <span>Q</span>
                 {q.TITLE}
                 <span></span> {/* 클래스네임 cWrite span: last-child가 Q에 붙어서 그거 떼려고 붙여놓음. 이거 떼면 Q에 last 다시 붙음 */}
               </div>
+
+              {openIndex === index && (
+      <div className="faqDetail">
+        <div className="faqContent">
+          <strong>본문:</strong>
+          <p>{q.CONTENT || '본문이 없습니다.'}</p>
+        </div>
+        <div className="faqAnswer">
+          <strong>답변</strong>
+          <p>{q.ANSWER || '답변이 없습니다.'}</p>
+        </div>
+      </div>
+              )}
+        </div>
             ))
           )}
-        </div>
+          </div>
       </div>
     </>
   );

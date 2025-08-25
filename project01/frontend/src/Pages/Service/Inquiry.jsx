@@ -78,6 +78,17 @@ const Inquiry = () => {
             value={search}
             onChange={e => setSearch(e.target.value)}
           />
+          {isLoggedIn && !isAdmin && (
+            <>
+            <button className="cBlueBtn sNoticeBtn" onClick={handleWriteClick}>
+              문의 작성
+            </button>
+
+            <button className="mobileOnly" onClick={handleWriteClick}>
+              +
+            </button>
+            </>
+          )}
         </div>
 
         <div className="cList">
@@ -104,11 +115,6 @@ const Inquiry = () => {
             ))
           )}
         </div>
-        {isLoggedIn && !isAdmin && (
-          <button className="sInquiry-Btn" onClick={handleWriteClick}>
-            +
-          </button>
-        )}
       </div>
     </>
   );

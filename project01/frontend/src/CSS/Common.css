@@ -217,14 +217,13 @@ body:has(.cBox) {
   color: #aaa;
 }
 
-
-/* 공지사항 등록 버튼 */
-.cSearch button {
+/* 공지사항 등록 버튼 <- 사용안함 */
+/* .cSearch button {
   padding: 7px 20px;
   font-size: 15px;
   border-radius: 16px !important;
   box-shadow: 0 4px 12px rgba(17, 24, 39, .06);
-}
+} */
 
 /* 글 목록 */
 .cList > div {
@@ -260,6 +259,7 @@ body:has(.cBox) {
   font-weight: 400;
   font-size: 1rem;  
 }
+
 /* ========================================================================== */
 
 
@@ -296,6 +296,13 @@ body:has(.cBox) {
   color: #1d3df0;
   box-shadow: 0 6px 16px rgba(17,24,39,.06), inset 0 0 0 2px #5b7fff;
 }
+
+@media (max-width: 395px){
+  .cTab {
+  display: grid;
+  }
+}
+
 /* ================================================================================================ */
 
 
@@ -339,6 +346,15 @@ body:has(.cBox) {
   }
 }
 
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
 .body {
   box-sizing: border-box;
   margin: 0;
@@ -357,6 +373,7 @@ body:has(.cBox) {
   align-items: center;
   box-shadow: 0 2px 10px rgba(0,0,0,0.03);
 }
+
 
 /* === 메인 로고 =============== */
 /* 로고 그룹 */

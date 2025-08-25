@@ -419,9 +419,10 @@ const Notice = () => {
             onChange={e => setSearch(e.target.value)}
           />
           {isAdmin && (
+            <>
             <button
               type="button"
-              className="cBlueBtn"
+              className="cBlueBtn sNoticeBtn"
               onClick={() => {
                 setMode('write');
                 setForm({ TITLE: '', CONTENT: '' });
@@ -433,6 +434,23 @@ const Notice = () => {
             >
               공지사항 등록
             </button>
+
+            {/* 새 버튼 (모바일에서만 보임) */}
+            <button
+              type="button"
+              className="mobileOnly"
+              onClick={() => {
+                setMode('write');
+                setForm({ TITLE: '', CONTENT: '' });
+                setFile(null);
+                setPreviewUrl('');
+                setSelectedNotice(null);
+                navigate('/notice');
+              }}
+            >
+              +
+            </button>
+            </>
           )}
         </div>
 
