@@ -73,7 +73,8 @@ body:has(.cBox) {
 
 /* ==== ← 돌아가기 ========================================= */
 .cBack {
-  color: #888;
+  color: #6e7177;
+  /* color: #888; */
   font-weight: 700;
   font-size: 0.96rem;
   text-decoration: none;
@@ -214,7 +215,6 @@ body:has(.cBox) {
 }
 .cSearch > input::placeholder {
   color: #aaa;
-  opacity: 1;
 }
 
 
@@ -229,6 +229,7 @@ body:has(.cBox) {
 /* 글 목록 */
 .cList > div {
   color: #aaa; 
+  /* font-size: 16.8px;  */
   font-size: 1.05rem; 
   padding: 20px 0; 
   text-align: center;
@@ -484,7 +485,8 @@ body:has(.cBox) {
 /* 돌아가기 버튼 */
 .back-btn{
 background: transparent ;
-color: #888c93; 
+color: #6e7177; 
+/* color: #888c93;  */
 padding: 0;
 font-weight: 700;
 float: left;

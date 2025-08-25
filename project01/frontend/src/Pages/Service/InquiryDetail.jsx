@@ -167,10 +167,10 @@ const InquiryDetail = () => {
           <div className='answer-btn-loca common-btn-gap'>
             {!showAnswerInput ? (
               <>
+              <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
               <button className="common-btn button-10px28px" onClick={handleShowAnswerInput}>
                 {question.ANSWER ? '답변 수정' : '답변 작성'}
               </button>
-              <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
               </>
             ) : (
               <div className='common-btn-gap'>
@@ -181,11 +181,11 @@ const InquiryDetail = () => {
                   onChange={e => setAnswerInput(e.target.value)}
                   rows={4}
                 /> 
-                <div className='common-btn-gap'>
+                <div className='common-btn-gap btn-FEnd'>
+                <button  className="common-btn button-10px28px faq-write-cancel" onClick={handleShowAnswerInput}>취소</button>
                 <button className="common-btn button-10px28px" onClick={handleAnswerSubmit} disabled={answerLoading}>
                   {answerLoading ? '저장 중...' : '저장'}
                 </button>
-                <button  className="common-btn button-10px28px faq-write-cancel" onClick={handleShowAnswerInput}>취소</button>
                 {/* <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button> */}
                 </div>
                 </div>

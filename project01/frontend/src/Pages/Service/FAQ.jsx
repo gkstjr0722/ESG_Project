@@ -82,6 +82,7 @@ const FAQ = () => {
               >
                 <span>Q</span>
                 {q.TITLE}
+                <span></span> {/* 클래스네임 cWrite span: last-child가 Q에 붙어서 그거 떼려고 붙여놓음. 이거 떼면 Q에 last 다시 붙음 */}
               </div>
             ))
           )}
