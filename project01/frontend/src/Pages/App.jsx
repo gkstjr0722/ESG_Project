@@ -22,7 +22,7 @@ import photo5 from '../assets/Slider02.png';
 /* ======================
    MOCK(임시데이터) 스위치 & 데이터
    ====================== */
-const USE_MOCK = true; // CSS 작업용: true / 실제 연동: false
+const USE_MOCK = false; // CSS 작업용: true / 실제 연동: false
 const MOCK_SLIDES = [
   { NOTICE_ID: 101, TITLE: '폭우로 인한 전기안전 주의 안내 ', NOTICE_DT: '2025-08-20' },
   { NOTICE_ID: 102, TITLE: '여름철 전기요금 절약 방법 안내', NOTICE_DT: '2025-08-18' },
@@ -81,7 +81,7 @@ function Slider({ limit = 6 }) {
   const slides = useMemo(() => items, [items]);
 
   if (loading) {
-    return <div className="mySwiper-1" />;
+    return <div className="mySwiper" />;
   }
 
   const baseSlides = slides.length
@@ -96,14 +96,14 @@ function Slider({ limit = 6 }) {
 
   return (
     <>
-      <section className="mSlider-1">
+      <section className="mSlider">
         <button className="mSlider-PBtn" aria-label="Previous slide">&lt;</button>
         <button className="mSlider-NBtn" aria-label="Next slide">&gt;</button>
 
         <Swiper
           ref={swiperRef}
           modules={[Pagination, Navigation, Autoplay]}
-          className="mySwiper-1"
+          className="mySwiper"
           slidesPerView={1}
           spaceBetween={0}
           loop={renderSlides.length > 1}
@@ -157,6 +157,11 @@ function Slider({ limit = 6 }) {
    ====================== */
 const videoData = [
   {
+    title: '1kWh 줄이기 캠페인',
+    url: 'https://youtu.be/4p0_F3RlBoQ?si=y1AQ35s6XzurzEBO',
+    thumbnail: 'https://img.youtube.com/vi/4p0_F3RlBoQ/0.jpg',
+  },
+  {
     title: '한전 파워플래너 소개',
     url: 'https://www.youtube.com/watch?v=he5BxBUhOBo',
     thumbnail: 'https://img.youtube.com/vi/he5BxBUhOBo/0.jpg',
@@ -165,11 +170,6 @@ const videoData = [
     title: '에너지 캐시백',
     url: 'https://youtu.be/b5Oa1T0pNho?si=Qi1g6SV_XPMeR3fJ',
     thumbnail: 'https://img.youtube.com/vi/b5Oa1T0pNho/0.jpg',
-  },
-  {
-    title: '1kWh 줄이기 캠페인',
-    url: 'https://youtu.be/4p0_F3RlBoQ?si=y1AQ35s6XzurzEBO',
-    thumbnail: 'https://img.youtube.com/vi/4p0_F3RlBoQ/0.jpg',
   },
   {
     title: '중요한 건 하려는 마음!',
