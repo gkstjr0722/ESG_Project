@@ -490,31 +490,45 @@
 /* 로고 */
 .cHeader-Logo { display: inline-flex; align-items: center; gap: 10px; }
 .cHeader-LogoLink { display:inline-flex; align-items:center; text-decoration:none; }
-.cHeader-LogoImg { height: 26px; display:block; }
+/* 로고 살짝 확대 (반응형) */
+.cHeader-LogoImg { height: clamp(28px, 2.4vw, 36px); display:block; }
+
 .cHeader-Badge {
   font-size:12px; padding:3px 8px; border-radius:999px;
   background:#eef3ff; color:#1854ad; text-decoration:none; font-weight:700;
 }
 
 /* 메인 메뉴(데스크탑) */
-.cHeader-Menu { display:flex; align-items:center; gap: 22px; }
+.cHeader-Menu { display:flex; align-items:center; gap: 34px; } /* 30px → 34px */
 .cHeader-MenuItem {
   text-decoration:none; color:#111; font-weight:600;
+  font-size: clamp(15px, 1.05vw, 18px);
   padding: 8px 6px; border-radius: 8px;
 }
-.cHeader-MenuItem:hover { background:#f6f7fb; }
+/* hover 색/배경 제거 */
+.cHeader-MenuItem:hover { background: transparent; color: inherit; }
 
 /* 우측 유틸(데스크탑) */
 .cHeader-Util { display:flex; align-items:center; gap: 16px; }
 .cHeader-UtilLink, .cHeader-LoginBtn {
   text-decoration:none;
-  color:#3c79d5;      /* 요청: 파란색으로 변경 */
+  color:#3c79d5; /* 파란색 유지 */
   font-weight:600; cursor:pointer;
+  font-size: clamp(14.5px, 1.05vw, 18px);
   padding: 6px 8px; border-radius: 8px;
 }
-.cHeader-UtilLink:hover, .cHeader-LoginBtn:hover {
-  background:#f0f5ff; /* 연파랑 배경 */
-  color:#1854ad;      /* 진한 파랑 텍스트 */
+/* hover/active/focus/visited 모두 동일한 파란색 유지 + 배경 변화 제거 */
+.cHeader .cHeader-UtilLink:hover,
+.cHeader .cHeader-UtilLink:active,
+.cHeader .cHeader-UtilLink:focus,
+.cHeader .cHeader-UtilLink:visited,
+.cHeader .cHeader-LoginBtn:hover,
+.cHeader .cHeader-LoginBtn:active,
+.cHeader .cHeader-LoginBtn:focus,
+.cHeader .cHeader-LoginBtn:visited {
+  color:#3c79d5;
+  background: transparent;
+  text-decoration: none;
 }
 
 /* 모바일 우측 아이콘(햄버거만) */
@@ -542,18 +556,36 @@
 .cHeader-DrawerHead {
   height: 56px; display:flex; align-items:center; justify-content: space-between;
   padding: 0 16px; border-bottom: 1px solid rgba(0,0,0,0.06);
-  font-weight: 700; font-size: 16px;
+  font-weight: 700; font-size: 17px; /* 살짝 키움 */
 }
+
 .cHeader-DrawerSection { padding: 10px 8px; display:flex; flex-direction:column; gap: 2px; }
+
+/* 드로어 기본 링크(메인 메뉴 섹션) */
 .cHeader-DrawerLink {
   padding: 14px 12px; text-decoration:none; color:#111; font-weight:600;
+  font-size: 16.5px;
   border-radius: 10px; display:block; text-align:left; background:transparent; border:0;
 }
-.cHeader-DrawerLink:hover { background:#f5f7fb; }
+/* hover 색/배경 제거 (기본 섹션) */
+.cHeader-DrawerLink:hover { background: transparent; color: inherit; }
+
+/* ✅ 드로어의 마지막 섹션(마이페이지 / 로그인 or 로그아웃)을 파란색으로 고정 */
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink {
+  color:#3c79d5;
+}
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:hover,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:active,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:focus,
+.cHeader-DrawerSection:last-of-type .cHeader-DrawerLink:visited {
+  color:#3c79d5;
+  background: transparent;
+  text-decoration: none;
+}
+
 .cHeader-BtnLike { cursor:pointer; }
 
 /* ===== 반응형 ===== */
-/* 모바일: 데스크탑 메뉴/유틸 숨김, 햄버거만 표시 */
 @media (max-width: 768px) {
   .cHeader-Menu,
   .cHeader-Util { display: none; }
@@ -561,23 +593,19 @@
   .cHeader-Nav { padding: 0 16px; }
 }
 
-/* 작은 노트북 ↑ 약간 여백 확장 */
 @media (min-width: 1024px) {
   .cHeader-Nav { padding: 0 clamp(24px, 5vw, 72px); }
 }
 
-/* 데스크탑 기본 */
 @media (min-width: 1280px) {
   .cHeader-Nav { padding: 0 clamp(32px, 6vw, 96px); }
 }
 
-/* 큰 노트북/맥북 프로 */
 @media (min-width: 1440px) {
-  .cHeader-Menu { gap: 26px; }
+  .cHeader-Menu { gap: 36px; } /* 큰 노트북에서 조금 더 넓게 */
 }
 
-/* FHD 데스크탑 */
 @media (min-width: 1920px) {
   .cHeader-Nav { padding: 0 clamp(48px, 8vw, 140px); }
+  .cHeader-Menu { gap: 40px; } /* FHD 이상에서 한 끗 더 넓게 */
 }
-/* =================================================== */
