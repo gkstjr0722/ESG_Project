@@ -9,8 +9,7 @@ const DEFAULT_LEVEL = 12; // 전국 스케일
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
-  const [stations, setStations] = useState([]); 
-  const [selectedTab, setSelectedTab] = useState('ev'); // 'ev' | 'elec'
+ // 'ev' | 'elec'
 
   // 🔹 추가: 전기공사업체 전용 상태 + 탭 상태
   const [contractors, setContractors] = useState([]);
