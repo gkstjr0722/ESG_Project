@@ -50,49 +50,6 @@ export default function CalcMain() {
   const currentMonthIdx = now.getMonth();                    // 0~11
   const prevMonthIdx    = (currentMonthIdx - 1 + 12) % 12;   // 전달
 
-<<<<<<< HEAD
-// CalcMain.jsx
-const handleCalculationComplete = (payload = {}) => {
-  setAvgActive(true);
-
-  // 1) 안전하게 숫자화(유효하지 않으면 null)
-  const left  = Number.isFinite(Number(payload.lastMonth)) ? Number(payload.lastMonth) : null;   // 왼쪽(전달) = 입력값
-  const right = Number.isFinite(Number(payload.thisMonth)) ? Number(payload.thisMonth) : null;   // 오른쪽(이번달) = 예측값
-
-  console.log(
-    '[CalcMain] onCalculationComplete -> lastMonth(left)=', left,
-    ' thisMonth(right)=', right,
-    ' fromApi=', Boolean(payload.fromApi)
-  );
-
-  // 2) 월별 사용량 업데이트
-  setMonthlyUsageData(prev => {
-    const nextArr = [...prev];
-    if (left  !== null)  nextArr[prevMonthIdx]    = { ...nextArr[prevMonthIdx],    value: left  }; // 왼쪽
-    if (right !== null)  nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: right }; // 오른쪽
-    return nextArr;
-  });
-
-  // 3) 평균 전력량 업데이트(동일한 규칙)
-  setAvgUsageData(prev => {
-    const nextArr = [...prev];
-    if (left  !== null)  nextArr[prevMonthIdx]    = { ...nextArr[prevMonthIdx],    value: left  };
-    if (right !== null)  nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: right };
-    return nextArr;
-  });
-};
-
-// 그래프에 넘길 데이터 (그대로 유지)
-const viewDataMonthly = [
-  monthlyUsageData[prevMonthIdx],     // 왼쪽: 전달(=입력값)
-  monthlyUsageData[currentMonthIdx],  // 오른쪽: 이번달(=예측값)
-];
-const viewDataAvg = [
-  avgUsageData[prevMonthIdx],
-  avgUsageData[currentMonthIdx],
-];
-
-=======
   const handleCalculationComplete = async (payload = {}) => { // ✅ async 유지
     setAvgActive(true);
 
@@ -158,7 +115,6 @@ const viewDataAvg = [
     avgUsageData[prevMonthIdx],
     avgUsageData[currentMonthIdx],
   ];
->>>>>>> 7dcde1d6a2a955eddd9422b86a29d16508df9bb0
 
   return (
     <>
@@ -168,11 +124,7 @@ const viewDataAvg = [
           <div className='box'>
             <div>전기요금</div>
             <PowerBill
-<<<<<<< HEAD
-              predictApiUrl="/fast/predict"      // 백엔드 프록시
-=======
               predictApiUrl="/fast/predict"
->>>>>>> 7dcde1d6a2a955eddd9422b86a29d16508df9bb0
               onCalculationComplete={handleCalculationComplete}
             />
           </div>
