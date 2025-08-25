@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../CSS/Sub.css';
+import '../CSS/Main.css';
 import Header from '../component/Header';
 
 // API Base (환경변수 없으면 로컬)
