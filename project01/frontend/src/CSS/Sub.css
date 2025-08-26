@@ -1028,36 +1028,6 @@ body {
 /* 표 상단 작성일 */
 .sWriteDate{
  margin-left: 500px;
-<<<<<<< HEAD
-}
-
-/* 글 옆 작성일 */
-.sWrite-Date{
-  margin-left: auto;
-}
-
-/* 제목이랑 글 분리 hr 바*/
-.sBlue{
-  border: none;
-  height: 1.5px;  
-  background-color: #397ffa ;
-  /* background-color: #1951a6 ; */
-  margin: 0;
-}
-
-<<<<<<< HEAD
-=======
-/* ===== 마이페이지 ========================================================== */
-:root{
-  --mypage-primary:#3c79d5;
-  --mypage-primary-hover:#2d69c4;
-  --mypage-text:#0f172a;
-  --mypage-subtext:#6b7280;
-  --mypage-border:rgba(15,23,42,.09);
-  --mypage-radius:16px;
-  --mypage-label-w:168px; /* 레이블 폭 */
-=======
->>>>>>> 7dcde1d6a2a955eddd9422b86a29d16508df9bb0
 }
 
 /* 글 옆 작성일 */

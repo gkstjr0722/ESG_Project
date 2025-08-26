@@ -6,7 +6,7 @@ import '../CSS/Sub.css';
 
 const Mypage = () => {
   const [user, setUser] = useState(null);
-  const [userType, setUserType] = useState('none');
+  const [userType, setUserType] = useState('none'); // 'business' | 'government'
   const [editMode, setEditMode] = useState(false);
 
   // Edit form state
@@ -47,10 +47,8 @@ const Mypage = () => {
     const userId = id || govId;
 
     const endpoint = govId
-      ? 'http://192.168.111.194:3001/userg/userinfo_gov'    // ✅ 관공업: userG 라우터
-      : 'http://192.168.111.194:3001/user/userinfo';        // ✅ 기업: user 라우터로 통합
-      ? 'http://192.168.111.194:3001/userg/userinfo_gov'    // ✅ 관공업: userG 라우터
-      : 'http://192.168.111.194:3001/user/userinfo';        // ✅ 기업: user 라우터로 통합
+      ? 'http://192.168.111.194:3001/userg/userinfo_gov' // 관공서/정부
+      : 'http://192.168.111.194:3001/user/userinfo';     // 기업
 
     try {
       const res = await axios.post(endpoint, { id: userId });
@@ -59,7 +57,8 @@ const Mypage = () => {
         alert('회원 정보를 찾을 수 없습니다.');
         navigate('/login');
       }
-    } catch {
+    } catch (err) {
+      console.error(err);
       alert('회원정보 조회 실패! 다시 로그인 해주세요.');
       navigate('/login');
     }
@@ -68,7 +67,7 @@ const Mypage = () => {
   // 최초 마운트 때 사용자 데이터 fetch
   useEffect(() => {
     fetchUserData();
-    // eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
 
   // user가 변경될 때 formData를 동기화
@@ -85,7 +84,7 @@ const Mypage = () => {
         corpTel: user.corpTel || '',
         address: user.address || '',
         id: user.id || '',
-        gov_id: user.id || '', // 정부회원도 id 컬럼을 사용!
+        gov_id: user.id || '', // 정부회원도 id 필드 사용
       });
     }
   }, [user]);
@@ -95,7 +94,7 @@ const Mypage = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 회원 탈퇴 처리 (오른쪽 아래 버튼용)
+  // 회원 탈퇴
   const userDelete = async () => {
     if (!user) return;
     const ok = window.confirm('정말로 회원탈퇴하시겠습니까? 이 작업은 되돌릴 수 없습니다.');
@@ -103,9 +102,7 @@ const Mypage = () => {
     try {
       if (userType === 'business') {
         await axios.delete('http://192.168.111.194:3001/user/delete', { data: { id: user.id } });
-        await axios.delete('http://192.168.111.194:3001/user/delete', { data: { id: user.id } });
       } else {
-        await axios.delete('http://192.168.111.194:3001/userg/delete_gov', { data: { id: user.id } });
         await axios.delete('http://192.168.111.194:3001/userg/delete_gov', { data: { id: user.id } });
       }
       alert('탈퇴가 완료되었습니다.');
@@ -118,7 +115,7 @@ const Mypage = () => {
     }
   };
 
-  // 수정 완료 시 변경사항 즉시 반영
+  // 수정 완료
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -155,8 +152,6 @@ const Mypage = () => {
 
     try {
       if (userType === 'business') {
-        // ✅ 기업: user 라우터로 통일
-        await axios.put('http://192.168.111.194:3001/user/update', {
         await axios.put('http://192.168.111.194:3001/user/update', {
           ...formData,
           id: formData.id,
@@ -164,14 +159,11 @@ const Mypage = () => {
 
         if (newPassword) {
           await axios.put('http://192.168.111.194:3001/user/password-update', {
-          await axios.put('http://192.168.111.194:3001/user/password-update', {
             id: formData.id,
             newPassword,
           });
         }
       } else {
-        // ✅ 관공업: userg 라우터 경로 유지
-        await axios.put('http://192.168.111.194:3001/userg/update_gov', {
         await axios.put('http://192.168.111.194:3001/userg/update_gov', {
           corpName: formData.corpName,
           ceo: formData.ceo,
@@ -181,11 +173,10 @@ const Mypage = () => {
           email: formData.email,
           corpTel: formData.corpTel,
           address: formData.address,
-          id: formData.gov_id,  // 실제 ID 반드시 맞게
+          id: formData.gov_id,
         });
 
         if (newPassword) {
-          await axios.put('http://192.168.111.194:3001/userg/update_gov_pw', {
           await axios.put('http://192.168.111.194:3001/userg/update_gov_pw', {
             id: formData.gov_id,
             newPassword,
@@ -194,20 +185,18 @@ const Mypage = () => {
       }
 
       alert('회원 정보가 성공적으로 수정되었습니다.');
-      // 1. 수정 폼 닫기
       setEditMode(false);
-      // 2. 최신 사용자 정보 다시 fetch - 여기서 바로 반영됨!
       await fetchUserData();
-      // 3. 비밀번호 입력란 초기화
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (error) {
-      alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
       console.error(error);
+      alert('회원 정보 수정에 실패했습니다. 다시 시도해주세요.');
     }
   };
 
- if (!user)
+  // 로딩 상태
+  if (!user)
     return (
       <div className="sMypage">
         <Header />
@@ -215,8 +204,8 @@ const Mypage = () => {
       </div>
     );
 
+  // 수정 모드
   if (editMode) {
-    // 수정 모드
     return (
       <div className="sMypage">
         <Header />
@@ -362,17 +351,29 @@ const Mypage = () => {
               />
             </label>
 
+            {/* 버튼 영역: 좌(탈퇴) / 우(취소+완료) */}
             <div className="sMypage-Btns">
-              <button
-                type="button"
-                className="sMypage-BtnSecondary"
-                onClick={userDelete}
-              >
-                회원 탈퇴
-              </button>
-              <button type="button" className="sMypage-BtnSecondary" onClick={() => setEditMode(false)}>취소</button>
-              <button type="submit" className="sMypage-BtnPrimary">수정 완료</button>
-              {/* 마지막 버튼은 오른쪽 끝 + primary 스타일 (CSS에서 처리) */}
+              <div className="sMypage-BtnsLeft">
+                <button
+                  type="button"
+                  className="sMypage-BtnDanger"
+                  onClick={userDelete}
+                >
+                  회원 탈퇴
+                </button>
+              </div>
+              <div className="sMypage-BtnsRight">
+                <button
+                  type="button"
+                  className="sMypage-BtnSecondary"
+                  onClick={() => setEditMode(false)}
+                >
+                  취소
+                </button>
+                <button type="submit" className="sMypage-BtnPrimary">
+                  수정 완료
+                </button>
+              </div>
             </div>
           </form>
         </div>
@@ -445,13 +446,10 @@ const Mypage = () => {
           </div>
         </div>
 
-<<<<<<< HEAD
-=======
-        <div className="mypage-btn-wrap btn-FEnd">
-          <button className="mypage-btn-primary" onClick={() => setEditMode(true)}>정보 수정</button>
->>>>>>> 74a7342786e9c4cc5814b8ca9908035204c6707c
-        <div className="sMypage-Btns sMypage-Btns--end">
-          <button className="sMypage-BtnPrimary" onClick={() => setEditMode(true)}>정보 수정</button>
+        <div className="sMypage-ViewBtns">
+          <button className="sMypage-BtnPrimary" onClick={() => setEditMode(true)}>
+            정보 수정
+          </button>
         </div>
       </div>
     </div>
