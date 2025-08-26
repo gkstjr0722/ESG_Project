@@ -331,7 +331,7 @@
 .sMypage-ViewWrap,.sMypage-EditWrap{padding:32px 20px 72px;}
 .sMypage-Loading{padding:72px 20px;text-align:center;color:var(--sMypage-subtext);font-size:15px;}
 
-/* 보기 화면 */
+/* 보기 화면 카드 */
 .sMypage-Info{
   border:1px solid var(--sMypage-border);
   border-radius:var(--sMypage-radius);
@@ -351,6 +351,14 @@
 .sMypage-Label{color:var(--sMypage-subtext);font-weight:700;font-size:15px;}
 .sMypage-Value{font-size:16.5px;font-weight:700;word-break:break-word;letter-spacing:-.005em;}
 
+/* 보기 화면: 하단 버튼(정보 수정) */
+.sMypage-ViewBtns{
+  display:flex;
+  justify-content:flex-end; /* 오른쪽 정렬 */
+  margin-top:18px;          /* 위 카드와 간격 */
+}
+
+/* 반응형(보기 카드) */
 @media (max-width:560px){
   .sMypage-Row{grid-template-columns:1fr;gap:6px;padding:14px 14px;}
   .sMypage-Label{font-size:13px;}
@@ -366,17 +374,17 @@
 }
 .sMypage-BtnPrimary:active,.sMypage-BtnSecondary:active{transform:translateY(1px);}
 
-/* primary (수정 완료) */
+/* primary (파란 버튼: 수정 완료/회원 탈퇴 공통) */
 .sMypage-BtnPrimary{
   background:var(--sMypage-primary);color:#fff;
   transition:background .18s,color .18s,border-color .18s,transform .04s;
 }
 .sMypage-BtnPrimary:hover{background:var(--sMypage-primary-hover);}
 
-/* secondary (취소 — 모양 동일, 색만 변경) */
+/* secondary (회색: 취소) */
 .sMypage-BtnSecondary{
-  background:#F1F2F6;          /* 회색 배경 */
-  color:#737373;                /* 회색 글자 */
+  background:#F1F2F6;
+  color:#737373;
   transition:background .18s,color .18s,transform .04s;
 }
 .sMypage-BtnSecondary:hover{
@@ -404,40 +412,34 @@
 .sMypage-EditWrap .sMypage-Btns{margin-top:10px;}
 @media (min-width:720px){.sMypage-EditWrap .sMypage-Btns{grid-column:1 / -1;}}
 
-/* ===== 버튼 정렬/색 오버라이드 (DOM 순서: 1=탈퇴, 2=취소, 3=수정완료) ===== */
-/* 1) 첫 번째(회원 탈퇴)를 Primary처럼 파란색으로 */
-.sMypage-Form .sMypage-Btns > :first-child{
-  background:var(--sMypage-primary);
-  color:#fff;
-  border-color:transparent;
-  transition:background .18s,color .18s,border-color .18s,transform .04s;
+/* === 편집 화면 버튼 레이아웃 (왼쪽: 탈퇴 / 오른쪽: 취소 + 완료) === */
+.sMypage-Form .sMypage-Btns{
+  display:flex;
+  align-items:center;
+  gap:12px;           /* 좌·우 묶음 사이 간격 */
+  margin-top:16px;    /* 위 입력필드들과 간격 */
+  padding-top:6px;
 }
-.sMypage-Form .sMypage-Btns > :first-child:hover{
-  background:var(--sMypage-primary-hover);
-  color:#fff;
-}
-
-/* 2) 두 번째(취소)부터 오른쪽 정렬 시작 → 취소 오른쪽에 수정완료가 붙음 */
-.sMypage-Form .sMypage-Btns > :nth-child(2){
-  margin-left:auto; /* 오른쪽 끝으로 밀기 시작점 */
+.sMypage-BtnsLeft{ margin-right:auto; } /* 오른쪽 묶음을 끝으로 밀기 */
+.sMypage-BtnsRight{
+  display:flex;
+  gap:12px;           /* ★ 취소 ↔ 수정 완료 사이 간격 */
 }
 
-@media (max-width: 320px) {
-  .sMypage-Form { padding: 18px 12px; }
-  .sMypage-Btns { gap: 8px; }
-
+/* 초소형 화면 최적화(280px 등) */
+@media (max-width:320px){
+  .sMypage-Form{padding:18px 12px;}
+  .sMypage-Btns{gap:8px;}
+  .sMypage-BtnsRight{gap:8px;}
   .sMypage-BtnPrimary,
-  .sMypage-BtnSecondary {
-    height: 38px;
-    padding: 0 10px;
-    font-size: 13px;
-    white-space: nowrap;     /* ★ 줄바꿈 방지 */
-    /* border-radius는 기존 pill(999px) 유지: 필요시 14px 정도로 줄여도 OK */
+  .sMypage-BtnSecondary{
+    height:38px;
+    padding:0 10px;
+    font-size:13px;
+    white-space:nowrap; /* 줄바꿈 방지 */
   }
-
-  /* 오른쪽 묶음(취소부터) 유지 */
-  .sMypage-Form .sMypage-Btns > :nth-child(2) { margin-left: auto; }
 }
+
 
 /* ======================================================================== */
 
@@ -483,7 +485,7 @@ body {
 
 
 
-/* ===================== Calc.css ===================== */
+/* ==== 전력사용현황 ============================================ */
 .box {
   border: 2px solid #b6c1e9;
   border-radius: 18px;
@@ -491,11 +493,11 @@ body {
   background: #fff;
   margin-bottom: 20px;
   min-width: 260px;
-  min-height: 190px;
+  min-height: 190px;   /* 기본 높이 */
   position: relative;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
 }
 .box > div:first-child {
   font-size: 1.13em;
@@ -503,8 +505,12 @@ body {
   color: #364785;
   margin-bottom: 9px;
   letter-spacing: -0.5px;
+  width: 100%;
+  text-align: center;      /* 모든 박스 타이틀 중앙 */
 }
-.box:hover { border-color: #4361ee; z-index: 3; }
+
+.box:hover { border-color: #3c79d5; z-index: 3; }
+
 .grid-2x2 {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -516,10 +522,296 @@ body {
 }
 .grid-wrapper {
   display: flex;
-  justify-content: center; /* 가로 중앙 */
-  align-items: center;     /* 세로 중앙 */
-  min-height: 90vh;       /* 화면 높이 꽉 채움 */
+  justify-content: center;
+  align-items: center;
+  min-height: 90vh;
 }
+
+/* ---- 전기요금 계산기 ---------------------------- */
+.power-calc-bg {
+  display: flex;
+  flex: 1 1 auto;
+  width: 100%;
+}
+.power-calc-box {
+  width: 100%;
+  max-width: 100%;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  color: #0f172a;
+
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.power-calc-box,
+.power-calc-box * { box-sizing: border-box; }
+
+/* 제목/텍스트 */
+.power-calc-box h2 {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin: 0 0 6px 0;
+  color: #0f172a;
+}
+.power-calc-box h3 {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+.power-calc-box p {
+  margin: 0 0 10px 0;
+  color: #6b7280;
+  font-size: 15px;
+}
+
+/* -------- 초기 화면 레이아웃 -------- */
+.initial-view {
+  display: grid;
+  grid-template-rows: 1fr auto auto 1fr auto;
+  width: 100%;
+  height: 100%;
+  justify-items: center;
+  text-align: center;
+  gap: 6px;
+}
+.initial-view h3 { grid-row: 2; }
+.initial-view p  { grid-row: 3; }
+.initial-view .main {
+  grid-row: 5;
+  width: 100%;
+}
+
+/* -------- 결과 화면 레이아웃 -------- */
+.power-calc-result {
+  display: grid;
+  grid-template-rows: 1fr auto auto 1fr auto; /* 위여백 / h3 / 금액 / 여백 / 버튼 */
+  width: 100%;
+  height: 100%;
+  justify-items: center;
+  text-align: center;
+  gap: 6px;
+}
+.power-calc-result h3 { grid-row: 2; }
+.power-calc-result .result-amount { grid-row: 3; }
+.power-calc-result .main {
+  grid-row: 5;   /* 버튼은 하단 */
+  width: 100%;
+}
+
+/* ---------------- 폼 ---------------- */
+.power-calc-box form {
+  display: grid;
+  gap: 10px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+/* 기본 행: 라벨 100px + 컨트롤 1fr */
+.power-calc-box .row {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+.power-calc-box .row > label:first-child {
+  font-weight: 700;
+  color: #364785;
+}
+
+/* ✅ 라디오가 있는 행: 라벨은 위, 옵션들은 그 아래 가로로 나란히 */
+.power-calc-box .row:has(input[type="radio"]) {
+  display: block;                    /* 블록으로 전환하여 줄 배치 제어 */
+}
+.power-calc-box .row:has(input[type="radio"]) > label:first-child {
+  display: block;                    /* 라벨을 한 줄 전체로 */
+  margin-bottom: 6px;                /* 라벨과 옵션 사이 간격 */
+}
+.power-calc-box .row:has(input[type="radio"]) > label:not(:first-child) {
+  display: inline-flex;              /* 옵션들을 한 줄에 나란히 */
+  align-items: center;
+  gap: 6px;
+  margin-right: 14px;                /* 옵션 간격 */
+  margin-bottom: 4px;                /* 줄바꿈 시 세로 간격 */
+}
+
+/* 라디오/라벨 공통 */
+.power-calc-box input[type="radio"] {
+  width: 15px; height: 15px;
+  accent-color: #3c79d5;
+  cursor: pointer;
+}
+.power-calc-box .row label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+/* 입력/셀렉트 */
+.power-calc-box input[type="number"],
+.power-calc-box select {
+  width: 100%;
+  max-width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid rgba(15,23,42,.12);
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+  outline: none;
+}
+
+/* 에러 */
+.power-calc-box .error {
+  background: #fff4f4;
+  color: #b42318;
+  border: 1px solid #fecaca;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+/* ---- 버튼 ---------------- */
+.power-calc-box button.main,
+.power-calc-result button.main,
+.initial-view button.main {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 0;
+  font-weight: 700;
+  color: #fff;
+  background: #3c79d5;
+  cursor: pointer;
+  transition: all 0.1s;
+  -webkit-appearance: none;
+  appearance: none;
+  outline: none;
+}
+.power-calc-box button.main:hover,
+.power-calc-result button.main:hover,
+.initial-view button.main:hover {
+  filter: brightness(1.03);
+  background: #2468cd;
+}
+.power-calc-box button.main:active,
+.power-calc-result button.main:active,
+.initial-view button.main:active {
+  transform: translateY(1px);
+}
+.power-calc-box button.main:focus-visible,
+.power-calc-result button.main:focus-visible,
+.initial-view button.main:focus-visible {
+  box-shadow: 0 0 0 4px rgba(60,121,213,.2);
+}
+.power-calc-box button.main:disabled,
+.power-calc-result button.main:disabled,
+.initial-view button.main:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* 결과 금액 텍스트 */
+.power-calc-result .result-amount {
+  font-size: 26px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  color: #101828;
+  margin: 4px 0 2px 0;
+}
+.power-calc-result .unit {
+  margin-left: 6px;
+  font-size: 16px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+
+/* ---- 중앙정렬 해야해서 한 거임 ------------- */
+:root { --header-h: 64px; }
+html, body, #root { height: 100%; }
+
+.grid-wrapper {
+  width: 100%;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-h));
+  padding-top: 20px;   /* ✅ 헤더와 간격 확보 */
+  box-sizing: border-box;
+}
+
+/* ---- 반응형 -------------------------------------------------- */
+/* 태블릿 가로 / 작은 노트북 */
+@media (min-width: 1024px) {
+  :root { --header-h: 68px; }
+  .grid-wrapper { 
+    min-height: calc(100vh - var(--header-h));
+    padding-top: 24px;   /* ✅ 노트북에서 여백 좀 더 */
+  }
+  .box { min-height: 180px; }
+}
+
+/* 기본 데스크탑 */
+@media (min-width: 1280px) {
+  :root { --header-h: 72px; }
+  .grid-wrapper { 
+    min-height: calc(100vh - var(--header-h));
+    padding-top: 28px;   /* ✅ 데스크탑 여백 */
+  }
+  .box { min-height: 175px; }
+}
+
+/* 큰 노트북, 맥북 프로 */
+@media (min-width: 1440px) {
+  :root { --header-h: 76px; }
+  .grid-wrapper { 
+    min-height: calc(100vh - var(--header-h));
+    padding-top: 32px;
+  }
+  .box { min-height: 170px; }
+}
+
+/* Full HD 데스크탑 */
+@media (min-width: 1920px) {
+  :root { --header-h: 84px; }
+  .grid-wrapper { 
+    min-height: calc(100vh - var(--header-h));
+    padding-top: 36px;
+  }
+  .box { min-height: 165px; }
+}
+/* ===================================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* ===================== Map.css ===================== */
 .evmap-mainwrap {
@@ -1043,5 +1335,3 @@ body {
   /* background-color: #1951a6 ; */
   margin: 0;
 }
-
-
