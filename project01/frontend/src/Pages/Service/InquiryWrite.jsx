@@ -24,7 +24,7 @@ const InquiryWrite = () => {
   useEffect(() => {
     if (isEdit) {
       setLoading(true);
-      axios.get(`http://192.168.111.194:3001/api/inquiry/${id}`)
+      axios.get(`http://localhost:3001/api/inquiry/${id}`)
         .then(res => {
           if (res.data && res.data.question) {
             // 본인 글 확인 (실제 운영에서는 백엔드에서 체크!)
@@ -69,7 +69,7 @@ const InquiryWrite = () => {
         const now = new Date();
         const UPDATE_DT = now.toISOString().slice(0, 19).replace('T', ' ');
         const res = await axios.put(
-          `http://192.168.111.194:3001/api/inquiry/edit/${id}`,
+          `http://localhost:3001/api/inquiry/edit/${id}`,
           { ...form, UPDATE_DT }
         );
         if (res.data.result === 'success') {
@@ -95,7 +95,7 @@ const InquiryWrite = () => {
           UPDATE_DT: null,
           QS_ID,
         };
-        const res = await axios.post('http://192.168.111.194:3001/api/inquiry/add', data);
+        const res = await axios.post('http://localhost:3001/api/inquiry/add', data);
         if (res.data.result === 'success') {
           alert('문의가 등록되었습니다!');
           navigate('/inquiry');

@@ -7,7 +7,7 @@ import '../CSS/Main.css';
 import Header from '../component/Header';
 
 // API Base (환경변수 없으면 로컬)
-const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://192.168.111.194:3001';
+const API_BASE = import.meta?.env?.VITE_API_BASE || 'http://localhost:3001';
 
 const Login = () => {
   const [mode, setMode] = useState('business');

@@ -25,7 +25,7 @@ const InquiryDetail = () => {
       setLoading(true);
       setError('');
       try {
-        const res = await axios.get(`http://192.168.111.194:3001/api/inquiry/${id}`);
+        const res = await axios.get(`http://localhost:3001/api/inquiry/${id}`);
         if (res.data && res.data.question) {
           setQuestion(res.data.question);  // 한 건 객체로 바로!
         } else {
@@ -54,7 +54,7 @@ const InquiryDetail = () => {
     }
     setAnswerLoading(true);
     try {
-      await axios.post(`http://192.168.111.194:3001/api/inquiry/answer/${question.QS_ID}`, {
+      await axios.post(`http://localhost:3001/api/inquiry/answer/${question.QS_ID}`, {
         ANSWER: answerInput,
       });
       alert('답변이 등록되었습니다!');
@@ -72,7 +72,7 @@ const InquiryDetail = () => {
     if (window.confirm("정말 삭제하시겠습니까?")) {
       try {
         const res = await axios.delete(
-          `http://192.168.111.194:3001/api/inquiry/delete/${question.QS_ID}`
+          `http://localhost:3001/api/inquiry/delete/${question.QS_ID}`
         );
         if (res.data.result === "success") {
           alert("삭제되었습니다!");

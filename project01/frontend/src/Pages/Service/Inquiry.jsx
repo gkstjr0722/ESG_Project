@@ -24,7 +24,7 @@ const Inquiry = () => {
       setError('');
       setLoading(true);
       try {
-        const res = await axios.get('http://192.168.111.194:3001/api/inquiry/list');
+        const res = await axios.get('http://localhost:3001/api/inquiry/list');
         setQuestions(res.data || []);
       } catch (err) {
         setError('문의 목록을 불러오지 못했습니다.');
