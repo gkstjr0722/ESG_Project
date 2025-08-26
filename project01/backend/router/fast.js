@@ -1,3 +1,4 @@
+// FAST API 관련 JS 
 const express = require('express');
 const axios = require('axios');
 
@@ -15,7 +16,7 @@ const toNum = (v) => {
 function buildFastApiPayload(body = {}) {
   const candidates = [
     body.current_month_kwh,
-     body.lastMonthKwh, 
+    body.lastMonthKwh, 
     body.value,
     body.thisMonth,
     body.lastMonth,

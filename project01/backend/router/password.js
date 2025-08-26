@@ -176,7 +176,7 @@ router.post('/reset/confirm', async (req, res) => {
  * 존재하면 password_reset_tokens에 해시 저장 후 메일 발송(또는 DEV 모드로 콘솔 출력).
  * 존재하지 않아도 같은 응답으로 사용자 정보 노출 방지.
  * =======================================================*/
-// ✅ 존재하지 않으면 404 반환하도록 수정한 버전
+// ✅ 아이디 존재하지 않으면 404 반환하도록 수정
 router.post('/email/request', requestLimiter, async (req, res) => {
   try {
     const { userType, id, bizRegNum, email } = req.body || {};

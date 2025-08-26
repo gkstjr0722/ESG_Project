@@ -58,10 +58,10 @@ router.put('/edit/:qs_id', (req, res) => {
 
     const insertSql = `
       INSERT INTO QUESTION_EDIT (
-        EDIT_ID, QS_ID, USER_ID, USER_NAME, EMAIL, TITLE, CONTENT, ANSWER,
+        EDIT_ID, QS_ID, USER_ID, USER_NAME, EMAIL, TITLE, CONTENT,
         QS_DATE, QS_NUMBER, AS_DATE, UPDATE_DT, EDIT_DT
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
     const values = [
       EDIT_ID,
@@ -72,7 +72,6 @@ router.put('/edit/:qs_id', (req, res) => {
       origin.TITLE,
       origin.CONTENT,
       origin.ANSWER,
-      origin.QS_DATE,
       origin.QS_NUMBER,
       origin.AS_DATE,
       UPDATE_DT,
@@ -119,7 +118,42 @@ router.get('/faq/top', (req, res) => {
   });
 });
 
-// 4. 상세 문의글 조회 라우터 (QS_ID로 단일 조회 + 조회수 증가)
+// 6. 고객문의글 답변 가능 기능(관리자만 가능) 라우터  ← 순서 위로 이동
+router.post('/answer/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const { ANSWER } = req.body;
+
+  if (!ANSWER || !qs_id) {
+    return res.status(400).json({ result: 'fail', msg: '필수값 누락' });
+  }
+
+  const sql = 'UPDATE USER_QUESTION SET ANSWER = ?, AS_DATE = NOW() WHERE QS_ID = ?';
+  conn.query(sql, [ANSWER, qs_id], (err) => {
+    if (err) {
+      console.error('DB 오류(답변등록):', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류(답변등록)' });
+    }
+    res.json({ result: 'success' });
+  });
+});
+
+// 5. 문의글 삭제 기능 라우터 (QS_ID 기준으로 삭제)  ← 순서 위로 이동
+router.delete('/delete/:qs_id', (req, res) => {
+  const { qs_id } = req.params;
+  const sql = `DELETE FROM USER_QUESTION WHERE QS_ID = ?`;
+  conn.query(sql, [qs_id], (err, result) => {
+    if (err) {
+      console.error('DB 오류:', err);
+      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
+    }
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
+    }
+    res.json({ result: 'success' });
+  });
+});
+
+// 4. 상세 문의글 조회 라우터 (QS_ID로 단일 조회 + 조회수 증가)  ← 순서 아래로 이동
 router.get('/:qs_id', (req, res) => {
   const { qs_id } = req.params;
 
@@ -142,41 +176,6 @@ router.get('/:qs_id', (req, res) => {
       }
       res.json({ question: rows[0] });
     });
-  });
-});
-
-// 5. 문의글 삭제 기능 라우터 (QS_ID 기준으로 삭제)
-router.delete('/delete/:qs_id', (req, res) => {
-  const { qs_id } = req.params;
-  const sql = `DELETE FROM USER_QUESTION WHERE QS_ID = ?`;
-  conn.query(sql, [qs_id], (err, result) => {
-    if (err) {
-      console.error('DB 오류:', err);
-      return res.status(500).json({ result: 'fail', msg: 'DB 오류' });
-    }
-    if (result.affectedRows === 0) {
-      return res.status(404).json({ result: 'fail', msg: 'NOT_FOUND' });
-    }
-    res.json({ result: 'success' });
-  });
-});
-
-// 6. 고객문의글 답변 가능 기능(관리자만 가능) 라우터
-router.post('/answer/:qs_id', (req, res) => {
-  const { qs_id } = req.params;
-  const { ANSWER } = req.body;
-
-  if (!ANSWER || !qs_id) {
-    return res.status(400).json({ result: 'fail', msg: '필수값 누락' });
-  }
-
-  const sql = 'UPDATE USER_QUESTION SET ANSWER = ?, AS_DATE = NOW() WHERE QS_ID = ?';
-  conn.query(sql, [ANSWER, qs_id], (err) => {
-    if (err) {
-      console.error('DB 오류(답변등록):', err);
-      return res.status(500).json({ result: 'fail', msg: 'DB 오류(답변등록)' });
-    }
-    res.json({ result: 'success' });
   });
 });
 

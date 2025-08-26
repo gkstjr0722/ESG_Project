@@ -14,7 +14,9 @@ const Carbon = ({ data }) => {
 
   useEffect(() => {
     // 혹시 남아있는 차트 정리(메모리릭 방지)
-    const prev = am5.registry.rootElements.find(root => root.dom && root.dom.id === chartId);
+    const prev = am5.registry.rootElements.find(
+      (root) => root.dom && root.dom.id === chartId
+    );
     if (prev) prev.dispose();
 
     let root = am5.Root.new(chartId);
@@ -22,8 +24,13 @@ const Carbon = ({ data }) => {
 
     let chart = root.container.children.push(
       am5xy.XYChart.new(root, {
-        panX: false, panY: false, wheelX: false, wheelY: false,
-        pinchZoomX: false, paddingLeft: 0, paddingRight: 1,
+        panX: false,
+        panY: false,
+        wheelX: false,
+        wheelY: false,
+        pinchZoomX: false,
+        paddingLeft: 0,
+        paddingRight: 1,
       })
     );
 
@@ -31,23 +38,34 @@ const Carbon = ({ data }) => {
     cursor.lineY.set("visible", false);
 
     let xRenderer = am5xy.AxisRendererX.new(root, {
-      minGridDistance: 30, minorGridEnabled: true,
+      minGridDistance: 30,
+      minorGridEnabled: true,
     });
     xRenderer.labels.template.setAll({
-      rotation: 0, centerY: am5.p50, centerX: am5.p50, paddingRight: 0,
+      rotation: 0,
+      centerY: am5.p50,
+      centerX: am5.p50,
+      paddingRight: 0,
     });
     xRenderer.grid.template.setAll({ location: 1 });
 
     let xAxis = chart.xAxes.push(
       am5xy.CategoryAxis.new(root, {
-        maxDeviation: 0.3, categoryField: "month",
-        renderer: xRenderer, tooltip: am5.Tooltip.new(root, {}),
+        maxDeviation: 0.3,
+        categoryField: "month",
+        renderer: xRenderer,
+        tooltip: am5.Tooltip.new(root, {}),
       })
     );
 
     let yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
     let yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer })
+      am5xy.ValueAxis.new(root, {
+        maxDeviation: 0.3,
+        renderer: yRenderer,
+        min: 0,             // ✅ y축을 0부터 시작
+        strictMinMax: false // 최대값은 데이터에 맞춰 자동 확장
+      })
     );
 
     let series = chart.series.push(
@@ -59,14 +77,16 @@ const Carbon = ({ data }) => {
         sequencedInterpolation: true,
         categoryXField: "month",
         tooltip: am5.Tooltip.new(root, {
-          // 왼쪽=전달, 오른쪽=예측이 한눈에 보이게 표시
-          labelText: "{co2} kgCO₂"
+          labelText: "{co2} kgCO₂",
         }),
       })
     );
 
     series.columns.template.setAll({
-      cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0, width: am5.percent(55)
+      cornerRadiusTL: 5,
+      cornerRadiusTR: 5,
+      strokeOpacity: 0,
+      width: am5.percent(55),
     });
     series.columns.template.adapters.add("fill", (fill, target) => {
       return chart.get("colors").getIndex(series.columns.indexOf(target));
@@ -103,9 +123,7 @@ const Carbon = ({ data }) => {
     };
   }, [chartId, data]);
 
-  return (
-    <div id={chartId} style={{ width: "100%", height: "200px" }}></div>
-  );
+  return <div id={chartId} style={{ width: "100%", height: "200px" }}></div>;
 };
 
 export default Carbon;

@@ -68,7 +68,7 @@ const Inquiry = () => {
 
       <br /><br />
       <div className="cWriteContent">
-        <h1>고객 문의</h1>
+        <h1>고객문의</h1>
 
         <div className="cSearch">
           <span>Q</span>

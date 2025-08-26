@@ -81,12 +81,7 @@ export default function MapEVCharger() {
 
         if (!alive) return;
         setContractors(cleaned);
-
-        // 🔎 콘솔로 위도/경도 확인
-        cleaned.forEach((c, i) => {
-          console.log(`[Geocode ${i + 1}] ${c.addr} → lat: ${c.lat}, lng: ${c.lng}`);
-        });
-        console.log(`총 ${cleaned.length}건 좌표 확인`);
+       
       } catch (e) {
         console.error(e);
         alert("전기공사업체 좌표 데이터 요청 실패");
@@ -246,7 +241,7 @@ export default function MapEVCharger() {
           {loading ? (
             <div className="evmap-loading">전국 충전소 불러오는 중...</div>
           ) : (
-            <div id="ev-map" className="evmap-map" style={{ width: "100%", height: "80vh" }} />
+            <div id="ev-map" className="evmap-map" />
           )}
         </div>
       </div>
