@@ -51,6 +51,96 @@ function readCompanyTypeFromDOM() {
   return null;
 }
 
+/* ====== 이 블록만 교체 (다른 코드/주석은 절대 수정 X) ====== */
+const getChecked = (name) =>
+  document.querySelector(`input[name="${name}"]:checked`)?.value ?? null;
+const getSelect = (sel) =>
+  document.querySelector(sel)?.value ?? null;
+
+// 입력 요소에 연결된 라벨 텍스트를 가장 안전하게 뽑는 헬퍼
+function _labelTextFor(input) {
+  if (!input) return '';
+  // <label for="id">
+  if (input.id) {
+    const byFor = document.querySelector(`label[for="${input.id}"]`);
+    if (byFor?.textContent) return byFor.textContent.trim();
+  }
+  // 형제 라벨(라디오 옆에 바로 오는 label)
+  if (input.nextElementSibling?.tagName === 'LABEL') {
+    return (input.nextElementSibling.textContent || '').trim();
+  }
+  // 부모에 텍스트가 섞여 있는 경우
+  const t = (input.parentElement?.textContent || '').trim();
+  return t;
+}
+
+function readFeePlanOption(payload = {}) {
+  // 1) payload 우선
+  let feeType    = payload.feeType     ?? payload.fee_type     ?? null; // '갑'|'을'
+  let planSet    = payload.planSet     ?? payload.plan_set     ?? null; // 'I'|'II'
+  let optionCode = payload.optionCode  ?? payload.option_code  ?? null; // 예: '고압A 선택I' 또는 'b_select1'
+
+  // 2) name이 잘 붙어 있는 경우 (가급적 먼저 시도)
+  if (!feeType) {
+    feeType =
+      getChecked('feeType') ??
+      getChecked('fee_type') ??
+      getChecked('fee') ??
+      getChecked('요금종별');
+  }
+  if (!planSet) {
+    planSet =
+      getChecked('planSet') ??
+      getChecked('plan_set') ??
+      getChecked('plan') ??
+      getChecked('선택');
+  }
+
+  // 3) 라디오의 라벨 텍스트에서 직접 판별 (name/id가 불명확한 UI 대응)
+  if (!feeType || !planSet) {
+    const checkedRadios = Array.from(
+      document.querySelectorAll('input[type="radio"]:checked')
+    );
+
+    for (const r of checkedRadios) {
+      const txt = _labelTextFor(r).replace(/\s+/g, '');
+      if (!feeType) {
+        if (/^갑$|요금종별갑|^A$|gab/i.test(txt)) feeType = '갑';
+        else if (/^을$|요금종별을|^B$|eul/i.test(txt)) feeType = '을';
+      }
+      if (!planSet) {
+        if (/선택\(II\)|선택II|Ⅱ|^II$/i.test(txt)) planSet = 'II';
+        else if (/선택\(I\)|선택I|Ⅰ|^I$/i.test(txt))  planSet = 'I';
+      }
+      if (feeType && planSet) break;
+    }
+  }
+
+  // 4) OPTION_CODE: "전기요금" 박스(첫 번째 .box) 안의 <select>를 우선 탐색
+  if (!optionCode) {
+    // 전기요금 영역(첫 번째 .box) 안에서 select 찾기
+    const billBox = document.querySelector('.grid-2x2 .box:first-child');
+    const selInBox = billBox?.querySelector('select');
+
+    // 박스 안에 없으면 문서 전체에서 첫 번째 select (다른 박스엔 일반적으로 없음)
+    const anySelect = selInBox || document.querySelector('select');
+
+    if (anySelect) {
+      // value가 있으면 value, 없으면 표시 텍스트 사용
+      optionCode =
+        anySelect.value ||
+        anySelect.options?.[anySelect.selectedIndex || 0]?.text ||
+        null;
+    }
+  }
+
+  console.log('[readFeePlanOption] resolved =>', { feeType, planSet, optionCode });
+  return { feeType, planSet, optionCode };
+}
+/* =============================================================== */
+
+
+
 export default function CalcMain() {
   const [monthlyUsageData, setMonthlyUsageData] = useState(initialMonthlyUsageData);
   const [avgUsageData, setAvgUsageData]         = useState(initialAvgUsageData);
@@ -65,8 +155,8 @@ export default function CalcMain() {
     setAvgActive(true);
 
     // 전달/이번달/다음달 값 계산
-    const left   = toNum(payload.lastMonth);     // 전달 실사용량(사용자 입력)
-    const thisM  = toNum(payload.thisMonth);     // 이번달(있으면)
+    const left  = toNum(payload.lastMonth);     // 전달 실사용량(사용자 입력)
+    const thisM = toNum(payload.thisMonth);     // 이번달(있으면)
 
     // (선택) 시간대 합계로 보정
     const hourlyThis  = payload.hourlyThisMonth  ?? payload.hourly_this_month  ?? null;
@@ -116,12 +206,15 @@ export default function CalcMain() {
     const currentMonthKwh = toNum(payload.currentMonthKwh, thisM_eff ?? left ?? 0);
     const nextMonthKwh    = toNum(nextM, null);
 
-    const domType   = readCompanyTypeFromDOM();
+    const domType     = readCompanyTypeFromDOM();
     const companyType = payload.companyType ?? payload.useType ?? domType ?? '산업용';
+
+    // ✅ 추가: 요금종별/선택/옵션 읽어오기 (payload → DOM 순)
+    const { feeType, planSet, optionCode } = readFeePlanOption(payload);
 
     console.log('[CalcMain] save payload =', {
       companyId, contractKw, currentMonthKwh, nextMonthKwh,
-      baseMonth: payload.baseMonth, companyType
+      baseMonth: payload.baseMonth, companyType, feeType, planSet, optionCode
     });
 
     try {
@@ -132,6 +225,10 @@ export default function CalcMain() {
         nextMonthKwh,
         baseMonth: payload.baseMonth,
         companyType,
+        // ✅ 추가: 3개 필드 전달 ( feetype,planset,optioncode )
+        feeType,
+        planSet,
+        optionCode,
         hourlyThisMonth: hourlyThis ?? undefined, // (옵션) 원자료 보관
         hourlyNextMonth: hourlyNext ?? undefined, // (옵션) 원자료 보관
       });

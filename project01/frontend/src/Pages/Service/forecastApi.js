@@ -1,4 +1,4 @@
-// src/Pages/Service/forecastApi.js
+// 전기사용량 입력값 관련 프론트 API 헬퍼 
 import axios from 'axios';
 
 export async function saveForecast({
@@ -7,6 +7,9 @@ export async function saveForecast({
   currentMonthKwh,
   baseMonth,     // 예: "202508"
   companyType,
+  feeType,
+  planSet,
+  optionCode,
 }) {
   // 프록시(vite.config.js)가 /api → http://localhost:3001 로 전달
   const url = '/api/forecast/save';
@@ -17,6 +20,10 @@ export async function saveForecast({
     current_month_kwh: Number(currentMonthKwh ?? 0),
     base_month: baseMonth ?? null,
     company_type: companyType ?? null,
+    fee_type: feeType ,// 갑/을 나누는 
+    plan_set: planSet , // 'I','II' 나눠주는 
+    option_code: optionCode,
+
   };
 
   try {

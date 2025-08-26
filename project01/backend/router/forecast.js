@@ -42,7 +42,17 @@ router.get('/_ping', (req, res) => res.json({ ok: true, where: '/api/forecast/_p
 router.post('/save', async (req, res) => {
   try {
     // 1) validate
-    const { company_id, contract_kw, current_month_kwh, base_month, company_type } = req.body || {};
+    const {
+      company_id,
+      contract_kw,
+      current_month_kwh,
+      base_month,
+      company_type,
+      // ✅ 추가 필드 3개
+      fee_type,
+      plan_set,
+      option_code,
+    } = req.body || {};
     console.log('[save] body =', req.body);
 
     const missing = [];
@@ -50,6 +60,7 @@ router.post('/save', async (req, res) => {
     if (!Number.isFinite(Number(contract_kw))) missing.push('contract_kw');
     if (!Number.isFinite(Number(current_month_kwh))) missing.push('current_month_kwh');
     if (missing.length) {
+      console.warn('[save] 400 missing fields =', missing); // 🔍 추가 로그
       return res.status(400).json({ ok: false, message: '필수값 누락/숫자 아님', missing });
     }
 
@@ -65,6 +76,7 @@ router.post('/save', async (req, res) => {
     // 3) call FastAPI
     const baseUrl = process.env.FASTAPI_URL || 'http://127.0.0.1:8000';
     const fastUrl = `${baseUrl}/predict`;
+    console.log('[save] call fastapi =', fastUrl); // 🔍 추가 로그
     const { data } = await axios.post(fastUrl, { current_month_kwh: Number(current_month_kwh) });
     console.log('[save] fastapi ok. keys this/next =',
       Object.keys(data?.hourly_this_month || {}).length,
@@ -78,6 +90,7 @@ router.post('/save', async (req, res) => {
     const okThis = mustHours.every((h) => getHourValue(ht, h) != null);
     const okNext = mustHours.every((h) => getHourValue(hn, h) != null);
     if (!okThis || !okNext) {
+      console.warn('[save] 502 hours missing', { this_len: Object.keys(ht).length, next_len: Object.keys(hn).length }); // 🔍 추가 로그
       return res.status(502).json({
         ok: false,
         message: '예측 응답 24시간 누락',
@@ -86,31 +99,40 @@ router.post('/save', async (req, res) => {
       });
     }
 
-    // 5) rows (COMPANY_TYPE 포함)  ✅ 시간키 접근 수정
+    // 5) rows (COMPANY_TYPE 포함)  ✅ 시간키 접근 + 새 컬럼 포함
     const rows = [];
     for (let h = 0; h < 24; h++) {
       const v = Number(getHourValue(ht, h));
       if (!Number.isFinite(v)) {
         const key = String(h).padStart(2, '0');
+        console.warn('[save] 502 not-a-number in this_month', { hour: key, value: getHourValue(ht, h) }); // 🔍 추가 로그
         return res.status(502).json({ ok: false, message: `this_month 숫자 아님: hour=${key}` });
       }
-      rows.push([company_id, normType, ymThis, h, v, Number(current_month_kwh), Number(contract_kw)]);
+      rows.push([
+        company_id, normType, fee_type, plan_set, option_code,
+        ymThis, h, v, Number(current_month_kwh), Number(contract_kw),
+      ]);
     }
     for (let h = 0; h < 24; h++) {
       const v = Number(getHourValue(hn, h));
       if (!Number.isFinite(v)) {
         const key = String(h).padStart(2, '0');
+        console.warn('[save] 502 not-a-number in next_month', { hour: key, value: getHourValue(hn, h) }); // 🔍 추가 로그
         return res.status(502).json({ ok: false, message: `next_month 숫자 아님: hour=${key}` });
       }
-      rows.push([company_id, normType, ymNext, h, v, Number(current_month_kwh), Number(contract_kw)]);
+      rows.push([
+        company_id, normType, fee_type, plan_set, option_code,
+        ymNext, h, v, Number(current_month_kwh), Number(contract_kw),
+      ]);
     }
     console.log('[save] rows to insert =', rows.length); // 48
 
-    // 6) INSERT ONLY (append)
-    const placeholders = rows.map(() => '(?, ?, ?, ?, ?, ?, ?)').join(', ');
+    // 6) INSERT ONLY (append)  ✅ 10개 자리표시자 + OPTION_CODE 오타 수정
+    const placeholders = rows.map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)').join(', ');
     const sql = `
       INSERT INTO power_forecast_hourly
-        (COMPANY_ID, COMPANY_TYPE, FORECAST_YM, HOUR, PRED_KWH, USED_KWH, CONTRACT_KW)
+        (COMPANY_ID, COMPANY_TYPE, FEE_TYPE, PLAN_SET, OPTION_CODE,
+         FORECAST_YM, HOUR, PRED_KWH, USED_KWH, CONTRACT_KW)
       VALUES ${placeholders}
     `;
 
@@ -124,16 +146,29 @@ router.post('/save', async (req, res) => {
     } catch (e) {
       await conn.rollback();
       console.error('[save] db error:', e);
+      console.error('[save] db error detail =', {           // 🔍 상세 에러 추가 로그
+        code: e.code,
+        errno: e.errno,
+        sqlState: e.sqlState,
+        sqlMessage: e.sqlMessage,
+        sql: e.sql
+      });
+      if (e && e.stack) console.error('[save] db error stack =\n', e.stack); // 🔍 스택 추가
       return res.status(500).json({ ok: false, message: 'DB error', detail: e?.message });
     } finally {
       conn.release();
     }
   } catch (err) {
     console.error('[save] fatal error:', err);
+    if (err && err.response) { // 🔍 FastAPI/axios 에러인 경우 추가
+      console.error('[save] upstream error detail =', {
+        status: err.response.status,
+        data: err.response.data
+      });
+    }
+    if (err && err.stack) console.error('[save] fatal stack =\n', err.stack); // 🔍 스택 추가
     return res.status(500).json({ ok: false, message: 'server error', detail: err?.message });
   }
 });
 
 module.exports = router;
-
-// 수정 
