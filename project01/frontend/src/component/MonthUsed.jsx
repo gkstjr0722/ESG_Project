@@ -45,8 +45,40 @@ const MonthUsed = ({ data }) => {
 
     let yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
     let yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer, min: 4000, strictMinMax: true })
+      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer })
     );
+
+    // ===== 공통 y축 범위 동기화 (전역 공유) =====
+    const calcDomain = (vals) => {
+      if (!vals.length) return null;
+      const min = Math.min(...vals);
+      const max = Math.max(...vals);
+      const range = Math.max(1, max - min);
+      const pad = Math.max(200, Math.round(range * 0.08)); // 8% or 최소 200kWh
+      const niceMin = Math.floor((min - pad) / 100) * 100;
+      const niceMax = Math.ceil((max + pad) / 10000) * 10000;
+      return {
+        min: Math.max(0, niceMin),
+        max: niceMax > niceMin ? niceMax : niceMin + 1000,
+      };
+    };
+    const applyDomain = (dom) => {
+      if (!dom) return;
+      yAxis.setAll({ min: dom.min, max: dom.max, strictMinMax: true });
+    };
+    const syncWithGlobal = (local) => {
+      const g = window;
+      const prev = g.__powerYDomain;
+      const merged = prev
+        ? { min: Math.min(prev.min, local.min), max: Math.max(prev.max, local.max) }
+        : local;
+      g.__powerYDomain = merged;
+      g.dispatchEvent?.(new CustomEvent("powerYDomainUpdated", { detail: merged }));
+      return merged;
+    };
+    const onGlobal = (e) => applyDomain(e.detail);
+    window.addEventListener?.("powerYDomainUpdated", onGlobal);
+    // ==========================================
 
     let series = chart.series.push(
       am5xy.ColumnSeries.new(root, {
@@ -80,6 +112,12 @@ const MonthUsed = ({ data }) => {
         }))
       : [];
 
+    // 내 데이터로 범위 계산 → 전역에 합치고 → 적용
+    const vals = safeData.map(d => Number(d.value || 0)).filter(Number.isFinite);
+    const local = calcDomain(vals);
+    const merged = syncWithGlobal(local);
+    applyDomain(merged);
+
     xAxis.data.setAll(safeData);
     series.data.setAll(safeData);
 
@@ -87,6 +125,7 @@ const MonthUsed = ({ data }) => {
     chart.appear(1000, 100);
 
     return () => {
+      window.removeEventListener?.("powerYDomainUpdated", onGlobal);
       root.dispose();
     };
   }, [chartId, data]);

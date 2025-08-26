@@ -49,6 +49,8 @@ const Mypage = () => {
     const endpoint = govId
       ? 'http://192.168.111.194:3001/userg/userinfo_gov'    // ✅ 관공업: userG 라우터
       : 'http://192.168.111.194:3001/user/userinfo';        // ✅ 기업: user 라우터로 통합
+      ? 'http://192.168.111.194:3001/userg/userinfo_gov'    // ✅ 관공업: userG 라우터
+      : 'http://192.168.111.194:3001/user/userinfo';        // ✅ 기업: user 라우터로 통합
 
     try {
       const res = await axios.post(endpoint, { id: userId });
@@ -101,7 +103,9 @@ const Mypage = () => {
     try {
       if (userType === 'business') {
         await axios.delete('http://192.168.111.194:3001/user/delete', { data: { id: user.id } });
+        await axios.delete('http://192.168.111.194:3001/user/delete', { data: { id: user.id } });
       } else {
+        await axios.delete('http://192.168.111.194:3001/userg/delete_gov', { data: { id: user.id } });
         await axios.delete('http://192.168.111.194:3001/userg/delete_gov', { data: { id: user.id } });
       }
       alert('탈퇴가 완료되었습니다.');
@@ -153,11 +157,13 @@ const Mypage = () => {
       if (userType === 'business') {
         // ✅ 기업: user 라우터로 통일
         await axios.put('http://192.168.111.194:3001/user/update', {
+        await axios.put('http://192.168.111.194:3001/user/update', {
           ...formData,
           id: formData.id,
         });
 
         if (newPassword) {
+          await axios.put('http://192.168.111.194:3001/user/password-update', {
           await axios.put('http://192.168.111.194:3001/user/password-update', {
             id: formData.id,
             newPassword,
@@ -165,6 +171,7 @@ const Mypage = () => {
         }
       } else {
         // ✅ 관공업: userg 라우터 경로 유지
+        await axios.put('http://192.168.111.194:3001/userg/update_gov', {
         await axios.put('http://192.168.111.194:3001/userg/update_gov', {
           corpName: formData.corpName,
           ceo: formData.ceo,
@@ -178,6 +185,7 @@ const Mypage = () => {
         });
 
         if (newPassword) {
+          await axios.put('http://192.168.111.194:3001/userg/update_gov_pw', {
           await axios.put('http://192.168.111.194:3001/userg/update_gov_pw', {
             id: formData.gov_id,
             newPassword,
@@ -437,6 +445,11 @@ const Mypage = () => {
           </div>
         </div>
 
+<<<<<<< HEAD
+=======
+        <div className="mypage-btn-wrap btn-FEnd">
+          <button className="mypage-btn-primary" onClick={() => setEditMode(true)}>정보 수정</button>
+>>>>>>> 74a7342786e9c4cc5814b8ca9908035204c6707c
         <div className="sMypage-Btns sMypage-Btns--end">
           <button className="sMypage-BtnPrimary" onClick={() => setEditMode(true)}>정보 수정</button>
         </div>

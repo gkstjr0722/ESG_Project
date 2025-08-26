@@ -1,11 +1,11 @@
-// backend/router/proxyEC.js
+// 전기공사업체 api 관련 js 
 require('dotenv').config();
 const express = require('express');
 const axios = require('axios');
 
 const router = express.Router();
 const PUB   = process.env.PUBLICDATA_KEY;   // 공공데이터 API 키 (.env)
-const KAKAO = process.env.KAKAO_REST_KEY;
+const KAKAO = process.env.KAKAO_REST_KEY;   // 카카오 rest api 키 (.env)
 const path = require('path');
 const fs = require('fs');    // 카카오 REST 키 (.env)
 
@@ -74,7 +74,7 @@ router.get('/list', async (req, res) => {
   }
 });
 
-// ── (B) 지오코딩 프록시 (주소 → 좌표) : 키는 서버에서만 사용
+// ── (B) 지오코딩 프록시 (주소 → 좌표) : 키는 서버에서만 사용 
 router.get('/geocode', async (req, res) => {
   const query = (req.query.query || '').trim();
   if (!query) return res.status(400).json({ error: 'query_required' });

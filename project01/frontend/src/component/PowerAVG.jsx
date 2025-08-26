@@ -13,14 +13,6 @@ const ENDPOINT = "/kepco/industry";
 // ▶︎ 추가: 간단 캐시(메모리)
 const cache = new Map();
 
-/**
- * props
- * - data: [{ month, value }]
- * - kepcoValue: number
- * - filters: { metroCd?, cityCd?, bizCd? }
- * - labelForAvg: string
- * - targetYM: { year: number, month: number }
- */
 const PowerAVG = ({
   data,
   kepcoValue = 0,
@@ -264,6 +256,38 @@ const PowerAVG = ({
     const yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
     const yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer }));
 
+    // ===== 공통 y축 범위 동기화 (전역 공유) =====
+    const calcDomain = (vals) => {
+      if (!vals.length) return null;
+      const min = Math.min(...vals);
+      const max = Math.max(...vals);
+      const range = Math.max(1, max - min);
+      const pad = Math.max(200, Math.round(range * 0.08));
+      const niceMin = Math.floor((min - pad) / 100) * 100;
+      const niceMax = Math.ceil((max + pad) / 10000) * 10000;
+      return {
+        min: Math.max(0, niceMin),
+        max: niceMax > niceMin ? niceMax : niceMin + 1000,
+      };
+    };
+    const applyDomain = (dom) => {
+      if (!dom) return;
+      yAxis.setAll({ min: dom.min, max: dom.max, strictMinMax: true });
+    };
+    const syncWithGlobal = (local) => {
+      const g = window;
+      const prev = g.__powerYDomain;
+      const merged = prev
+        ? { min: Math.min(prev.min, local.min), max: Math.max(prev.max, local.max) }
+        : local;
+      g.__powerYDomain = merged;
+      g.dispatchEvent?.(new CustomEvent("powerYDomainUpdated", { detail: merged }));
+      return merged;
+    };
+    const onGlobal = (e) => applyDomain(e.detail);
+    window.addEventListener?.("powerYDomainUpdated", onGlobal);
+    // ==========================================
+
     const series = chart.series.push(
       am5xy.ColumnSeries.new(root, {
         name: "평균전력량",
@@ -276,7 +300,7 @@ const PowerAVG = ({
       })
     );
 
-    series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0, width: am5.percent(55)}); // 막대 크기 바꾸는 코드
+    series.columns.template.setAll({ cornerRadiusTL: 5, cornerRadiusTR: 5, strokeOpacity: 0, width: am5.percent(55)});
     series.columns.template.adapters.add("fill", (fill, target) => chart.get("colors").getIndex(series.columns.indexOf(target)));
     series.columns.template.adapters.add("stroke", (stroke, target) => chart.get("colors").getIndex(series.columns.indexOf(target)));
 
@@ -288,6 +312,12 @@ const PowerAVG = ({
 
     const chartData = [prevItem, avgItem];
 
+    // 내 데이터(전달값+평균)로 범위 계산 → 전역에 합치고 → 적용
+    const vals = chartData.map(d => Number(d.value || 0)).filter(Number.isFinite);
+    const local = calcDomain(vals);
+    const merged = syncWithGlobal(local);
+    applyDomain(merged);
+
     xAxis.data.setAll(chartData);
     series.data.setAll(chartData);
 
@@ -295,6 +325,7 @@ const PowerAVG = ({
     chart.appear(800, 80);
 
     return () => {
+      window.removeEventListener?.("powerYDomainUpdated", onGlobal);
       root.dispose();
     };
   }, [data, avgVal, loading, err, ymLabel, chartId]);
