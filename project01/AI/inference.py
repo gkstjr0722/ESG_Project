@@ -255,7 +255,7 @@ _debug_artifacts()
 if __name__ == "__main__":
     _debug_artifacts()
     r, nxt, h0, h1 = predict_next_with_input(26000, make_hourly=True)
-    print(f"ratio={r:.4f}, next_total={nxt:,.2f}")
+    print(f"ratio={r:.4f}, next_total={nxt:.2f}")
     if h0 is not None:
         print("sum_this =", float(np.sum(h0)))
     if h1 is not None:

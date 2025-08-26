@@ -7,7 +7,7 @@ const router = express.Router();
 router.get('/manage', async (req, res) => {
   const { addr = '', limit = 5000, page = 1 } = req.query;
 
-  const apiKey =  process.env.KEPCOAPI_KEY;// 실제 키 사용 권장
+  const apiKey = process.env.KEPCOAPI_KEY;// 실제 키 사용 권장
   const base = 'https://bigdata.kepco.co.kr/openapi/v1/EVchargeManage.do';
 
   // ⚠️ 아래 page/numOfRows는 "추정"입니다. 문서를 확인해 정확한 파라미터로 바꾸세요.

@@ -7,7 +7,7 @@ const BASE = 'https://bigdata.kepco.co.kr/openapi/v1/powerUsage/industryType.do'
 
 // 🔹 KEPCO API 키(직접 하드코딩)
 //  - 실제 배포에서는 .env 권장하지만 요청대로 파일 내에 둠
-const API_KEY_RAW =  process.env.KEPCOAPI_KEY;
+const API_KEY_RAW = process.env.KEPCOAPI_KEY;
 const API_KEY_ENC = encodeURIComponent(API_KEY_RAW);
 
 // ── 응답 항목 정규화(철자 차이/누락 방지)

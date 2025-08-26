@@ -38,7 +38,7 @@ def predict(req: PredictRequest):
 
    
     def to_map(arr):
-        return {str(h): round(float(arr[h]), 2) for h in range(24)}
+        return {f"{h:02d}": f"{float(arr[h]):.2f}" for h in range(24)}
     def to_text(arr):
         return [f"{h:02d} : {float(arr[h]):.2f}" for h in range(24)]
     
