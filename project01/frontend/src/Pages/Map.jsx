@@ -9,11 +9,9 @@ const DEFAULT_LEVEL = 12; // 전국 스케일
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
- // 'ev' | 'elec'
-
-  // 🔹 추가: 전기공사업체 전용 상태 + 탭 상태
-  const [contractors, setContractors] = useState([]);
-  const [selectedTab, setSelectedTab] = useState('ev');
+  const [stations, setStations] = useState([]);           // ✅ 복구: EV 충전소 상태
+  const [contractors, setContractors] = useState([]);     // 전기공사업체 상태
+  const [selectedTab, setSelectedTab] = useState('ev');   // 'ev' | 'elec'
 
   // kakao 객체, map, clusterer, infowindow를 ref로 보관
   const kakaoRef = useRef(null);
@@ -21,18 +19,14 @@ export default function MapEVCharger() {
   const clustererRef = useRef(null);
   const infoRef = useRef(null);
 
-  // 1) 데이터 로드 (전국)
+  // 1) 데이터 로드 (전국 EV 충전소)
   useEffect(() => {
     let alive = true;
 
     async function fetchData() {
       setLoading(true);
       try {
-        // 전국 단위 예시: addr를 비우고 limit를 크게 요청 (백엔드 수정 필요, 아래 3) 참고)
-        const { data } = await axios.get(
-          "/api/proxy/manage",
-          { params: { limit: 5000 } }
-        );
+        const { data } = await axios.get("/api/proxy/manage", { params: { limit: 5000 } });
         if (!alive) return;
 
         const parsed = (Array.isArray(data) ? data : [])
@@ -67,7 +61,7 @@ export default function MapEVCharger() {
     return () => { alive = false; };
   }, [selectedTab]);
 
-  // 🔹 전기공사업체 데이터 로드 (미리 생성된 좌표 JSON 사용)
+  // 2) 전기공사업체 데이터 로드 (미리 생성된 좌표 JSON 사용)
   useEffect(() => {
     let alive = true;
 
@@ -105,7 +99,7 @@ export default function MapEVCharger() {
     return () => { alive = false; };
   }, [selectedTab]);
 
-  // 2) 지도/클러스터러 초기화 (최초 1회)
+  // 3) 지도/클러스터러 초기화 (최초 1회)
   useEffect(() => {
     if (loading) return;
 
@@ -141,7 +135,7 @@ export default function MapEVCharger() {
     }
   }, [loading]);
 
-  // 3) 마커 생성/클러스터러에 추가 (stations 변경 시)
+  // 4) EV 충전소 마커
   useEffect(() => {
     if (!stations.length) return;
     if (selectedTab !== 'ev') return;
@@ -186,7 +180,7 @@ export default function MapEVCharger() {
     map.setBounds(bounds);
   }, [stations, selectedTab]);
 
-  // 🔹 전기공사업체 마커 생성(전용)
+  // 5) 전기공사업체 마커
   useEffect(() => {
     if (!contractors.length) return;
     if (selectedTab !== 'elec') return;

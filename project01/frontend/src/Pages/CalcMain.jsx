@@ -124,11 +124,7 @@ export default function CalcMain() {
           <div className='box'>
             <div>전기요금</div>
             <PowerBill
-<<<<<<< HEAD
-              predictApiUrl="/fast/predict"      // 백엔드 프록시
-=======
               predictApiUrl="/fast/predict"
->>>>>>> 7dcde1d6a2a955eddd9422b86a29d16508df9bb0
               onCalculationComplete={handleCalculationComplete}
             />
           </div>
