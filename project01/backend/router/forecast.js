@@ -27,6 +27,15 @@ function normalizeType(val) {
   return String(val).trim(); // 모르는 값이면 원문 저장
 }
 
+// ✅ 시간키 안전 접근 헬퍼: "0"/"00" 둘 다 지원
+function getHourValue(obj, h) {
+  const k1 = String(h);
+  const k2 = String(h).padStart(2, '0');
+  return Object.prototype.hasOwnProperty.call(obj || {}, k1)
+    ? obj[k1]
+    : obj?.[k2];
+}
+
 // health
 router.get('/_ping', (req, res) => res.json({ ok: true, where: '/api/forecast/_ping' }));
 
@@ -62,12 +71,12 @@ router.post('/save', async (req, res) => {
       Object.keys(data?.hourly_next_month || {}).length
     );
 
-    // 4) response check
-    const mustHours = Array.from({ length: 24 }, (_, h) => String(h));
+    // 4) response check  ✅ "0"/"00" 모두 허용
+    const mustHours = Array.from({ length: 24 }, (_, h) => h);
     const ht = data?.hourly_this_month || {};
     const hn = data?.hourly_next_month || {};
-    const okThis = mustHours.every((h) => h in ht);
-    const okNext = mustHours.every((h) => h in hn);
+    const okThis = mustHours.every((h) => getHourValue(ht, h) != null);
+    const okNext = mustHours.every((h) => getHourValue(hn, h) != null);
     if (!okThis || !okNext) {
       return res.status(502).json({
         ok: false,
@@ -77,16 +86,22 @@ router.post('/save', async (req, res) => {
       });
     }
 
-    // 5) rows (COMPANY_TYPE 포함)
+    // 5) rows (COMPANY_TYPE 포함)  ✅ 시간키 접근 수정
     const rows = [];
     for (let h = 0; h < 24; h++) {
-      const v = Number(ht[String(h)]);
-      if (!Number.isFinite(v)) return res.status(502).json({ ok: false, message: `this_month 숫자 아님: hour=${h}` });
+      const v = Number(getHourValue(ht, h));
+      if (!Number.isFinite(v)) {
+        const key = String(h).padStart(2, '0');
+        return res.status(502).json({ ok: false, message: `this_month 숫자 아님: hour=${key}` });
+      }
       rows.push([company_id, normType, ymThis, h, v, Number(current_month_kwh), Number(contract_kw)]);
     }
     for (let h = 0; h < 24; h++) {
-      const v = Number(hn[String(h)]);
-      if (!Number.isFinite(v)) return res.status(502).json({ ok: false, message: `next_month 숫자 아님: hour=${h}` });
+      const v = Number(getHourValue(hn, h));
+      if (!Number.isFinite(v)) {
+        const key = String(h).padStart(2, '0');
+        return res.status(502).json({ ok: false, message: `next_month 숫자 아님: hour=${key}` });
+      }
       rows.push([company_id, normType, ymNext, h, v, Number(current_month_kwh), Number(contract_kw)]);
     }
     console.log('[save] rows to insert =', rows.length); // 48
