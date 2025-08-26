@@ -2,36 +2,41 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// .env.local 등에 VITE_BACKEND_ORIGIN=http://localhost:3001 넣어두면 편함
-const BACKEND = process.env.VITE_BACKEND_ORIGIN || 'http://localhost:3001';
+// 도커 내부에서 백엔드는 'backend:3001' 로 접근
+const BACKEND = process.env.VITE_BACKEND_ORIGIN || 'http://backend:3001';
+// 외부 접속용 HMR 고정 (프론트 서버 IP)
+const PUBLIC_HOST = process.env.VITE_PUBLIC_HOST || '192.168.111.194';
 
 export default defineConfig({
   plugins: [react()],
   server: {
     host: '0.0.0.0',
-    port: 3000,              // 프론트 포트(유지)
-    strictPort: true,        // 이미 사용 중이면 에러 내고 종료 (포트 헷갈림 방지)
+    port: 3000,
+    strictPort: true,
+
+    // HMR/WebSocket 외부 접속 고정
+    hmr: { host: PUBLIC_HOST, clientPort: 3000, protocol: 'ws' },
+    origin: `http://${PUBLIC_HOST}:3000`,
+
     proxy: {
-      // FastAPI 브리지(Express) 라우터
+      // ⚠️ 백엔드가 /api/fast 로 마운트돼 있다면 rewrite로 맞춥니다.
       '/fast': {
-        target: BACKEND,     // ← Express(3001)가 /fast 라우터를 마운트하고 있어야 함
+        target: BACKEND,
         changeOrigin: true,
-        ws: true,
-        // rewrite: (p) => p,  // 백엔드가 /fast로 마운트되어 있으므로 rewrite 불필요
+        rewrite: (p) => p.replace(/^\/fast/, '/api/fast'),
       },
 
-      // 산업 평균 API (기존 유지)
+      // ⚠️ KEPCO 라우터가 /api/proxy 인 경우 rewrite
       '/kepco': {
         target: BACKEND,
         changeOrigin: true,
-        ws: true,
+        rewrite: (p) => p.replace(/^\/kepco/, '/api/proxy'),
       },
 
-      // 일반 API (기존 유지)
+      // 백엔드의 일반 API
       '/api': {
         target: BACKEND,
         changeOrigin: true,
-        ws: true,
       },
     },
   },
