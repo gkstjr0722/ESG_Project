@@ -9,8 +9,11 @@ const DEFAULT_LEVEL = 12; // 전국 스케일
 
 export default function MapEVCharger() {
   const [loading, setLoading] = useState(true);
-  const [stations, setStations] = useState([]); 
-  const [selectedTab, setSelectedTab] = useState('ev'); // 'ev' | 'elec'
+ // 'ev' | 'elec'
+
+  // 🔹 추가: 전기공사업체 전용 상태 + 탭 상태
+  const [contractors, setContractors] = useState([]);
+  const [selectedTab, setSelectedTab] = useState('ev');
 
   // kakao 객체, map, clusterer, infowindow를 ref로 보관
   const kakaoRef = useRef(null);
@@ -27,8 +30,8 @@ export default function MapEVCharger() {
       try {
         // 전국 단위 예시: addr를 비우고 limit를 크게 요청 (백엔드 수정 필요, 아래 3) 참고)
         const { data } = await axios.get(
-          "http://192.168.111.194:3001/api/proxy/manage",
-          { params: { limit: 5000 } } // 추정 파라미터
+          "/api/proxy/manage",
+          { params: { limit: 5000 } }
         );
         if (!alive) return;
 
@@ -48,20 +51,59 @@ export default function MapEVCharger() {
       }
     }
 
-    // kakao SDK 준비 후 실행
-    const waitKakao = () => {
-      if (window.kakao?.maps?.load) {
-        window.kakao.maps.load(fetchData);
-      } else if (window.kakao?.maps) {
-        fetchData();
-      } else {
-        setTimeout(waitKakao, 100);
-      }
-    };
-    waitKakao();
+    if (selectedTab === 'ev') {
+      const waitKakao = () => {
+        if (window.kakao?.maps?.load) {
+          window.kakao.maps.load(fetchData);
+        } else if (window.kakao?.maps) {
+          fetchData();
+        } else {
+          setTimeout(waitKakao, 100);
+        }
+      };
+      waitKakao();
+    }
 
     return () => { alive = false; };
-  }, []);
+  }, [selectedTab]);
+
+  // 🔹 전기공사업체 데이터 로드 (미리 생성된 좌표 JSON 사용)
+  useEffect(() => {
+    let alive = true;
+
+    async function fetchEC() {
+      setLoading(true);
+      try {
+        const { data } = await axios.get('/api/ec/points');
+
+        const list = Array.isArray(data) ? data : (data?.items || []);
+        const cleaned = list
+          .map(d => ({
+            ...d,
+            lat: Number(d.lat),
+            lng: Number(d.lng),
+          }))
+          .filter(d => Number.isFinite(d.lat) && Number.isFinite(d.lng));
+
+        if (!alive) return;
+        setContractors(cleaned);
+
+        // 🔎 콘솔로 위도/경도 확인
+        cleaned.forEach((c, i) => {
+          console.log(`[Geocode ${i + 1}] ${c.addr} → lat: ${c.lat}, lng: ${c.lng}`);
+        });
+        console.log(`총 ${cleaned.length}건 좌표 확인`);
+      } catch (e) {
+        console.error(e);
+        alert("전기공사업체 좌표 데이터 요청 실패");
+      } finally {
+        if (alive) setLoading(false);
+      }
+    }
+
+    if (selectedTab === 'elec') fetchEC();
+    return () => { alive = false; };
+  }, [selectedTab]);
 
   // 2) 지도/클러스터러 초기화 (최초 1회)
   useEffect(() => {
@@ -74,22 +116,19 @@ export default function MapEVCharger() {
       const { maps } = window.kakao;
       kakaoRef.current = window.kakao;
 
-      // 지도 생성(전국 뷰)
       mapRef.current = new maps.Map(container, {
         center: new maps.LatLng(DEFAULT_CENTER.lat, DEFAULT_CENTER.lng),
         level: DEFAULT_LEVEL,
       });
 
-      // 클러스터러 생성
       clustererRef.current = new maps.MarkerClusterer({
         map: mapRef.current,
         averageCenter: true,
-        minLevel: 7,        // 레벨이 7 이하로 축소될 때만 클러스터링 해제
-        gridSize: 80,       // 클러스터 간격 픽셀(원하는 밀도로 조정)
+        minLevel: 7,
+        gridSize: 80,
         disableClickZoom: false,
       });
 
-      // 공용 InfoWindow
       infoRef.current = new maps.InfoWindow({ removable: true });
     };
 
@@ -105,6 +144,7 @@ export default function MapEVCharger() {
   // 3) 마커 생성/클러스터러에 추가 (stations 변경 시)
   useEffect(() => {
     if (!stations.length) return;
+    if (selectedTab !== 'ev') return;
     const kakao = kakaoRef.current;
     const map = mapRef.current;
     const clusterer = clustererRef.current;
@@ -113,17 +153,14 @@ export default function MapEVCharger() {
 
     const { maps } = kakao;
 
-    // 기존 마커/클러스터 초기화
-    clusterer.clear(); // addMarkers로 추가했던 마커 전체 제거
+    clusterer.clear();
 
-    // 새 마커 생성
     const markers = stations.map(st => {
       const marker = new maps.Marker({
         position: new maps.LatLng(st.lat, st.lng),
         title: st.cpNm || st.csNm || "충전소",
       });
 
-      // 클릭 시 공용 InfoWindow 오픈
       maps.event.addListener(marker, "click", () => {
         const html = `
           <div class="evmap-popup">
@@ -140,23 +177,59 @@ export default function MapEVCharger() {
       return marker;
     });
 
-    // 클러스터러에 마커 추가
     clusterer.addMarkers(markers);
 
-    // 화면에 모든 마커가 보이도록 bounds 맞춤
     const bounds = new maps.LatLngBounds();
     for (const st of stations) {
       bounds.extend(new maps.LatLng(st.lat, st.lng));
     }
     map.setBounds(bounds);
+  }, [stations, selectedTab]);
 
-    // cleanup은 필요 시(다음 렌더 직전) clusterer.clear로 충분
-  }, [stations]);
+  // 🔹 전기공사업체 마커 생성(전용)
+  useEffect(() => {
+    if (!contractors.length) return;
+    if (selectedTab !== 'elec') return;
+    const kakao = kakaoRef.current;
+    const map = mapRef.current;
+    const clusterer = clustererRef.current;
+    const info = infoRef.current;
+    if (!kakao || !map || !clusterer || !info) return;
+
+    clusterer.clear();
+
+    const { maps } = kakao;
+    const markers = contractors.map(st => {
+      const marker = new maps.Marker({
+        position: new maps.LatLng(st.lat, st.lng),
+        title: st.name || "전기공사업체",
+      });
+      maps.event.addListener(marker, "click", () => {
+        const html = `
+          <div class="evmap-popup">
+            <b>${st.name || "전기공사업체"}</b><br/>
+            <span>${st.addr || ""}</span><br/>
+            ${st.tel ? `<span>☎ ${st.tel}</span>` : ""}
+          </div>
+        `;
+        info.setContent(html);
+        info.open(map, marker);
+      });
+      return marker;
+    });
+
+    clusterer.addMarkers(markers);
+
+    const bounds = new maps.LatLngBounds();
+    for (const st of contractors) {
+      bounds.extend(new maps.LatLng(st.lat, st.lng));
+    }
+    map.setBounds(bounds);
+  }, [contractors, selectedTab]);
 
   return (
     <div>
       <Header />
-      {/* 상단 탭바 */}
       <div className="cTab">
         <button
           type="button"

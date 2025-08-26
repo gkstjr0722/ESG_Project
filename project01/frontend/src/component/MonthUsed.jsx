@@ -45,7 +45,7 @@ const MonthUsed = ({ data }) => {
 
     let yRenderer = am5xy.AxisRendererY.new(root, { strokeOpacity: 0.1 });
     let yAxis = chart.yAxes.push(
-      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer })
+      am5xy.ValueAxis.new(root, { maxDeviation: 0.3, renderer: yRenderer, min: 4000, strictMinMax: true })
     );
 
     let series = chart.series.push(

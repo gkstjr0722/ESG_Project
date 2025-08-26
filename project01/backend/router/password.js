@@ -57,7 +57,7 @@ function sha256hex(str) {
 // 비밀번호 변경 요청 남용 방지 
 const requestLimiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  max: 10,
+  max: 50,
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -167,7 +167,7 @@ router.post('/reset/confirm', async (req, res) => {
 });
 
 /* =========================================================
- * 신규: 이메일 방식 ① — 메일 요청
+ * 비밀번호 변경 이메일 방식 ① — 메일 요청
  * POST /email/request  
  * body (프론트 규격과 일치):
  *   - corp: { userType:'corp', id, bizRegNum, email }
@@ -258,7 +258,7 @@ router.post('/email/request', requestLimiter, async (req, res) => {
 
 
 /* =========================================================
- * 신규: 이메일 방식 ② — 토큰 유효성 검사
+ * 비밀번호 변경 이메일 방식 ② — 토큰 유효성 검사
  * GET /email/verify?uid=&ut=&token=
  * =======================================================*/
 router.get('/email/verify', async (req, res) => {
@@ -281,7 +281,7 @@ router.get('/email/verify', async (req, res) => {
 });
 
 /* =========================================================
- * 신규: 이메일 방식 ③ — 비밀번호 변경 (트랜잭션 없이 견고하게)
+ * 비밀번호 변경 이메일 방식 ③ — 비밀번호 변경 
  * POST /email/confirm  body: { uid, ut, token, newPw }
  * 1) 유효 토큰을 조건부로 used=1로 소진 (동시성 안전)
  * 2) 성공 시 비밀번호 업데이트

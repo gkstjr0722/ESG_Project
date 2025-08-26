@@ -282,6 +282,195 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ==== 마이페이지 ==================================================================== */
+:root{
+  --sMypage-primary:#3c79d5;
+  --sMypage-primary-hover:#2d69c4;
+  --sMypage-text:#0f172a;
+  --sMypage-subtext:#6b7280;
+  --sMypage-border:rgba(15,23,42,.09);
+  --sMypage-radius:16px;
+  --sMypage-label-w:168px; /* 레이블 폭 */
+}
+
+/* 기본 */
+.sMypage{background:#fff;color:var(--sMypage-text);min-height:100vh;}
+.sMypage-Title{font-size:26px;font-weight:800;letter-spacing:-.01em;margin:6px 0 18px;}
+
+/* 컨테이너 */
+.sMypage-ViewWrap,.sMypage-EditWrap,.sMypage-Loading{max-width:880px;margin:0 auto;}
+.sMypage-ViewWrap,.sMypage-EditWrap{padding:32px 20px 72px;}
+.sMypage-Loading{padding:72px 20px;text-align:center;color:var(--sMypage-subtext);font-size:15px;}
+
+/* 보기 화면 */
+.sMypage-Info{
+  border:1px solid var(--sMypage-border);
+  border-radius:var(--sMypage-radius);
+  background:#fff;
+  overflow:hidden;
+}
+.sMypage-Row{
+  display:grid;
+  grid-template-columns:var(--sMypage-label-w) 1fr;
+  align-items:center;
+  gap:1px;
+  padding:16px 20px;
+  border-top:1px solid var(--sMypage-border);
+  line-height:1.65;
+}
+.sMypage-Row:first-child{border-top:none;}
+.sMypage-Label{color:var(--sMypage-subtext);font-weight:700;font-size:15px;}
+.sMypage-Value{font-size:16.5px;font-weight:700;word-break:break-word;letter-spacing:-.005em;}
+
+@media (max-width:560px){
+  .sMypage-Row{grid-template-columns:1fr;gap:6px;padding:14px 14px;}
+  .sMypage-Label{font-size:13px;}
+  .sMypage-Value{font-size:16px;}
+}
+
+/* 버튼 공통 */
+.sMypage-Btns{display:flex;gap:10px;margin-top:18px;}
+.sMypage-Btns--end{justify-content:flex-end;}
+.sMypage-BtnPrimary,.sMypage-BtnSecondary{
+  appearance:none;border:1px solid transparent;border-radius:999px;height:44px;padding:0 18px;
+  font-weight:700;font-size:15px;cursor:pointer;
+}
+.sMypage-BtnPrimary:active,.sMypage-BtnSecondary:active{transform:translateY(1px);}
+
+/* primary (수정 완료) */
+.sMypage-BtnPrimary{
+  background:var(--sMypage-primary);color:#fff;
+  transition:background .18s,color .18s,border-color .18s,transform .04s;
+}
+.sMypage-BtnPrimary:hover{background:var(--sMypage-primary-hover);}
+
+/* secondary (취소 — 모양 동일, 색만 변경) */
+.sMypage-BtnSecondary{
+  background:#F1F2F6;          /* 회색 배경 */
+  color:#737373;                /* 회색 글자 */
+  transition:background .18s,color .18s,transform .04s;
+}
+.sMypage-BtnSecondary:hover{
+  background:#E9EBF1;
+  color:#5f5f5f;
+}
+
+/* 편집 화면 */
+.sMypage-Form{
+  display:grid;grid-template-columns:1fr;gap:16px;
+  border:1px solid var(--sMypage-border);border-radius:var(--sMypage-radius);
+  background:#fff;padding:22px 18px;
+}
+@media (min-width:720px){
+  .sMypage-Form{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;row-gap:18px;}
+}
+.sMypage-Field{display:flex;flex-direction:column;gap:8px;min-width:0;}
+.sMypage-FieldLabel{font-size:13px;color:var(--sMypage-subtext);font-weight:700;}
+.sMypage-Input{
+  width:100%;min-width:0;box-sizing:border-box;height:46px;padding:0 14px;
+  border:1px solid var(--sMypage-border);border-radius:12px;background:#fff;font-size:15px;outline:none;
+  transition:border-color .15s,box-shadow .15s,background .15s;
+}
+.sMypage-Field--full{grid-column:1 / -1;}
+.sMypage-EditWrap .sMypage-Btns{margin-top:10px;}
+@media (min-width:720px){.sMypage-EditWrap .sMypage-Btns{grid-column:1 / -1;}}
+
+/* ===== 버튼 정렬/색 오버라이드 (DOM 순서: 1=탈퇴, 2=취소, 3=수정완료) ===== */
+/* 1) 첫 번째(회원 탈퇴)를 Primary처럼 파란색으로 */
+.sMypage-Form .sMypage-Btns > :first-child{
+  background:var(--sMypage-primary);
+  color:#fff;
+  border-color:transparent;
+  transition:background .18s,color .18s,border-color .18s,transform .04s;
+}
+.sMypage-Form .sMypage-Btns > :first-child:hover{
+  background:var(--sMypage-primary-hover);
+  color:#fff;
+}
+
+/* 2) 두 번째(취소)부터 오른쪽 정렬 시작 → 취소 오른쪽에 수정완료가 붙음 */
+.sMypage-Form .sMypage-Btns > :nth-child(2){
+  margin-left:auto; /* 오른쪽 끝으로 밀기 시작점 */
+}
+
+@media (max-width: 320px) {
+  .sMypage-Form { padding: 18px 12px; }
+  .sMypage-Btns { gap: 8px; }
+
+  .sMypage-BtnPrimary,
+  .sMypage-BtnSecondary {
+    height: 38px;
+    padding: 0 10px;
+    font-size: 13px;
+    white-space: nowrap;     /* ★ 줄바꿈 방지 */
+    /* border-radius는 기존 pill(999px) 유지: 필요시 14px 정도로 줄여도 OK */
+  }
+
+  /* 오른쪽 묶음(취소부터) 유지 */
+  .sMypage-Form .sMypage-Btns > :nth-child(2) { margin-left: auto; }
+}
+
+/* ======================================================================== */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /* Calc, Map, Faq, Support 순 CSS */
 
 /* 공통 body (Faq+Support)*/
@@ -917,7 +1106,11 @@ body {
 /* 표 상단 작성일 */
 .sWriteDate{
  margin-left: 500px;
+<<<<<<< HEAD
  padding: 20px;
+=======
+<<<<<<< HEAD
+>>>>>>> 74a7342786e9c4cc5814b8ca9908035204c6707c
 }
 
 /* 글 옆 작성일 */
@@ -953,95 +1146,21 @@ body {
   --mypage-border:rgba(15,23,42,.09);
   --mypage-radius:16px;
   --mypage-label-w:168px; /* 레이블 폭 */
+=======
+>>>>>>> 7dcde1d6a2a955eddd9422b86a29d16508df9bb0
 }
 
-/* 기본 */
-.mypage-root{background:#fff;color:var(--mypage-text);min-height:100vh;}
-.mypage-title{font-size:26px;font-weight:800;letter-spacing:-.01em;margin:6px 0 18px;}
-
-/* 컨테이너 */
-.mypage-view-wrap,.mypage-edit-wrap,.mypage-loading{max-width:880px;margin:0 auto;}
-.mypage-view-wrap,.mypage-edit-wrap{padding:32px 20px 72px;}
-.mypage-loading{padding:72px 20px;text-align:center;color:var(--mypage-subtext);font-size:15px;}
-
-/* 보기 화면 */
-.mypage-info{
-  border:1px solid var(--mypage-border);
-  border-radius:var(--mypage-radius);
-  background:#fff;
-  overflow:hidden;
-}
-.mypage-kv-row{
-  display:grid;
-  grid-template-columns:var(--mypage-label-w) 1fr;
-  align-items:center;
-  gap:1px;
-  padding:16px 20px;
-  border-top:1px solid var(--mypage-border);
-  line-height:1.65;
-}
-.mypage-kv-row:first-child{border-top:none;}
-.mypage-kv-label{color:var(--mypage-subtext);font-weight:700;font-size:15px;}
-.mypage-kv-value{font-size:16.5px;font-weight:700;word-break:break-word;letter-spacing:-.005em;}
-
-@media (max-width:560px){
-  .mypage-kv-row{grid-template-columns:1fr;gap:6px;padding:14px 14px;}
-  .mypage-kv-label{font-size:13px;}
-  .mypage-kv-value{font-size:16px;}
+/* 글 옆 작성일 */
+.sWrite-Date{
+  margin-left: auto;
 }
 
-/* 버튼 공통 */
-.mypage-btn-wrap{display:flex;gap:10px;margin-top:18px;}
-.mypage-btn-primary,.mypage-btn-secondary{
-  appearance:none;border:1px solid transparent;border-radius:999px;height:44px;padding:0 18px;
-  font-weight:700;font-size:15px;cursor:pointer;
+/* 제목이랑 글 분리 hr 바*/
+.sBlue{
+  border: none;
+  height: 1.5px;  
+  background-color: #397ffa ;
+  /* background-color: #1951a6 ; */
+  margin: 0;
 }
-.mypage-btn-primary:active,.mypage-btn-secondary:active{transform:translateY(1px);}
 
-/* primary */
-.mypage-btn-primary{
-  background:var(--mypage-primary);color:#fff;
-  transition:background .18s,color .18s,border-color .18s,transform .04s;
-}
-.mypage-btn-primary:hover{background:var(--mypage-primary-hover);}
-
-/* secondary (기본은 링크 느낌) */
-.mypage-btn-secondary{
-  background:transparent;color:var(--mypage-primary);
-  transition:color .18s,transform .04s;
-}
-.mypage-btn-secondary:hover{color:var(--mypage-primary-hover);}
-
-/* 편집 화면 */
-.mypage-form{
-  display:grid;grid-template-columns:1fr;gap:16px;
-  border:1px solid var(--mypage-border);border-radius:var(--mypage-radius);
-  background:#fff;padding:22px 18px;
-}
-@media (min-width:720px){
-  .mypage-form{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:24px;row-gap:18px;}
-}
-.mypage-field{display:flex;flex-direction:column;gap:8px;min-width:0;}
-.mypage-field-label{font-size:13px;color:var(--mypage-subtext);font-weight:700;}
-.mypage-input{
-  width:100%;min-width:0;box-sizing:border-box;height:46px;padding:0 14px;
-  border:1px solid var(--mypage-border);border-radius:12px;background:#fff;font-size:15px;outline:none;
-  transition:border-color .15s,box-shadow .15s,background .15s;
-}
-.mypage-field--full{grid-column:1 / -1;}
-.mypage-edit-wrap .mypage-btn-wrap{margin-top:10px;}
-@media (min-width:720px){.mypage-edit-wrap .mypage-btn-wrap{grid-column:1 / -1;}}
-
-/* 편집 화면의 마지막 버튼(회원 탈퇴): 오른쪽 정렬 + primary 스타일로 오버라이드 */
-.mypage-form .mypage-btn-wrap > :last-child{
-  margin-left:auto;                        /* 오른쪽 끝으로 밀기 */
-  background:var(--mypage-primary);        /* primary와 동일 */
-  color:#fff;
-  border-color:transparent;
-  transition:background .18s,color .18s,border-color .18s,transform .04s;
-}
-.mypage-form .mypage-btn-wrap > :last-child:hover{
-  background:var(--mypage-primary-hover);
-  color:#fff;
-}
-/* ========================================================================================== */
