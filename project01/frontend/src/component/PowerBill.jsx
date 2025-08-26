@@ -216,10 +216,12 @@ export default function PowerBill({
       };
 
       const apiRes = await fetchPredictedUsage(predictApiUrl, payload);
-      const nm = apiRes?.nextMonth || {};
+      const tm = apiRes?.thisMonth || {};           // 이번 달 합계(시간대 합에서 계산됨)
+      const nm = apiRes?.nextMonth || {};           // 다음 달 예측
       const times = Array.isArray(nm.times) ? nm.times : null;
-      const predictedTotal = Number(nm.totalKwh || 0);
-      const predictionAvailable = Number.isFinite(predictedTotal) && predictedTotal > 0;
+      const thisTotal = Number(tm.totalKwh || 0);   // 이번 달 총량
+      const nextTotal = Number(nm.totalKwh || 0);   // 다음 달 총량(예측)
+      const predictionAvailable = Number.isFinite(nextTotal) && nextTotal > 0;
 
       let baseCharge = 0;
       let energyCharge = 0;
@@ -229,7 +231,7 @@ export default function PowerBill({
           const table = useGeneral ? J_POWER_RATE_GAP_I : POWER_RATE_GAP_I;
           const selected = table.find(v => v.key === option);
           baseCharge  = floorWon(Number(contractPower) * selected.base);
-          energyCharge = floorWon(predictedTotal * selected.rate[season]);
+          energyCharge = floorWon(nextTotal * selected.rate[season]);     // 다음 달 기준
         } else {
           const table = useGeneral ? J_POWER_RATE_GAP_II : POWER_RATE_GAP_II;
           const selected = table.find(v => v.key === option);
@@ -237,7 +239,7 @@ export default function PowerBill({
           if (times && times.length === 3) {
             for (let i = 0; i < 3; i++) energyCharge += floorWon((Number(times[i]) || 0) * selected.rates[season][i]);
           } else {
-            energyCharge = floorWon(predictedTotal * selected.rates[season][1]);
+            energyCharge = floorWon(nextTotal * selected.rates[season][1]); // 다음 달 기준
           }
         }
       } else {
@@ -259,11 +261,13 @@ export default function PowerBill({
       setResult(predictionAvailable ? finalAmount : null);
       setView('result');
 
-      onCalculationComplete?.({
-        lastMonth: Number(lastMonthKwh),
-        thisMonth: Number(nm.totalKwh || 0),
-        fromApi: predictionAvailable,
-      });
+    onCalculationComplete?.({
+      lastMonth: Number(lastMonthKwh),   // 전달 실사용량(입력)
+      thisMonth: thisTotal,              // 이번 달(시간대 합)
+      nextMonthKwh: nextTotal,           // ✅ 다음 달 예측 총량
+      hourlyNextMonth: apiRes.hourlyNext ?? undefined, // (선택) 배열/맵 그대로
+      fromApi: predictionAvailable,
+     });
 
     } catch (err) {
       setError(err?.response?.data?.message || err.message || '예측 중 오류가 발생했습니다.');

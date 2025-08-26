@@ -1,12 +1,11 @@
+version: "3.9"
+
 services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.dev     # 프론트 개발용 (Vite dev 서버)
     container_name: frontend
-    environment:
-      VITE_BACKEND_ORIGIN: "http://backend:3001"   # 컨테이너 DNS
-      VITE_PUBLIC_HOST: "192.168.111.194"          # 프론트 서버 IP (HMR용)
     working_dir: /app
     ports:
       - "3000:3000"
@@ -23,21 +22,22 @@ services:
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile         # 네가 쓰는 백엔드 Dockerfile
     container_name: backend
     environment:
-      NODE_ENV: "production"
-      PORT: "3001"
-      STATIC_DIR: "/app/static"
-      DB_HOST: "host.docker.internal"
-      DB_PORT: "3307"
-      DB_USER: "hans123"
-      DB_PASS: "hans123"
-      DB_NAME: "hans"
-      FASTAPI_URL: "http://ai:8000"
+      - NODE_ENV=production
+      - PORT=3001
+      - STATIC_DIR=/app/static
+      - DB_HOST=host.docker.internal
+      - DB_PORT=3307
+      - DB_USER=hans123
+      - DB_PASS=hans123
+      - DB_NAME=hans
+      - FASTAPI_URL=http://ai:8000
     ports:
       - "3001:3001"
     volumes:
+      # 배포 빌드 쓰고 싶으면 dist 마운트 유지 / 개발 중이면 제거해도 됨
       - ./frontend/dist:/app/static:ro
     restart: unless-stopped
     depends_on:
@@ -50,7 +50,7 @@ services:
       dockerfile: Dockerfile
     container_name: ai
     ports:
-      - "8000:8000"
+      - "8000:8000"        # 외부에서 직접 테스트 원치 않으면 이 줄 삭제 가능
     volumes:
       - ./AI/artifacts:/app/artifacts
     restart: unless-stopped
