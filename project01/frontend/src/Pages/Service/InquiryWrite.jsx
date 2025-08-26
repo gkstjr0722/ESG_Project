@@ -125,7 +125,7 @@ const InquiryWrite = () => {
       <Header/>
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
-        <a className="faq-detail-backbtn" onClick={handleCancel}>
+        <a className="cBack" onClick={handleCancel}>
           ← 돌아가기
         </a>
         <br /><br />
@@ -160,11 +160,11 @@ const InquiryWrite = () => {
             />
           </div>
           <div className="common-btn-flexend common-btn-gap">
-            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
-              {loading ? (isEdit ? '저장 중...' : '등록 중...') : (isEdit ? '저장' : '등록')}
-            </button>
             <button type="button" className="common-btn button-10px28px faq-write-cancel" onClick={handleCancel} disabled={loading}>
               취소
+            </button>
+            <button type="submit" className="common-btn button-10px28px" disabled={loading}>
+              {loading ? (isEdit ? '저장 중...' : '등록 중...') : (isEdit ? '저장' : '등록')}
             </button>
           </div>
         </form>

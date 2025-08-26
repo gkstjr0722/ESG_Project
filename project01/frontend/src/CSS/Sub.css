@@ -858,10 +858,10 @@ body {
 }
 
 .faq-fix1-submit { 
-  background:#bd3535;
+  background:#bd3535 !important;
 }
 .faq-fix1-submit:hover { 
-  background:#9b2525; 
+  background:#9b2525 !important; 
 }
 
 /* 자주묻는 질문 */
@@ -875,12 +875,31 @@ body {
   text-align: left;
 }
 
-.faqContent, .faqAnswer {
+.faqContent {
   margin-bottom: 8px;
 }
 
-.faqContent strong, .faqAnswer strong {
+.faqContent strong {
   color: #3c79d5;
+}
+
+/* 외부에서 넘치는 걸 자르기 위한 래퍼 */
+.slide-down-wrapper {
+  overflow: hidden;
+  height: auto; /* 콘텐츠 높이에 맞게 조절 */
+}
+
+/* 애니메이션 대상 */
+.slide-down-content {
+  animation: slideDownSmooth 0.3s ease-out forwards;
+  transform: translateY(-100%);
+}
+
+/* 키프레임: 위에서 미끄러지듯 내려오기 */
+@keyframes slideDownSmooth {
+  to {
+    transform: translateY(0);
+  }
 }
 
 /* ===== 공지 상세 (Notice detail) ===== */
@@ -1036,9 +1055,7 @@ body {
 }
 
 .sNoticeBtn {
-  border-radius: 999px;
-  padding: 10px 20px;
-  font-size: 16px;
+/* 반응형용 빈 클래스네임 */
 }
 
 @media(min-width: 465px){
@@ -1093,11 +1110,10 @@ body {
   white-space: nowrap;
   font-size: 16.8px;
   background-color: #e6f1fe ;
-  /* background-color: #d7e2f3 ; */
-  /* color: white; */
   height: 45px;
   align-items: center;
 }
+
 /* 표 상단 제목 */
 .sNoti-title{
   margin-left: 400px;
@@ -1111,7 +1127,19 @@ body {
 /* 글 옆 작성일 */
 .sWrite-Date{
   margin-left: auto;
+  
 }
+
+@media (min-width: 240px){
+  .sNoti-title{
+  margin-left: auto;
+}
+  .sWriteDate{
+    margin-left: auto;
+    margin-right: 15px;
+  }
+}
+
 
 /* 제목이랑 글 분리 hr 바*/
 .sBlue{

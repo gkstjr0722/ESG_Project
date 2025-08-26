@@ -274,9 +274,9 @@ const Notice = () => {
     return (
       <div className="faq-page-wrap">
         <div className="notice-detail-inner" style={wrapSx}>
-          <button className="common-btn back-btn" onClick={handleViewBack}>
+          <a className="cBack" onClick={handleViewBack}>
             ← 돌아가기
-          </button>
+          </a>
           <br />
 
           <div className="faq-detail-title notice-detail-title" style={zeroLeft}>
@@ -303,10 +303,17 @@ const Notice = () => {
 
           {/* 수정/삭제 버튼: 본문 아래, 왼쪽 정렬 (관리자만) */}
           {isAdmin && (
-            <div style={{ marginTop: '16px', textAlign: 'left', display: 'flex', gap: 8 }}>
+            <div className='answer-btn-loca common-btn-gap'>
               <button
                 type="button"
-                className="notice-add-btn"
+                className="common-btn button-10px28px faq-fix1-submit"
+                onClick={handleDelete}
+              >
+                삭제
+              </button>
+              <button
+                type="button"
+                className="common-btn button-10px28px"
                 onClick={() => {
                   setMode('edit');
                   setFile(null);
@@ -317,13 +324,6 @@ const Notice = () => {
                 수정
               </button>
 
-              <button
-                type="button"
-                className="notice-add-btn"
-                onClick={handleDelete}
-              >
-                삭제
-              </button>
             </div>
           )}
         </div>
@@ -381,9 +381,6 @@ const Notice = () => {
           </div>
 
           <div className="faq-write-btns common-btn-gap common-btn-flexend">
-            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
-              {loading ? '처리 중...' : '저장'}
-            </button>
             <button
               type="button"
               className="common-btn button-10px28px faq-write-cancel"
@@ -396,6 +393,9 @@ const Notice = () => {
               disabled={loading}
             >
               취소
+            </button>
+            <button type="submit" className="common-btn button-10px28px faq-write-submit" disabled={loading}>
+              {loading ? '처리 중...' : '저장'}
             </button>
           </div>
         </form>
@@ -453,14 +453,14 @@ const Notice = () => {
             </>
           )}
         </div>
-
+          
           <hr className='sBlue'></hr>
           <div className='sDis-Flex'>
             <span className='sNoti-title'>제목</span>
             <span className='sWriteDate'>작성일</span>
          </div>
-
         <div className="cList">
+
           {loading ? (
             <div>불러오는 중...</div>
           ) : error ? (

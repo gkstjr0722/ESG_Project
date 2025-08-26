@@ -68,7 +68,7 @@ const FaqDetail = () => {
       <Header />
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
-        <a className="common-btn back-btn" onClick={() => navigate('/faq')}>
+        <a className="cBack" onClick={() => navigate('/faq')}>
           ← 돌아가기
         </a>
         <br /><br />

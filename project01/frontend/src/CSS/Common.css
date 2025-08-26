@@ -242,7 +242,7 @@ body:has(.cBox) {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 32px;
+  margin-bottom: 65px;
   border-bottom: 1.5px solid #aaa;
   padding-bottom: 14px;
 }
@@ -278,8 +278,8 @@ body:has(.cBox) {
 .cList > div {
   color: #aaa; 
   /* font-size: 16.8px;  */
-  font-size: 1.05rem; 
-  padding: 20px 0; 
+  /* font-size: 1.05rem;  */
+  /* padding: 20px 0;  */
   text-align: center;
   gap: 10px;
 }
@@ -292,6 +292,7 @@ body:has(.cBox) {
   color: #222 !important;
   cursor: pointer; 
   transition: background .13s;
+  gap: 10px;
 }
 .cWrite:hover { 
   background: #f8fafb; 
@@ -344,12 +345,20 @@ body:has(.cBox) {
   color: #1d3df0;
   box-shadow: 0 6px 16px rgba(17,24,39,.06), inset 0 0 0 2px #5b7fff;
 }
+
+@media (max-width: 395px){
+  .cTab {
+  display: grid;
+  }
+}
 /* ================================================================================================ */
 
 
 
-
-
+/* 볼드처리 */
+.cBold {
+  font-weight: 500;
+}
 
 
 

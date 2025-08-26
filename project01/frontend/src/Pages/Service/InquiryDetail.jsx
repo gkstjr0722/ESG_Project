@@ -125,7 +125,7 @@ const InquiryDetail = () => {
       <Header />
       <br /><br /><br />
       <div className="faq-detail-page-wrap">
-        <a className="common-btn back-btn" onClick={() => navigate('/inquiry')}>
+        <a className="cBack" onClick={() => navigate('/inquiry')}>
           ← 돌아가기
         </a>
         <br /><br />
@@ -157,8 +157,8 @@ const InquiryDetail = () => {
         {/* 작성자: 답변 전만 수정/삭제 가능 */}
         {canEditOrDelete && (
           <div className="answer-btn-loca common-btn-gap">
-            <button className="common-btn button-10px28px" onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}>수정</button>
             <button className="common-btn button-10px28px faq-fix1-submit" onClick={handleDelete}>삭제</button>
+            <button className="common-btn button-10px28px" onClick={() => navigate(`/inquiry/edit/${question.QS_ID}`)}>수정</button>
           </div>
         )}
 

@@ -79,7 +79,7 @@ const FAQ = () => {
             <div>등록된 질문이 없습니다.</div>
           ) : (
             filteredQuestions.map((q, index) => (
-              <div key={q.QS_ID} className="faqItem">
+              <div key={q.QS_ID}>
                 <div
                   className="cWrite"
                   onClick={() => toggleAnswer(index)} // ✅ 클릭 시 해당 항목 열기/닫기
@@ -90,16 +90,19 @@ const FAQ = () => {
               </div>
 
               {openIndex === index && (
+                <div className=' slide-down-wrapper'>
+        <div className='slide-down-content'>
       <div className="faqDetail">
         <div className="faqContent">
-          <strong>본문:</strong>
           <p>{q.CONTENT || '본문이 없습니다.'}</p>
         </div>
-        <div className="faqAnswer">
-          <strong>답변</strong>
+        <div className="faqContent">
+          <strong>[답변]</strong>
           <p>{q.ANSWER || '답변이 없습니다.'}</p>
         </div>
+        </div>
       </div>
+              </div>
               )}
         </div>
             ))

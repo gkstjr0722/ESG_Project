@@ -90,7 +90,7 @@ const Inquiry = () => {
             </>
           )}
         </div>
-
+          
         <div className="cList">
           {loading ? (
             <div>로딩 중...</div>
