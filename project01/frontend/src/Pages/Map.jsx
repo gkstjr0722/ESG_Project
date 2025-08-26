@@ -241,7 +241,7 @@ export default function MapEVCharger() {
           {loading ? (
             <div className="evmap-loading">전국 충전소 불러오는 중...</div>
           ) : (
-            <div id="ev-map" className="evmap-map" style={{ width: "100%", height: "80vh" }} />
+            <div id="ev-map" className="evmap-map" />
           )}
         </div>
       </div>

@@ -356,7 +356,7 @@ const Mypage = () => {
               <div className="sMypage-BtnsLeft">
                 <button
                   type="button"
-                  className="sMypage-BtnDanger"
+                  className="sMypage-BtnPrimary"
                   onClick={userDelete}
                 >
                   회원 탈퇴

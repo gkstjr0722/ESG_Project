@@ -1,6 +1,7 @@
 // 전력사용현황 메인 페이지 (최종본, fixed)
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import '../CSS/Sub.css';
 import MonthUsed from '../component/MonthUsed';
 import PowerAVG from '../component/PowerAVG';
@@ -146,6 +147,16 @@ export default function CalcMain() {
   const [avgUsageData, setAvgUsageData]         = useState(initialAvgUsageData);
   const [avgActive, setAvgActive]               = useState(false);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    const authed = localStorage.getItem('id') || localStorage.getItem('gov_id');
+    if (!authed) {
+      alert('로그인이 필요합니다!'); // ← 요청사항: 먼저 안내 문구
+      navigate('/login', { replace: true, state: { from: location } });
+    }
+  }, [navigate, location]);
+  
   const now = new Date();
   const currentMonthIdx = now.getMonth();                    // 0~11
   const prevMonthIdx    = (currentMonthIdx - 1 + 12) % 12;   // 전달
