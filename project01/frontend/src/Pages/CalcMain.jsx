@@ -88,8 +88,12 @@ export default function CalcMain() {
     const domType     = readCompanyTypeFromDOM();
     const companyType = payload.companyType ?? payload.useType ?? domType ?? '산업용';
 
+    // ✅ baseMonth 보정 (payload에 없으면 오늘 YYYYMM 사용)
+    const ym = String(now.getFullYear()) + String(now.getMonth() + 1).padStart(2, '0');
+    const baseMonth = payload.baseMonth ?? ym;
+
     console.log('[CalcMain] save payload =', {
-      companyId, contractKw, currentMonthKwh, baseMonth: payload.baseMonth, companyType
+      companyId, contractKw, currentMonthKwh, baseMonth, companyType
     });
 
     try {
@@ -97,8 +101,8 @@ export default function CalcMain() {
         companyId,
         contractKw,
         currentMonthKwh,
-        baseMonth: payload.baseMonth,
-        companyType, // ✅ 백엔드로 전송
+        baseMonth,     // ✅ 보정된 값 사용
+        companyType,   // ✅ 백엔드로 전송
       });
       console.log('[CalcMain] saved to DB:', resp);
     } catch (e) {

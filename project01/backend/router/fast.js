@@ -16,7 +16,7 @@ const toNum = (v) => {
 function buildFastApiPayload(body = {}) {
   const candidates = [
     body.current_month_kwh,
-     body.lastMonthKwh, 
+    body.lastMonthKwh, 
     body.value,
     body.thisMonth,
     body.lastMonth,
