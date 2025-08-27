@@ -22,7 +22,7 @@ export default defineConfig({
 
       // 산업 평균 API (기존 유지)
       '/kepco': {
-        target: BACKEND,
+        target: 'http://localhost:3001',
         changeOrigin: true,
         ws: true,
       },

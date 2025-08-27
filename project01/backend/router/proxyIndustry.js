@@ -2,6 +2,7 @@
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();
+const https = require('https'); 
 
 const BASE = 'https://bigdata.kepco.co.kr/openapi/v1/powerUsage/industryType.do';
 
@@ -26,12 +27,50 @@ const normalizeItem = (it = {}) => ({
 // 응답에서 레코드 배열 꺼내기(data | totData 혼용 대응)
 function extractRows(respData) {
   if (!respData) return [];
-  if (Array.isArray(respData?.data)) return respData.data;
-  if (Array.isArray(respData?.totData)) return respData.totData;
-  if (Array.isArray(respData?.data?.data)) return respData.data.data;
-  if (Array.isArray(respData?.totData?.data)) return respData.totData.data;
-  return [];
+
+  // 내부 헬퍼: 객체에서 rows 꺼내기
+  const take = (obj) => {
+    if (!obj) return [];
+    if (Array.isArray(obj.data)) return obj.data;
+    if (Array.isArray(obj.totData)) return obj.totData;
+    if (Array.isArray(obj?.data?.data)) return obj.data.data;
+    if (Array.isArray(obj?.totData?.data)) return obj.totData.data;
+    return [];
+  };
+
+  // 1) 응답이 문자열인 경우 (KEPCO가 종종 text/HTML로 주거나 JSON 2개를 연달아 붙여 보내는 케이스)
+  if (typeof respData === 'string') {
+    const txt = respData.trim();
+
+    // 1-1) 먼저 전체를 JSON으로 파싱 시도
+    try {
+      const obj = JSON.parse(txt);
+      return take(obj);
+    } catch { /* fallthrough */ }
+
+    // 1-2) JSON 두 개가 붙은 형태: `}{` 기준으로 분리 후 각각 파싱
+    const parts = txt.split(/}\s*{/).map((seg, i, arr) => {
+      if (i === 0) return seg.endsWith('}') ? seg : seg + '}';
+      if (i === arr.length - 1) return seg.startsWith('{') ? seg : '{' + seg;
+      return '{' + seg + '}';
+    });
+
+    const rows = [];
+    for (const p of parts) {
+      try {
+        const obj = JSON.parse(p);
+        rows.push(...take(obj));
+      } catch {
+        // 파싱 실패한 조각은 건너뜀
+      }
+    }
+    return rows;
+  }
+
+  // 2) 응답이 객체일 때 기존 로직
+  return take(respData);
 }
+
 
 // ── 한전 API 호출(헤더/파라미터/키 방식 조합으로 재시도)
 async function callKepcoOnce(paramsBase, { keyName, useEncoded, withPaging, uaKind }) {
@@ -62,6 +101,12 @@ async function callKepcoOnce(paramsBase, { keyName, useEncoded, withPaging, uaKi
 
   const headers = headersCandidates[uaKind] || headersCandidates.tight;
 
+  // ⚙️ (옵션) SSL 이슈 회피: 필요할 때만 on (KEPCO_INSECURE_SSL=true)
+  const httpsAgent =
+    process.env.KEPCO_INSECURE_SSL === 'true'
+      ? new (require('https').Agent)({ rejectUnauthorized: false })
+      : undefined;
+
   console.log('[KEPCO] try', {
     keyName,
     useEncoded,
@@ -75,21 +120,32 @@ async function callKepcoOnce(paramsBase, { keyName, useEncoded, withPaging, uaKi
     bizCd: params.bizCd || '',
   });
 
-  const { data } = await axios.get(BASE, {
-    params,
-    timeout: 15000,
-    headers,
-    validateStatus: (s) => s >= 200 && s < 500, // 4xx라도 본문을 보고 판단
-  });
+  try {
+    const { data } = await axios.get(BASE, {
+      params,
+      timeout: 25000,               // ⏱ 15s → 25s
+      headers,
+      httpsAgent,                   // 🔐 SSL 우회(옵션)
+      validateStatus: (s) => s >= 200 && s < 500, // 4xx라도 본문을 보고 판단
+    });
 
-  // 406 같은 경우에도 data가 HTML일 수 있으니 rows 추출 전에 체크
-  if (typeof data === 'string' && data.includes('406 Not Acceptable')) {
-    const err = new Error('KEPCO 406 Not Acceptable (HTML)');
-    err.response = { status: 406, data };
-    throw err;
+    // 406 같은 경우에도 data가 HTML일 수 있으니 rows 추출 전에 체크
+    if (typeof data === 'string' && data.includes('406 Not Acceptable')) {
+      const err = new Error('KEPCO 406 Not Acceptable (HTML)');
+      err.response = { status: 406, data };
+      throw err;
+    }
+
+    return data;
+  } catch (e) {
+    // 디버깅에 도움 되는 로그 추가 (네트워크 에러 코드 등)
+    console.error('[KEPCO] axios error:', {
+      code: e?.code,
+      message: e?.message,
+      status: e?.response?.status,
+    });
+    throw e;
   }
-
-  return data;
 }
 
 // 제공된 paramsBase로 여러 조합을 순차 시도
@@ -128,6 +184,116 @@ async function callKepcoWithFallback(paramsBase) {
   if (lastErr) throw lastErr;
   throw new Error('KEPCO call failed with no error info');
 }
+
+/* =========================
+   ⬇⬇⬇ 여기부터 추가 (필요 코드만)
+   ========================= */
+
+// 평균/합계 요약 계산
+function summarize(items = []) {
+  let total_kwh = 0;
+  let total_customers = 0;
+  let total_bill = 0;
+  let w_unitcost_numer = 0; // sum(unitCost * powerUsage)
+  let w_unitcost_denom = 0; // sum(powerUsage)
+
+  for (const it of items) {
+    const k = Number(it.powerUsage || 0);
+    const c = Number(it.custCnt || 0);
+    const b = Number(it.bill || 0);
+    const u = Number(it.unitCost || 0);
+
+    total_kwh += k;
+    total_customers += c;
+    total_bill += b;
+
+    w_unitcost_numer += u * k;
+    w_unitcost_denom += k;
+  }
+
+  const avg_kwh_per_customer =
+    total_customers > 0 ? total_kwh / total_customers : null;
+
+  const weighted_unit_cost =
+    w_unitcost_denom > 0 ? w_unitcost_numer / w_unitcost_denom : null;
+
+  return {
+    total_kwh,
+    total_customers,
+    total_bill,
+    avg_kwh_per_customer,   // kWh/고객
+    weighted_unit_cost,     // 원/kWh (사용량 가중평균)
+  };
+}
+
+// 단일 월 산업 평균 계산 엔드포인트
+// GET /kepco/industry/calc?year=YYYY&month=MM&metroCd=&cityCd=&bizCd=
+router.get('/industry/calc', async (req, res) => {
+  try {
+    if (!API_KEY_RAW) {
+      return res.status(500).json({ result: 0, message: 'KEPCO_API_KEY 누락' });
+    }
+
+    const { year, month, metroCd = '', cityCd = '', bizCd = '' } = req.query;
+
+    if (!/^\d{4}$/.test(String(year || ''))) {
+      return res.status(400).json({ result: 0, message: 'year=YYYY 필요' });
+    }
+    if (!/^\d{1,2}$/.test(String(month || ''))) {
+      return res.status(400).json({ result: 0, message: 'month=MM 필요' });
+    }
+
+    const paramsBase = {
+      year: String(year),
+      month: String(month).padStart(2, '0'),
+    };
+    if (metroCd) paramsBase.metroCd = metroCd;
+    if (cityCd)  paramsBase.cityCd  = cityCd;
+    if (bizCd)   paramsBase.bizCd   = bizCd;
+
+    let pack;
+    try {
+      pack = await callKepcoWithFallback(paramsBase);
+    } catch (e1) {
+      if (!metroCd && !cityCd && !bizCd) {
+        const alt = { ...paramsBase, bizCd: 'C' }; // 무필터 보정
+        pack = await callKepcoWithFallback(alt);
+      } else {
+        throw e1;
+      }
+    }
+
+    const items = pack.rows.map(normalizeItem);
+    const summary = summarize(items);
+
+    return res.json({
+      result: 1,
+      query: { year: paramsBase.year, month: paramsBase.month, metroCd, cityCd, bizCd },
+      count: items.length,
+      summary,
+      avg_kwh: summary.avg_kwh_per_customer, // 바로 쓰기용 별칭
+      upstream: {
+        tried: pack.meta?.tried,
+        resultCode: pack.data?.resultCode ?? pack.data?.header?.resultCode ?? null,
+        resultMsg:  pack.data?.resultMsg  ?? pack.data?.header?.resultMsg  ?? null,
+      },
+    });
+  } catch (e) {
+    const upStatus = e?.response?.status || 0;
+    const upBody = e?.response?.data;
+    console.error('[industry/calc] error:', upStatus, e?.message, upBody);
+    return res.status(502).json({
+      result: 0,
+      message: 'KEPCO API 호출 실패',
+      upStatus,
+      upBody: typeof upBody === 'object' ? upBody : String(upBody || ''),
+    });
+  }
+});
+
+/* =========================
+   ⬆⬆⬆ 여기까지 추가
+   ========================= */
 
 // ── GET /kepco/industry
 router.get('/industry', async (req, res) => {

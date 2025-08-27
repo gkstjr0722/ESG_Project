@@ -8,16 +8,17 @@ import axios from "axios";
 
 // ⚠️ 프록시(vite.config.js)의 '/kepco' 경로를 타도록 항상 상대경로 사용
 const api = axios.create({ baseURL: "/" });
-const ENDPOINT = "/kepco/industry";
+const ENDPOINT = "/kepco/industry/calc";
 
 // ▶︎ 추가: 간단 캐시(메모리)
 const cache = new Map();
 
+// ex) 25년도 6월 평균 이런 식으로 바뀔 수 있게 수정 완료 
 const PowerAVG = ({
   data,
   kepcoValue = 0,
   filters = {},
-  labelForAvg = "산업 평균",
+  labelForAvg,
   targetYM,
   active = false, // ← 추가: 계산 버튼 누르기 전엔 API 호출 않음
 }) => {
@@ -30,11 +31,22 @@ const PowerAVG = ({
   // ▶︎ 동일 조건 중복 호출 방지용 키
   const lastKeyRef = useRef("");
 
-  const ymLabel =
-    (labelForAvg && String(labelForAvg).trim()) ||
-    (targetYM && Number(targetYM?.year) && Number(targetYM?.month)
-      ? `${targetYM.year}-${String(targetYM.month).padStart(2, "0")} 산업 평균`
-      : "산업 평균");
+ // 교체:
+  const ymLabel = React.useMemo(() => {
+    // 1) props로 직접 라벨을 넘기면 그걸 우선 사용
+   if (labelForAvg && String(labelForAvg).trim()) return String(labelForAvg).trim();
+
+   // 2) targetYM이 있으면 "YY년도 M월 평균" 형식으로 표시
+   if (targetYM && Number(targetYM.year) && Number(targetYM.month)) {
+    const y = String(targetYM.year);
+    const yy = y.length === 4 ? y.slice(2) : y;               // 2025 → 25
+    const m  = String(targetYM.month).replace(/^0+/, '');     // 06 → 6
+    return `${yy}년도 ${m}월 평균`;
+    }
+
+  // 3) 기본값
+  return "산업 평균";
+}, [labelForAvg, targetYM?.year, targetYM?.month]);
 
   useEffect(() => {
     let cancelled = false;
@@ -119,8 +131,22 @@ const PowerAVG = ({
           return;
         }
 
+        /* =========[여기부터 2번 분기 추가]========= */
+        // 1) 백엔드 계산기 값 우선 사용 (avg_kwh 또는 summary.avg_kwh_per_customer)
+        const avgFromServer = Number(res?.avg_kwh ?? res?.summary?.avg_kwh_per_customer);
+        if (Number.isFinite(avgFromServer) && avgFromServer > 0) {
+          const rounded = Math.round(avgFromServer);
+          if (!cancelled) {
+            setAvgVal(rounded);
+            setErr("");
+            cache.set(key, rounded); // 성공 응답만 캐시
+          }
+          console.log("[PowerAVG] used server avg:", { params, avg_kwh: res?.avg_kwh });
+          return;
+        }
+        // 2) 폴백: 원본 items가 있으면 프런트에서 가중평균 계산
         const items = Array.isArray(res?.items) ? res.items : [];
-        console.log("[PowerAVG] /kepco/industry params:", params);
+        console.log("[PowerAVG] Fallback calc. Endpoint:", ENDPOINT, "params:", params);
         console.log("[PowerAVG] result count:", items.length, "upstream:", res?.upstream);
 
         if (items.length === 0) {
@@ -158,6 +184,7 @@ const PowerAVG = ({
           // ▶︎ 성공 응답만 캐시
           cache.set(key, rounded);
         }
+        /* =========[여기까지 2번 분기 추가]========= */
       } catch (e) {
         if (!cancelled) {
           console.error("[PowerAVG] KEPCO 평균 조회 실패:", e?.response?.status, e?.message, e?.response?.data);

@@ -156,7 +156,7 @@ export default function CalcMain() {
       navigate('/login', { replace: true, state: { from: location } });
     }
   }, [navigate, location]);
-  
+
   const now = new Date();
   const currentMonthIdx = now.getMonth();                    // 0~11
   const prevMonthIdx    = (currentMonthIdx - 1 + 12) % 12;   // 전달
@@ -198,8 +198,11 @@ export default function CalcMain() {
     setMonthlyUsageData(prev => {
       const nextArr = [...prev];
       if (left       !== null) nextArr[prevMonthIdx]    = { ...nextArr[prevMonthIdx],    value: left };
-      if (thisM_eff  !== null) nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: thisM_eff };
-      if (nextM      !== null) nextArr[nextMonthIdx]    = { ...nextArr[nextMonthIdx],    value: nextM };
+      if (nextM      !== null) { 
+        nextArr[currentMonthIdx]    = { ...nextArr[currentMonthIdx],    value: nextM };
+      } else if (thisM_eff !== null) {
+        nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: thisM_eff };
+      }
       return nextArr;
     });
 
@@ -251,8 +254,8 @@ export default function CalcMain() {
 
   // ✅ 한달 예측 사용량: "이번달 vs 다음달(예측)"
   const viewDataMonthly = [
+    monthlyUsageData[prevMonthIdx],
     monthlyUsageData[currentMonthIdx],
-    monthlyUsageData[nextMonthIdx],
   ];
 
   // 평균 전력량은 기존 로직 유지(필요 시 바꿔도 됨)
@@ -283,10 +286,10 @@ export default function CalcMain() {
             <div>평균 전력량</div>
             <PowerAVG
               active={avgActive}
-              data={viewDataAvg}
-              targetYM={{ year: 2025, month: 5 }}
-              labelForAvg="2025년 5월 산업 평균"
-              filters={{ bizCd: 'O', metroCd: '29' }}
+              data={viewDataAvg}                  // 그대로 둬도 됨 (차트 초기값/백업)
+              targetYM={{ year: 2025, month: 5 }} // 보여줄 기준월
+              // ⬇️ KEPCO 필터는 filters prop 하나에 묶어서 전달
+              filters={{ bizCd: 'C', metroCd: '29' }} // C=제조업, 29=광주광역시
             />
           </div>
 
