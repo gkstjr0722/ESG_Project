@@ -1,4 +1,4 @@
-// server.js
+// ESG 전력 프로젝트 server.js
 require('dotenv').config();
 const path = require('path');
 const express = require('express');
@@ -33,11 +33,7 @@ const fastRouter = require('./router/fast');
 /* ----------------------- 라우터 마운트 ------------------------ */
 app.use('/main', mainRouter);
 app.use('/sub', subRouter);
-
-// ✅ /user 라우트 (joinCorp 등 포함)
 app.use('/user', userRouter);
-
-// (직접 바인딩된 엔드포인트도 유지)
 app.post('/user/userinfo', (req, res) => {
   return res.json({ ok: true, from: 'server.js direct' });
 });
@@ -50,14 +46,12 @@ app.use('/put', putRouter);
 app.use('/api/proxy', proxyEvRouter);
 app.use('/api/inquiry', inquiryRouter);
 app.use('/api/notice', noticeRouter);
-app.use('/api/password', passwordRouter);   // 기존 경로 유지
-app.use('/auth', passwordRouter);           // ✅ (추가) 이메일 방식: /auth/email/...
+app.use('/api/password', passwordRouter);   
+app.use('/auth', passwordRouter);           
 app.use('/kepco', proxyIndustry);
 app.use('/fast', fastRouter);
 app.use('/api/forecast', forecast);
 app.use('/api/ec', proxyEcRouter);
-
-// server.js (또는 app.js)
 app.post('/api/predict-usage', (req, res) => {
   const { lastMonthKwh = 0 } = req.body || {};
   // 임시 로직: 지난달과 동일 사용량으로 예측 (시간대 분배 30/40/30)
@@ -71,16 +65,11 @@ app.post('/api/predict-usage', (req, res) => {
 });
 
 // 3. 파일 업로드 설정 (정적 제공)
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 // data 폴더 정적 경로로 열어주는 코드 !
 app.use('/data', express.static(path.join(__dirname, 'data')));
-
-
 // 헬스 체크
 app.get('/health', (req, res) => res.status(200).send('OK'));
-
 /* ----------------------- SPA 라우팅 처리 ----------------------- */
 // 주의: API/업로드 요청은 건너뛰고, 나머지 GET은 모두 index.html 반환
 app.get('*', (req, res, next) => {

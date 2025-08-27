@@ -1,4 +1,4 @@
-// server/routes/ev.js
+// 전기차 충전소 api 관련 js 
 const express = require('express');
 const axios = require('axios');
 const router = express.Router();

@@ -1,4 +1,4 @@
-// 서브 라우터 
+// 서브 라우터 js 
 const express = require('express');
 const router = express.Router();
 

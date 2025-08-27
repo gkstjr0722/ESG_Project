@@ -1,3 +1,4 @@
+// 전기공사업체 저장해두는 스크립트 js 
 require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
@@ -7,10 +8,10 @@ const PUB   = process.env.PUBLICDATA_KEY;
 const KAKAO = process.env.KAKAO_REST_KEY;
 
 
-// 🔧 데이터 저장 원하는 규모 설정 (필요에 따라 조절)
-const PER_PAGE     = 1000;   // odcloud는 보통 1000까지 OK
-const MAX_PAGES    = 999;    // 충분히 크게
-const MAX_GEOCODE  = 20000;   // 지오코딩해서 저장할 개수 상한 (시간/쿼터 고려해서 정해)
+// 🔧 데이터 저장 원하는 규모 설정 (조절 가능)
+const PER_PAGE     = 1000;   // odcloud는 보통 1000까지 함 
+const MAX_PAGES    = 999;    // 수정 X
+const MAX_GEOCODE  = 20000;   // 지오코딩해서 저장할 개수 상한 (전기공사업체 개수에 따라서 정해놓은거니 수정 X)
 const SLEEP_MS     = 100;    // 100ms면 초당 ~10건 (안전)
 
 const url = 'https://api.odcloud.kr/api/15125370/v1/uddi:c84da3cf-95ac-48a0-9f36-867aef58e9df';
@@ -42,6 +43,7 @@ async function fetchAllContractors() {
   return all;
 }
 
+// 데이터 수집위한 지오코딩 
 async function geocodeAddress(addr) {
   const res = await axios.get(geocoderUrl, {
     params: { query: addr },
@@ -53,6 +55,7 @@ async function geocodeAddress(addr) {
   return { lat: Number(doc.y), lng: Number(doc.x) }; // Kakao: y=lat, x=lng
 }
 
+// 전기공사업체 데이터 수집 
 async function main() {
   try {
     console.log('⚡ 스크립트 시작: 전기공사업체 데이터 수집 중...');
@@ -90,7 +93,7 @@ async function main() {
     const outPath = path.join(__dirname, '..', 'data', 'ec_points.min.json');
     fs.mkdirSync(path.dirname(outPath), { recursive: true });
     fs.writeFileSync(outPath, JSON.stringify(results, null, 2));
-    console.log(`🎉 완료! ${results.length} 개 저장됨 → ${outPath}`);
+    console.log(`🎉 완료! ${results.length} 개 저장됨 → ${outPath}`); // 이 콘솔 출력 시 스크립트에 저장 완료 
   } catch (e) {
     console.error('🔥 전체 오류:', e.message);
   }

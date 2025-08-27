@@ -1,4 +1,4 @@
-
+// 비밀번호 토큰 관련 js 
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 
