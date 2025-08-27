@@ -171,4 +171,55 @@ router.post('/save', async (req, res) => {
   }
 });
 
+// MYSQL에 2000개씩 페이지네이션하기 위한 코드 
+router.get('/list', async (req, res) => {
+  try {
+    // 기본값: page=1, size=2000
+    const page = Math.max(1, parseInt(req.query.page || '1', 10));
+    const size = Math.min(2000, Math.max(1, parseInt(req.query.size || '2000', 10)));
+    const offset = (page - 1) * size;
+
+    // 선택 필터 (없으면 전체 조회)
+    const { company_id, ym, fee_type, plan_set } = req.query;
+
+    const where = [];
+    const params = [];
+
+    if (company_id) { where.push('COMPANY_ID = ?'); params.push(company_id); }
+    if (ym)         { where.push('FORECAST_YM = ?'); params.push(ym); }
+    if (fee_type)   { where.push('FEE_TYPE = ?');    params.push(fee_type); }
+    if (plan_set)   { where.push('PLAN_SET = ?');    params.push(plan_set); }
+
+    const whereSql = where.length ? `WHERE ${where.join(' AND ')}` : '';
+
+    // 정렬 기준: 최근 생성순(필요 시 INPUT_ID DESC로 바꿔도 OK)
+    const sql = `
+      SELECT 
+        INPUT_ID, COMPANY_ID, COMPANY_TYPE, FEE_TYPE, PLAN_SET, OPTION_CODE,
+        FORECAST_YM, HOUR, PRED_KWH, USED_KWH, CONTRACT_KW, CREATED
+      FROM power_forecast_hourly
+      ${whereSql}
+      ORDER BY CREATED DESC
+      LIMIT ? OFFSET ?
+    `;
+
+    // 총 개수도 함께 내려주면 프론트에서 페이지 계산 가능
+    const countSql = `
+      SELECT COUNT(*) AS total
+      FROM power_forecast_hourly
+      ${whereSql}
+    `;
+
+    const countParams = [...params];
+    const listParams  = [...params, size, offset];
+
+    const [[{ total }]] = await pool.query(countSql, countParams);
+    const [rows] = await pool.query(sql, listParams);
+
+    return res.json({ ok: true, page, size, total, rows });
+  } catch (err) {
+    console.error('[list] error:', err);
+    return res.status(500).json({ ok: false, message: 'server error', detail: err?.message });
+  }
+});
 module.exports = router;
