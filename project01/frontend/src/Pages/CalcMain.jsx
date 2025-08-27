@@ -75,41 +75,6 @@ function _labelTextFor(input) {
   return t;
 }
 
-// ✅ “전기요금” 박스 안에서 라벨 텍스트로 숫자 input을 안전하게 찾는 헬퍼
-function readNumberFromBillBoxByLabel(word) {
-  const billBox = document.querySelector('.grid-2x2 .box:first-child');
-  if (!billBox) return null;
-
-  const inputs = Array.from(billBox.querySelectorAll('input'));
-  for (const el of inputs) {
-    // radio/checkbox 오인식 방지
-    if (el.type && el.type !== 'number' && el.type !== 'text') continue;
-
-    const labelText =
-      (el.id && billBox.querySelector(`label[for="${el.id}"]`)?.textContent) ||
-      el.closest('label')?.textContent ||
-      el.parentElement?.textContent ||
-      '';
-    if (!labelText) continue;
-
-    if (labelText.includes(word)) {
-      const n = Number(String(el.value).replace(/[^\d.-]/g, ''));
-      if (Number.isFinite(n)) return n;
-    }
-  }
-  return null;
-}
-
-// ✅ 추가: 계약전력(kW) 입력값을 DOM에서 읽어오기(기본값 20 제거)
-function readContractKwFromDOM() {
-  return readNumberFromBillBoxByLabel('계약전력');
-}
-
-// ✅ 추가: 사용자 “사용량(kWh)” 입력값을 DOM에서 읽기
-function readKwhFromDOM() {
-  return readNumberFromBillBoxByLabel('사용량') ?? readNumberFromBillBoxByLabel('kWh');
-}
-
 function readFeePlanOption(payload = {}) {
   // 1) payload 우선
   let feeType    = payload.feeType     ?? payload.fee_type     ?? null; // '갑'|'을'
@@ -197,6 +162,11 @@ export default function CalcMain() {
   const prevMonthIdx    = (currentMonthIdx - 1 + 12) % 12;   // 전달
   const nextMonthIdx    = (currentMonthIdx + 1) % 12;        // 다음달
 
+  // ✅ 25일 컷오프 규칙 추가
+  const isCutoff = now.getDate() >= 25;
+  const usageIdx  = isCutoff ? currentMonthIdx : prevMonthIdx; // 왼쪽(사용월)
+  const targetIdx = isCutoff ? nextMonthIdx    : currentMonthIdx;
+
   const handleCalculationComplete = async (payload = {}) => {
     setAvgActive(true);
 
@@ -229,45 +199,28 @@ export default function CalcMain() {
       'fromApi=', Boolean(payload.fromApi)
     );
 
-    // 그래프 데이터 반영: 전달/이번달/다음달
+    // ✅ 그래프 데이터 반영 (컷오프 적용)
     setMonthlyUsageData(prev => {
       const nextArr = [...prev];
-      if (left       !== null) nextArr[prevMonthIdx]    = { ...nextArr[prevMonthIdx],    value: left };
-      if (nextM      !== null) { 
-        nextArr[currentMonthIdx]    = { ...nextArr[currentMonthIdx],    value: nextM };
-      } else if (thisM_eff !== null) {
-        nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: thisM_eff };
-      }
+      if (thisM_eff !== null) nextArr[usageIdx]  = { ...nextArr[usageIdx],  value: thisM_eff };
+      else if (left !== null)  nextArr[usageIdx]  = { ...nextArr[usageIdx],  value: left };
+      if (nextM !== null)      nextArr[targetIdx] = { ...nextArr[targetIdx], value: nextM };
       return nextArr;
     });
 
     setAvgUsageData(prev => {
       const nextArr = [...prev];
-      if (left       !== null) nextArr[prevMonthIdx]    = { ...nextArr[prevMonthIdx],    value: left };
-      if (thisM_eff  !== null) nextArr[currentMonthIdx] = { ...nextArr[currentMonthIdx], value: thisM_eff };
-      if (nextM      !== null) nextArr[nextMonthIdx]    = { ...nextArr[nextMonthIdx],    value: nextM };
+      if (thisM_eff !== null) nextArr[usageIdx]  = { ...nextArr[usageIdx],  value: thisM_eff };
+      if (nextM      !== null) nextArr[targetIdx] = { ...nextArr[targetIdx], value: nextM };
       return nextArr;
     });
 
-    // 소수 반올림 유틸 (저장 안정화)
-    const fix2 = (v) => (v == null ? null : Math.round(Number(v) * 100) / 100);
-    const fix3 = (v) => (v == null ? null : Math.round(Number(v) * 1000) / 1000);
 
     // DB 저장 호출 — 부족한 필드 보정(임시 기본값)
-    const companyId = payload.companyId ?? localStorage.getItem('id') ?? localStorage.getItem('gov_id') ?? 'A001';
-
-    // ✅ 계약전력: payload → DOM(라벨 ‘계약전력’) → null
-    let contractKw = toNum(payload.contractKw, null);
-    if (contractKw == null) contractKw = toNum(readContractKwFromDOM(), null);
-    contractKw = fix2(contractKw); // 2자리 반올림
-
-    // ✅ 이번달 사용량: 사용자 입력 → payload → 예측합/전달
-    let currentMonthKwh = toNum(readKwhFromDOM(), null);
-    if (currentMonthKwh == null) currentMonthKwh = toNum(payload.currentMonthKwh, null);
-    if (currentMonthKwh == null) currentMonthKwh = thisM_eff ?? left ?? 0;
-    currentMonthKwh = fix3(currentMonthKwh); // 3자리 반올림
-
-    const nextMonthKwh = toNum(nextM, null);
+    const companyId       = payload.companyId ?? 'A001';
+    const contractKw      = toNum(payload.contractKw, 20);
+    const currentMonthKwh = toNum(payload.currentMonthKwh, thisM_eff ?? left ?? 0);
+    const nextMonthKwh    = toNum(nextM, null);
 
     const domType     = readCompanyTypeFromDOM();
     const companyType = payload.companyType ?? payload.useType ?? domType ?? '산업용';
@@ -301,17 +254,17 @@ export default function CalcMain() {
     }
   };
 
-  // ✅ 한달 예측 사용량: "이번달 vs 다음달(예측)"
-  const viewDataMonthly = [
-    monthlyUsageData[prevMonthIdx],
-    monthlyUsageData[currentMonthIdx],
-  ];
+  // ✅ 컷오프 적용해서 차트에 넘기기
+const viewDataMonthly = [
+  monthlyUsageData[usageIdx],
+  monthlyUsageData[targetIdx],
+];
 
-  // 평균 전력량은 기존 로직 유지(필요 시 바꿔도 됨)
-  const viewDataAvg = [
-    avgUsageData[prevMonthIdx],
-    avgUsageData[currentMonthIdx],
-  ];
+const viewDataAvg = [
+  avgUsageData[usageIdx],
+  avgUsageData[targetIdx],
+];
+
 
   return (
     <>

@@ -34,7 +34,6 @@ const POWER_RATE_EUL = [
   { key:"c_select3",     label:"고압C 선택 III",base: 8090, rates:{ summer:[120.0,172.9,253.8], springFall:[120.0,142.9,173.3], winter:[126.9,172.5,229.1] } },
 ];
 
-
 // 일반용(갑) I — 단일단가
 const J_POWER_RATE_GAP_I = [
   { key:"j_low",       label:"저압전력",     base: 6160, rate:{ summer:132.4, springFall:91.9,  winter:119.0 } },
@@ -60,8 +59,6 @@ const J_POWER_RATE_EUL = [
   { key:"j_b_sel3_e", label:"고압B 선택 III",base:8190, rates:{ summer:[90.4,142.7,224.0], springFall:[90.4,112.8,143.1], winter:[97.5,142.7,198.9] } },
 ];
 // --------------------------------------------------------------------------
-
-
 
 /* -------------------- 공용 유틸 -------------------- */
 const MONTH_LABELS = ["1월","2월","3월","4월","5월","6월","7월","8월","9월","10월","11월","12월"];
@@ -157,7 +154,7 @@ export default function PowerBill({
   onCalculationComplete,
   predictApiUrl = '/fast/predict',
 }) {
-  
+
   const [mainType, setMainType] = useState('gap');  // 'gap' | 'eul'
   const [subType,  setSubType]  = useState('I');    // 'I' | 'II'
   const [option,   setOption]   = useState('low');
@@ -169,8 +166,13 @@ export default function PowerBill({
   const now = new Date();
   const currentMonthIdx = now.getMonth();
   const prevMonthIdx    = (currentMonthIdx - 1 + 12) % 12;
-  const currentMonthLabel = MONTH_LABELS[currentMonthIdx];
-  const prevMonthLabel    = MONTH_LABELS[prevMonthIdx];
+
+  // ✅ 25일 컷오프: 예측 대상/입력 대상 월 라벨
+  const isCutoff = now.getDate() >= 25;
+  const targetMonthIdx = isCutoff ? (currentMonthIdx + 1) % 12 : currentMonthIdx; // 예측
+  const usageMonthIdx  = isCutoff ? currentMonthIdx : prevMonthIdx;               // 입력
+  const targetMonthLabel = MONTH_LABELS[targetMonthIdx];
+  const usageMonthLabel  = MONTH_LABELS[usageMonthIdx];
 
   const [contractPower, setContractPower] = useState('');
   const [lastMonthKwh,  setLastMonthKwh]  = useState('');
@@ -204,7 +206,7 @@ export default function PowerBill({
     setResult(null);
 
     if (!contractPower || Number(contractPower) <= 0) { alert('계약전력을 입력하세요.'); return; }
-    if (!lastMonthKwh || Number(lastMonthKwh) <= 0) { alert(`${prevMonthLabel} 전력사용량(kWh)을 입력하세요.`); return; }
+    if (!lastMonthKwh || Number(lastMonthKwh) <= 0) { alert(`${usageMonthLabel} 전력사용량(kWh)을 입력하세요.`); return; }
 
     try {
       setLoading(true);
@@ -218,7 +220,8 @@ export default function PowerBill({
       const apiRes = await fetchPredictedUsage(predictApiUrl, payload);
       const tm = apiRes?.thisMonth || {};           // 이번 달 합계(시간대 합에서 계산됨)
       const nm = apiRes?.nextMonth || {};           // 다음 달 예측
-      const times = Array.isArray(nm.times) ? nm.times : null;
+      const thisTimes = Array.isArray(tm.times) ? tm.times : null;
+      const nextTimes = Array.isArray(nm.times) ? nm.times : null;
       const thisTotal = Number(tm.totalKwh || 0);   // 이번 달 총량
       const nextTotal = Number(nm.totalKwh || 0);   // 다음 달 총량(예측)
       const predictionAvailable = Number.isFinite(nextTotal) && nextTotal > 0;
@@ -230,26 +233,31 @@ export default function PowerBill({
         if (subType === 'I') {
           const table = useGeneral ? J_POWER_RATE_GAP_I : POWER_RATE_GAP_I;
           const selected = table.find(v => v.key === option);
-          baseCharge  = floorWon(Number(contractPower) * selected.base);
+          baseCharge   = floorWon(Number(contractPower) * selected.base);
           energyCharge = floorWon(nextTotal * selected.rate[season]);     // 다음 달 기준
         } else {
           const table = useGeneral ? J_POWER_RATE_GAP_II : POWER_RATE_GAP_II;
           const selected = table.find(v => v.key === option);
-          baseCharge  = floorWon(Number(contractPower) * selected.base);
-          if (times && times.length === 3) {
-            for (let i = 0; i < 3; i++) energyCharge += floorWon((Number(times[i]) || 0) * selected.rates[season][i]);
+          baseCharge = floorWon(Number(contractPower) * selected.base);
+          if (nextTimes && nextTimes.length === 3) {
+            for (let i = 0; i < 3; i++) {
+              energyCharge += floorWon((Number(nextTimes[i]) || 0) * selected.rates[season][i]);
+            }
           } else {
-            energyCharge = floorWon(nextTotal * selected.rates[season][1]); // 다음 달 기준
+            energyCharge = floorWon(nextTotal * selected.rates[season][1]); // 다음 달 기준(중간)
           }
         }
       } else {
         const table = useGeneral ? J_POWER_RATE_EUL : POWER_RATE_EUL;
         const selected = table.find(v => v.key === option);
         baseCharge = floorWon(Number(contractPower) * selected.base);
-        if (times && times.length === 3) {
-          for (let i = 0; i < 3; i++) energyCharge += floorWon((Number(times[i]) || 0) * selected.rates[season][i]);
+        if (nextTimes && nextTimes.length === 3) {
+          for (let i = 0; i < 3; i++) {
+            energyCharge += floorWon((Number(nextTimes[i]) || 0) * selected.rates[season][i]);
+          }
         } else {
-          energyCharge = floorWon(predictedTotal * selected.rates[season][1]);
+          // 🔧 버그 픽스: predictedTotal → nextTotal
+          energyCharge = floorWon(nextTotal * selected.rates[season][1]);
         }
       }
 
@@ -261,13 +269,14 @@ export default function PowerBill({
       setResult(predictionAvailable ? finalAmount : null);
       setView('result');
 
-    onCalculationComplete?.({
-      lastMonth: Number(lastMonthKwh),   // 전달 실사용량(입력)
-      thisMonth: thisTotal,              // 이번 달(시간대 합)
-      nextMonthKwh: nextTotal,           // ✅ 다음 달 예측 총량
-      hourlyNextMonth: apiRes.hourlyNext ?? undefined, // (선택) 배열/맵 그대로
-      fromApi: predictionAvailable,
-     });
+      onCalculationComplete?.({
+        lastMonth: Number(lastMonthKwh),      // 전달/사용월 실사용량(입력)
+        thisMonth: thisTotal,                 // 이번 달(시간대 합)
+        nextMonthKwh: nextTotal,              // 다음 달 예측 총량
+        hourlyThisMonth: thisTimes ?? undefined,
+        hourlyNextMonth: nextTimes ?? undefined,
+        fromApi: predictionAvailable,
+      });
 
     } catch (err) {
       setError(err?.response?.data?.message || err.message || '예측 중 오류가 발생했습니다.');
@@ -286,7 +295,8 @@ export default function PowerBill({
         {view === 'initial' && (
           <div className="initial-view">
             <h3>전기요금 계산하기</h3>
-            <p>{currentMonthLabel} 전기요금을 미리 계산해 보세요.</p>
+            {/* ✅ 25일 컷오프 적용 */}
+            <p>{targetMonthLabel} 전기요금을 미리 계산해 보세요.</p>
             <button className="main" onClick={() => setView('calculator')}>계산기 열기</button>
           </div>
         )}
@@ -330,7 +340,8 @@ export default function PowerBill({
               </div>
 
               <div className="row">
-                <label>{prevMonthLabel} 전력 사용량 (kWh):&nbsp;</label>
+                {/* ✅ 25일 컷오프 적용 */}
+                <label>{usageMonthLabel} 전력 사용량 (kWh):&nbsp;</label>
                 <input type="number" min="0" value={lastMonthKwh} onChange={e=>setLastMonthKwh(e.target.value)} required />
               </div>
 
