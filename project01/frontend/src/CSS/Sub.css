@@ -324,7 +324,7 @@
 
 /* 기본 */
 .sMypage{background:#fff;color:var(--sMypage-text);min-height:100vh;}
-.sMypage-Title{font-size:26px;font-weight:800;letter-spacing:-.01em;margin:6px 0 18px;}
+.sMypage-Title{font-size:26px;font-weight:700;letter-spacing:-.01em;margin:6px 0 18px;}
 
 /* 컨테이너 */
 .sMypage-ViewWrap,.sMypage-EditWrap,.sMypage-Loading{max-width:880px;margin:0 auto;}
@@ -919,7 +919,7 @@ html, body, #root { height: 100%; }
 
 .faq-page-wrap { 
   max-width: 1000px;
-  margin: 64px auto 0;
+  margin: 112px auto 0;
   padding: 0 24px;
   min-height: 80vh;
 }
@@ -932,7 +932,7 @@ html, body, #root { height: 100%; }
 
 }
 .faq-tit-loca{
-  text-align: center;
+  /* text-align: center; */
   margin-right: 800px;
 }
 .faq-search-row {
@@ -1005,7 +1005,7 @@ html, body, #root { height: 100%; }
   }
 }
 .faq-detail-page-wrap {
-  max-width: 650px; 
+  max-width: 900px; 
   margin: 64px auto 0; 
   background: #fff; 
   border-radius: 12px;
@@ -1014,16 +1014,17 @@ html, body, #root { height: 100%; }
   min-height: 340px;
 }
 .faq-detail-title { 
-  font-size: 30px; 
+  font-size: 2.2rem; 
   font-weight: 700; 
-  color: #1d5fc4; 
-  margin-bottom: 26px; 
+  color: #1d5fc4;  
 }
 .faq-detail-content { 
   font-size: 1.09rem; 
   color: #23272e; 
   line-height: 1.7; 
   margin-bottom: 38px; 
+  padding: 50px 0;
+  border-bottom: 1px solid #ddd; 
 }
 
 .faq-detail-notfound { 
@@ -1058,8 +1059,11 @@ html, body, #root { height: 100%; }
 .faq-detail-date { 
   color:#7d88a2; 
   font-size:.98rem; 
-  margin:6px 0 16px; 
+  /* margin:6px 0 16px;*/
   letter-spacing:.1px; 
+  text-align: right;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
 }
 .floating-write-btn {
   position: fixed; 
@@ -1138,7 +1142,7 @@ html, body, #root { height: 100%; }
 
 .edit-input-box{
   height: 4.625rem;
-  width: 40rem;
+  width: 62.2rem;
   line-height: 40px;
   border: 1px solid #a9a9a9;
   border-radius: 8px;
@@ -1198,7 +1202,12 @@ html, body, #root { height: 100%; }
 .faq-detail-title.notice-detail-title { 
   font-size: 2rem !important; 
   font-weight: 800; 
-  line-height: 1.3; }
+  line-height: 1.3;
+  margin-top: 50px;
+  border-top: 2px solid #1d5fc4;
+  padding: 40px 0 ;
+  border-bottom: 1px solid #ddd;
+}
 
 /* ===================== Support.css ===================== */
 /* 탭바 (밑줄/테두리 제거 + 중앙 정렬) */

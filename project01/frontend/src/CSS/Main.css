@@ -489,7 +489,7 @@
 .cHeader-Menu { display:flex; align-items:center; gap: 34px; } /* 30px → 34px */
 .cHeader-MenuItem {
   text-decoration:none; color:#111; font-weight:600;
-  font-size: clamp(15px, 1.05vw, 18px);
+  font-size: clamp(17px, 1.05vw, 18px);
   padding: 8px 6px; border-radius: 8px;
 }
 /* hover 색/배경 제거 */
@@ -501,7 +501,7 @@
   text-decoration:none;
   color:#3c79d5; /* 파란색 유지 */
   font-weight:600; cursor:pointer;
-  font-size: clamp(14.5px, 1.05vw, 18px);
+  font-size: clamp(16px, 1.05vw, 18px);
   padding: 6px 8px; border-radius: 8px;
 }
 /* hover/active/focus/visited 모두 동일한 파란색 유지 + 배경 변화 제거 */
