@@ -262,8 +262,6 @@ const Notice = () => {
         : `http://localhost:3001${selectedNotice.FILE_PATH}`;
     }
     const isImage = fileUrl && /\.(jpg|jpeg|png|gif|webp)$/i.test(fileUrl);
-
-    const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
     // const backBtnSx = {
     //   background: 'transparent', border: 'none', boxShadow: 'none',
     //   color: '#000', fontWeight: 700, fontSize: '16px', padding: 0,
@@ -273,7 +271,8 @@ const Notice = () => {
 
     return (
       <div className="faq-page-wrap">
-        <div className="notice-detail-inner" style={wrapSx}>
+        <div>
+          {/* <br /><br /><br /> */}
           <a className="cBack" onClick={handleViewBack}>
             ← 돌아가기
           </a>
@@ -284,13 +283,13 @@ const Notice = () => {
           </div>
 
           <div className="faq-detail-date" style={zeroLeft}>
+            작성일&nbsp;&nbsp;|&nbsp;&nbsp;
             {selectedNotice.NOTICE_DT?.slice(0, 10)}
           </div>
 
           <div className="faq-detail-content notice-detail-content" style={zeroLeft}>
             {selectedNotice.CONTENT}
-          </div>
-
+            <br/>
           {fileUrl && (
             isImage ? (
               <img src={fileUrl} alt="첨부파일" className="notice-detail-img" loading="lazy" style={{ ...zeroLeft }} />
@@ -300,6 +299,8 @@ const Notice = () => {
               </a>
             )
           )}
+          </div>
+
 
           {/* 수정/삭제 버튼: 본문 아래, 왼쪽 정렬 (관리자만) */}
           {isAdmin && (

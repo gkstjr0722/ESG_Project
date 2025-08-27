@@ -20,6 +20,11 @@ const InquiryDetail = () => {
   const govAdmin = localStorage.getItem('gov_id') === 'admin';
   const isAdmin = corpAdmin || govAdmin;
 
+  const pathname = location?.pathname || '/';
+  const isNoticeActive  = pathname.startsWith('/notice');
+  const isInquiryActive = pathname.startsWith('/inquiry');
+  const isFAQActive     = pathname.startsWith('/faq');
+
   useEffect(() => {
     const fetchDetail = async () => {
       setLoading(true);
@@ -119,17 +124,22 @@ const InquiryDetail = () => {
   const isOwner = question.USER_ID === userId;
   const canEditOrDelete = isOwner && (!question.ANSWER || question.ANSWER.trim() === '');
 
+  const wrapSx = { paddingLeft: '24px', maxWidth: '980px', margin: 0 };
+
   // 고객문의 글 작성 완료 후
   return (
     <div className='bg-common'>
       <Header />
-      <br /><br /><br />
-      <div className="faq-detail-page-wrap">
+      <div className="cTab">
+          <button type="button" className={isNoticeActive ? 'active' : ''}  onClick={() => navigate('/notice')}>공지사항</button>
+          <button type="button" className={isInquiryActive ? 'active' : ''} onClick={() => navigate('/inquiry')}>고객문의</button>
+          <button type="button" className={isFAQActive ? 'active' : ''}     onClick={() => navigate('/faq')}>자주 묻는 질문</button>
+        </div>
+      <div className="faq-page-wrap">
         <a className="cBack" onClick={() => navigate('/inquiry')}>
           ← 돌아가기
         </a>
-        <br /><br />
-        <div className="faq-detail-title">{question.TITLE}</div>
+        <div className="faq-detail-title notice-detail-title">{question.TITLE}</div>
         <div className="faq-detail-date">
           작성일&nbsp;&nbsp;|&nbsp;&nbsp;
           {question.QS_DATE &&
@@ -144,7 +154,7 @@ const InquiryDetail = () => {
             .replace(/-$/, '')   
           }
         </div>
-        <div className="faq-detail-content">{question.CONTENT}</div>
+        <div className="faq-detail-content notice-detail-content">{question.CONTENT}</div>
 
         {/* 답변 */}
         {question.ANSWER && (

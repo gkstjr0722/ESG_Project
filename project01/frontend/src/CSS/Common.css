@@ -88,7 +88,7 @@ body:has(.cBox) {
   color: #6e7177;
   /* color: #888; */
   font-weight: 700;
-  font-size: 0.96rem;
+  font-size: 17px;
   text-decoration: none;
   transition: color 0.2s;
   cursor: pointer;
